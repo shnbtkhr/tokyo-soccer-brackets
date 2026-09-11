@@ -103,8 +103,36 @@ def main() -> int:
     )
     args = ap.parse_args()
 
-    me = normalize(args.team)
-    manual = json.loads(args.block_config.read_text(encoding="utf-8"))
+    data = build_data(args.team, args.block_config)
+    me = data["me"]
+    block = data["block"]
+    html = (ROOT / "scout/scout_template.html").read_text(encoding="utf-8")
+    html = html.replace("/*__DATA__*/null", json.dumps(data, ensure_ascii=False))
+
+    out_path = args.out
+    if out_path is None:
+        slug = "musashigaoka" if me == "武蔵丘" else normalize(me).lower()
+        out_path = ROOT / f"out/scout/{slug}.html"
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(html, encoding="utf-8")
+    print(f"wrote {out_path} ({out_path.stat().st_size // 1024} KB)")
+
+    if args.export_prompt:
+        prompt_md = generate_prompt_markdown(data)
+        prompt_path = out_path.parent / f"{out_path.stem}_scout_prompt.md"
+        prompt_path.write_text(prompt_md, encoding="utf-8")
+        print(f"wrote {prompt_path} ({prompt_path.stat().st_size // 1024} KB)")
+
+    for k in block:
+        print(k, "meet", data["teams"][k]["meetProb"], "vsMe", data["teams"][k]["vsMe"], "blockWin", data["teams"][k]["blockWin"])
+    return 0
+
+
+def build_data(team: str, block_config: Path) -> dict:
+    """ページに埋め込むデータ一式を組み立てる（build_site.py からも使う）。"""
+    me = normalize(team)
+    manual = json.loads(block_config.read_text(encoding="utf-8"))
 
     # analyze_team の出力を参照（存在しない場合は手動データ等から基本構造を作成）
     json_path = ROOT / "out/scout/musashigaoka_sen2026.json"
@@ -208,6 +236,7 @@ def main() -> int:
                         "eloHistory",
                         "summary",
                         "bySeries",
+                        "byYear",
                         "recent",
                         "games",
                         "names",
@@ -237,36 +266,7 @@ def main() -> int:
         "pyramid": manual.get("pyramid", []),
         "pyramidNote": manual.get("pyramidNote", ""),
     }
-
-    html = (ROOT / "scout/scout_template.html").read_text(encoding="utf-8")
-    html = html.replace("/*__DATA__*/null", json.dumps(data, ensure_ascii=False))
-
-    out_path = args.out
-    if out_path is None:
-        slug = "musashigaoka" if me == "武蔵丘" else normalize(me).lower()
-        out_path = ROOT / f"out/scout/{slug}.html"
-
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(html, encoding="utf-8")
-    print(f"wrote {out_path} ({out_path.stat().st_size // 1024} KB)")
-
-    if args.export_prompt:
-        prompt_md = generate_prompt_markdown(data)
-        prompt_path = out_path.parent / f"{out_path.stem}_scout_prompt.md"
-        prompt_path.write_text(prompt_md, encoding="utf-8")
-        print(f"wrote {prompt_path} ({prompt_path.stat().st_size // 1024} KB)")
-
-    for k in block:
-        print(
-            k,
-            "meet",
-            data["teams"][k]["meetProb"],
-            "vsMe",
-            data["teams"][k]["vsMe"],
-            "blockWin",
-            data["teams"][k]["blockWin"],
-        )
-    return 0
+    return data
 
 
 if __name__ == "__main__":

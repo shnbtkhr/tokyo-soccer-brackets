@@ -1,0 +1,283 @@
+"""武蔵丘スカウトのサイト（7ページ）を書き出す。
+
+- index           … ブロック全体（入口）
+- musashigaoka    … 武蔵丘の自己分析
+- showa-daiichi   … 1回戦の相手
+- gakushuin / itabashi-yutoku … 2回戦の相手候補
+- joto / higashimurayama      … ブロック決勝の相手候補
+- seeds           … 2次予選から出てくる強豪（1次予選の免除校。build_seeds.py の出力）
+
+入力は build_scout_page.build_data() と同じ（analyze_team.py・fetch_leagues.py の出力と scout/sen2026_block10.json）。
+見た目と部品は scout/site/（page.html・site.css・site.js）に1か所だけ置き、各ページに埋め込む。
+
+--links local    … ページどうしを相対リンクでつなぐ（手元で開く用。out/site/）
+--links artifact … scout/site_urls.json の公開URLでつなぐ（claude.ai 上で開く用。out/site_artifact/）
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from collections import Counter
+from pathlib import Path
+
+from analyze_team import BASE, CARRY, K, win_prob
+from build_scout_page import build_data
+
+ROOT = Path(__file__).parent
+SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
+TITLE = {"index": "武蔵丘 選手権スカウティング", "musashigaoka": "武蔵丘 自己分析", "seeds": "2次予選の強豪校"}
+
+
+def band_of(g: dict) -> str:
+    gap = (g.get("oppElo") or 1500) - (g.get("myElo") or 1500)
+    return "格上" if gap > 50 else "格下" if gap < -50 else "同格"
+
+
+def wins(gs: list) -> tuple[int, int, int, int]:
+    return tuple(sum(g["res"] == r for g in gs) for r in ("勝", "PK勝", "PK負", "負"))
+
+
+def league_line(t: dict) -> str:
+    for lg in t.get("leagues", []):
+        row = next((r for r in lg["table"] if r["team"] == lg["teamName"]), None)
+        played = [g for g in lg["games"] if g["res"]]
+        c = Counter(g["res"] for g in played)
+        rec = f"{c['勝']}勝{c['分']}分{c['負']}敗"
+        return f"今季 {lg['league']} " + (f"{row['rank']}位/{len(lg['table'])}・" if row else "") + rec
+    return "今季のリーグ戦は未確認"
+
+
+def team_points(t: dict, me_t: dict, me_games: list, br: dict) -> list[str]:
+    """相手校の「スカウティングの要点」を数字から書く。"""
+    pts = []
+    gap = t["elo"] - me_t["elo"]
+    band = "格上" if gap > 50 else "格下" if gap < -50 else "同格"
+    w, pw, pl, l = wins([g for g in me_games if band_of(g) == band])
+    pts.append(f"強さの点数は武蔵丘より<b>{gap:+d}</b>で、<b>{band}</b>にあたる。武蔵丘は5年間、{band}の相手に <b>{w}勝 {pw}PK勝 {pl}PK負 {l}敗</b>。")
+    for lg in t.get("leagues", [])[:1]:
+        row = next((r for r in lg["table"] if r["team"] == lg["teamName"]), None)
+        played = [g for g in lg["games"] if g["res"]]
+        c = Counter(g["res"] for g in played)
+        gf, ga = sum(g["gf"] for g in played), sum(g["ga"] for g in played)
+        pos = f"{row['rank']}位（{len(lg['table'])}チーム中）" if row else ""
+        pts.append(f"今季の{lg['league']}は<b>{pos}</b>、{len(played)}試合 {c['勝']}勝{c['分']}分{c['負']}敗・得点{gf} 失点{ga}。")
+    if not t.get("leagues"):
+        pts.append("今季のリーグ戦の結果は見つかっていない。調子は大会の結果から判断するしかない。")
+    S = t["summary"]
+    pts.append(f"過去5年の公式戦は1試合平均 <b>得点{S['gfPer']}・失点{S['gaPer']}</b>。無得点の試合が{S['scoreless']}/{S['n']}、無失点が{S['cleanSheets']}/{S['n']}。")
+    if S["pkw"] + S["pkl"]:
+        pts.append(f"PK戦は{S['pkw']}勝{S['pkl']}敗。武蔵丘は{me_t['summary']['pkw']}勝{me_t['summary']['pkl']}敗。")
+    st26 = [st for st in t["stages"] if st["year"] == 2026]
+    if st26:
+        pts.append("2026年度の公式戦: " + "／".join(f"{st['series']} {st['stage']}は{st['reach']}（{st['path']}）" for st in st26) + "。")
+    return pts
+
+
+def self_insights(me_t: dict, block: dict, opp_of_round: dict) -> tuple[list, list, str]:
+    gs = me_t["games"]
+    S = me_t["summary"]
+    bands = []
+    for b in ("格上", "同格", "格下"):
+        sub = [g for g in gs if band_of(g) == b]
+        w, pw, pl, l = wins(sub)
+        bands.append({"band": b, "n": len(sub), "w": w, "pkw": pw, "pkl": pl, "l": l})
+    up = bands[0]
+    even = bands[1]
+    down = bands[2]
+    losses = [g for g in gs if g["res"] in ("負", "PK負")]
+    scoreless_losses = sum(g["gf"] == 0 for g in losses)
+    close = sum(abs(g["gf"] - g["ga"]) <= 1 for g in gs)
+    sr = me_t["bySeries"]
+    strong = [k for k, v in opp_of_round.items() if v - me_t["elo"] > 50]
+    weak = [k for k, v in opp_of_round.items() if me_t["elo"] - v > 50]
+    ins = [
+        {"fig": f"{up['w'] + up['pkw']}勝", "head": "格上の相手には、5年間で勝てていない",
+         "body": f"差が50点を超える格上とは{up['n']}試合で{up['w']}勝{up['pkw']}PK勝{up['pkl']}PK負{up['l']}敗。" + (f"この山では{'・'.join(strong)}が格上にあたる。" if strong else "")},
+        {"fig": f"{even['w'] + even['pkw']}/{even['n']}", "head": "同格の相手には、ほぼ互角以上",
+         "body": f"同格とは{even['n']}試合で{even['w']}勝{even['pkw']}PK勝{even['pkl']}PK負{even['l']}敗。格下には{down['w']}勝{down['pkw']}PK勝{down['pkl']}PK負{down['l']}敗と取りこぼしが少ない。" + (f"この山では{'・'.join(weak)}が格下にあたる。" if weak else "")},
+        {"fig": f"{S['pkw']}勝{S['pkl']}敗", "head": "PK戦に強い", "body": f"PK戦は{S['pkw'] + S['pkl']}試合で{S['pkw']}勝{S['pkl']}敗。同点で終盤を迎えても、PK戦に持ち込めば分がある。"},
+        {"fig": f"{S['scoreless']}/{S['n']}", "head": f"無得点で終わる試合が{round(S['scoreless'] / S['n'] * 100)}%ある", "body": f"{S['n']}試合のうち{S['scoreless']}試合が無得点。負けた{len(losses)}試合のうち{scoreless_losses}試合は無得点で、点が取れない日に負けている。"},
+        {"fig": f"{close}", "head": "1点差以内の接戦が多い", "body": f"1点差以内（PK戦を含む）で終わった試合が{close}/{S['n']}。先制点と終盤の守り方が勝敗を分けやすい。"},
+        {"fig": f"{sr['選手権']['gfPer']} / {sr['選手権']['gaPer']}", "head": "選手権は数字が良い",
+         "body": f"1試合平均の得点／失点は、選手権 {sr['選手権']['gfPer']}／{sr['選手権']['gaPer']}、総体 {sr['総体']['gfPer']}／{sr['総体']['gaPer']}、新人戦 {sr['新人戦']['gfPer']}／{sr['新人戦']['gaPer']}。秋の選手権で失点が一番少ない。"},
+    ]
+    note = "試合の時点の強さの点数で分けています。2022年度の最初の試合は、どの学校も1500から数え始めたため、この年の格の判定は甘めです。"
+    return ins, bands, note
+
+
+def elo_explainer(T: dict, me: str, r1: str, opps: list) -> dict:
+    """入口ページの「強さの点数のしくみ」に載せる値。数値は analyze_team.py の設定から取る（説明と計算がずれないように）。"""
+    me_e, op_e = T[me]["elo"], T[r1]["elo"]
+    p = win_prob(me_e, op_e)
+
+    def case(label: str, res: float, gf: int, ga: int) -> dict:
+        margin = abs(gf - ga)
+        mult = 1.0 if margin <= 1 else 1.5 if margin == 2 else (11 + margin) / 8
+        d = round(K * mult * (res - p))
+        return {"label": label, "delta": d, "me": me_e + d, "opp": op_e - d}
+
+    return {
+        "base": int(BASE), "k": int(K), "carry": CARRY, "band": 50,
+        "example": {"me": T[me]["display"], "opp": T[r1]["display"], "meElo": me_e, "oppElo": op_e, "diff": me_e - op_e, "p": round(p, 3),
+                    "cases": [case("2-0 勝ち", 1, 2, 0), case("1-0 勝ち", 1, 1, 0), case("PK戦", 0.5, 1, 1), case("0-1 負け", 0, 0, 1), case("0-3 負け", 0, 0, 3)]},
+        "opponents": [{"name": T[k]["display"], "diff": me_e - T[k]["elo"]} for k in opps],
+        "uses": [
+            "「武蔵丘が勝つ見込み」は、いまの両校の点数を手順2の式に入れたもの。",
+            "「この山を勝ち抜く見込み」は、山の組み合わせに沿って、1試合ずつの見込みを掛け合わせたもの。終わった試合は結果どおりに扱う。",
+            "「当たる確率」＝ 武蔵丘がその試合まで勝ち上がる見込み × 相手がその試合まで勝ち上がる見込み。武蔵丘が途中で負けるとどちらとも当たらないので、"
+            "同じ回戦の候補2校を足しても100%にはならず、足した値は「武蔵丘がその回戦まで勝ち上がる見込み」になる。100%との差は「武蔵丘がその前に負ける」場合"
+            "（内訳は「勝ち上がりの道」の帯グラフ）。試合どうしは影響し合わない（独立）とみなして掛け算している。",
+            "「格上・格下」は、試合の時点で点数の差が 50 点を超える相手。",
+        ],
+        "caveats": [
+            "32・4分の1・PK戦を引き分けとする扱い・50 点の線引きは、一般的な決め方をもとに置いた値で、過去の試合で当たり具合を確かめていない。",
+            "2022年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。",
+            "試合数の少ない学校や、地区の違う学校どうしの比較は、たどれる試合のつながりが少なく、ぶれやすい。",
+            "今季のリーグ戦は入っていないので、今の調子は反映されない（昭和第一は地区リーグで首位）。ホームかどうかも考えていない。",
+        ],
+    }
+
+
+def meet_breakdown(T: dict, block: list, me: str) -> dict:
+    """回戦ごとに、100% を「相手Aと当たる／相手Bと当たる／武蔵丘がその前に負ける」に分ける。
+
+    どの試合も強さの点数の見込みどおりに決まり、試合どうしは影響しない（独立）とみなして掛け算する。
+    「当たる確率」= 武蔵丘がその回戦まで勝ち上がる見込み × 相手がその回戦まで勝ち上がる見込み。
+    同じ回戦の候補を足すと「武蔵丘がその回戦まで勝ち上がる見込み」になり、100% との差は武蔵丘がその前に負ける場合。
+    """
+    e = {k: T[k]["elo"] for k in block}
+    alive = {k: T[k]["alive"] for k in block}
+
+    def p(a: str, b: str) -> float:
+        return win_prob(e[a], e[b])
+
+    def r1(k: str) -> float:  # k が1回戦を勝つ見込み（終わった試合は結果どおり）
+        o = block[block.index(k) ^ 1]
+        return 0.0 if not alive[k] else 1.0 if not alive[o] else p(k, o)
+
+    i = block.index(me)
+    h0 = (i // 4) * 4
+    pair2 = [block[h0 + ((i - h0) // 2 ^ 1) * 2 + x] for x in (0, 1)]
+    other = [block[j] for j in range(8) if j // 4 != i // 4]
+    p1 = r1(me)
+    my_r2 = p1 * sum(r1(o) * p(me, o) for o in pair2)
+
+    def reach3(o: str) -> float:  # o がブロック決勝まで来る見込み
+        j = block.index(o)
+        mates = [block[x] for x in range((j // 2 ^ 1) * 2, (j // 2 ^ 1) * 2 + 2)]
+        return r1(o) * sum(r1(x) * p(o, x) for x in mates)
+
+    def step(reach: float, opps: list, shares: dict, before: str) -> dict:
+        return {"reach": round(reach, 3), "before": before,
+                "opps": [{"key": o, "share": round(shares[o], 3), "meet": round(reach * shares[o], 3)} for o in opps if shares[o] > 0]}
+
+    r1o = block[i ^ 1]
+    return {
+        "1回戦": step(1.0, [r1o], {r1o: 1.0}, ""),
+        "2回戦": step(p1, pair2, {o: r1(o) for o in pair2}, "1回戦で負ける"),
+        "ブロック決勝": step(my_r2, other, {o: reach3(o) for o in other}, "2回戦までに負ける"),
+        "detail": {"p1": round(p1, 3), "p2": {o: round(p(me, o), 3) for o in pair2}, "r1": {o: round(r1(o), 3) for o in pair2 + other}},
+    }
+
+
+def build(links: str) -> Path:
+    data = build_data("武蔵丘", ROOT / "scout/sen2026_block10.json")
+    me = data["me"]
+    T = data["teams"]
+    block = data["block"]
+    sched = {m["no"]: m for m in data["schedule"] if m.get("no")}
+    i_me = block.index(me)
+    r1 = block[i_me ^ 1]
+    r2 = [block[i] for i in ((0, 1) if i_me in (2, 3) else (2, 3))]
+    fin = [k for k in (block[4:] if i_me < 4 else block[:4]) if T[k]["alive"]]
+    rounds = {r1: ("1回戦", False), **{k: ("2回戦", True) for k in r2}, **{k: ("ブロック決勝", True) for k in fin}}
+    mine_no = next(m["no"] for m in data["schedule"] if m.get("no") and me in (m["a"], m["b"]))
+    road = [
+        {"n": "1", "round": "1回戦", "when": f"{sched[mine_no]['date']}({sched[mine_no]['dow']}) {sched[mine_no]['time']}", "teams": [r1]},
+        {"n": "2", "round": "2回戦", "when": f"{sched[149]['date']}({sched[149]['dow']}) {sched[149]['time']}", "teams": r2},
+        {"n": "3", "round": "ブロック決勝", "when": f"{sched[208]['date']}({sched[208]['dow']}) {sched[208]['time']}", "teams": fin},
+    ]
+    bd = meet_breakdown(T, block, me)
+    for st in road:
+        st["bd"] = bd[st["round"]]
+    brief = {}
+    for k in block:
+        t = T[k]
+        rnd = rounds.get(k, ("", False))
+        brief[k] = {
+            "display": t["display"], "alive": t["alive"], "blockWin": t["blockWin"], "vsMe": t["vsMe"], "meetProb": t["meetProb"],
+            "elo": t.get("elo"), "eloRank": t.get("eloRank"), "area": t.get("area"), "round": rnd[0], "candidate": rnd[1],
+            "leagueLine": league_line(t),
+        }
+    opps = [r1, *r2, *fin]  # 当たる順
+    order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds"]
+    for k in opps:
+        TITLE[SLUG[k]] = f"{T[k]['display'].replace('都・', '')} スカウティング"
+    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{rounds[k][0]}）" for k in opps}, "seeds": "2次予選の強豪"}
+
+    if links == "artifact":
+        urls = json.loads((ROOT / "scout/site_urls.json").read_text(encoding="utf-8"))
+        hrefs = {s: urls.get(s, urls["index"]) for s in order}
+        target, out_dir = "_blank", ROOT / "out/site_artifact"
+    else:
+        hrefs = {s: ("index.html" if s == "index" else f"{s}.html") for s in order}
+        target, out_dir = None, ROOT / "out/site"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    nav = [
+        {"label": "", "items": [{"slug": "index", "label": "ブロック全体"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]},
+        {"label": "1回戦", "items": [{"slug": SLUG[r1], "label": T[r1]["display"].replace("都・", "")}]},
+        {"label": "2回戦", "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", "")} for k in r2]},
+        {"label": "決勝", "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", "")} for k in fin]},
+        {"label": "2次予選", "items": [{"slug": "seeds", "label": "強豪32校"}]},
+    ]
+    common = {
+        "me": me, "blockLabel": data["blockLabel"], "asOf": data["asOf"], "schedule": data["schedule"], "slots": data["slots"],
+        "decided": data["decided"], "block": block, "brief": brief, "nav": nav, "links": hrefs, "linkTarget": target,
+        "keyToSlug": {k: SLUG[k] for k in [me, *opps]}, "order": order, "titles": titles,
+        "nTeamsRated": data["nTeamsRated"], "styleNone": data["styleNone"],
+    }
+    css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
+    js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")
+    shell = (ROOT / "scout/site/page.html").read_text(encoding="utf-8")
+    total = sum(1 for _ in (ROOT / "out/matches.csv").open(encoding="utf-8-sig")) - 1
+
+    def write(slug: str, page: dict) -> None:
+        html = shell.replace("__TITLE__", TITLE[slug]).replace("/*__CSS__*/", css).replace("/*__JS__*/", js)
+        html = html.replace("/*__DATA__*/null", json.dumps({**common, **page, "slug": slug}, ensure_ascii=False))
+        path = out_dir / ("index.html" if slug == "index" else f"{slug}.html")
+        path.write_text(html, encoding="utf-8")
+        print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size // 1024} KB)")
+
+    nm = sched[mine_no]
+    write("index", {"page": "hub", "next": {**nm, "opp": r1}, "road": road, "formNote": data["formNote"], "pyramid": data["pyramid"],
+                    "pyramidNote": data["pyramidNote"], "method": data["method"], "totalMatches": total,
+                    "elo": elo_explainer(T, me, r1, opps)})
+    me_t = {**T[me], "key": me}
+    ins, bands, note = self_insights(me_t, block, {T[k]["display"]: T[k]["elo"] for k in opps})
+    lead = (f"第{T[me]['area']['area']}地区（{T[me]['area']['city']}）の{T[me]['area']['kind']}高校。過去5年の公式戦{T[me]['summary']['n']}試合と今季のNSリーグから、"
+            "強みと課題を整理しました。相手ごとの分析と見比べて使ってください。")
+    write("musashigaoka", {"page": "self", "self": me_t, "insights": ins, "bands": bands, "bandNote": note, "selfLead": lead, "road": road})
+    conn_path = ROOT / f"data/connections/{me}_2026.json"
+    conns = json.loads(conn_path.read_text(encoding="utf-8")) if conn_path.exists() else {}
+    for k in opps:
+        t = {**T[k], "key": k}
+        t["autoPoints"] = team_points(t, me_t, T[me]["games"], brief[k])
+        t["connections"] = conns.get(k)
+        write(SLUG[k], {"page": "team", "team": t, "meHistory": T[me]["eloHistory"]})
+    seeds = json.loads((ROOT / "out/scout/seeds_2026.json").read_text(encoding="utf-8"))
+    write("seeds", {"page": "seeds", "seeds": seeds})
+    return out_dir
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--links", choices=["local", "artifact"], default="local")
+    args = ap.parse_args()
+    build(args.links)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
