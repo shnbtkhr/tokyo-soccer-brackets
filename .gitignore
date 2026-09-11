@@ -14,5 +14,8 @@ pdfs/
 out/
 scratch/
 
+# GitHub Pages 用に docs/ フォルダだけ追跡する
+# （out/scout/ → docs/ に手動コピーして追跡）
+
 # Antigravity handover document
 HANDOVER_AND_PROPOSALS.md
