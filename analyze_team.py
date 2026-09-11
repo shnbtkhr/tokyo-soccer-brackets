@@ -78,6 +78,8 @@ def result_for(r: dict, key: str) -> dict:
         "et": "(延長)" in r["スコア"],
         "res": ("PK勝" if pk else "勝") if won else ("PK負" if pk else "負"),
         "src": r["出典PDF"],
+        "myElo": r.get("_eloA" if a else "_eloB"),
+        "oppElo": r.get("_eloB" if a else "_eloA"),
     }
 
 
@@ -97,6 +99,8 @@ def compute_elo(rows: list[dict]) -> tuple[dict, dict]:
         if not played(r) or not r["kA"] or not r["kB"]:
             continue
         a, b = r["kA"], r["kB"]
+        # 試合の時点の点数を残す（格上・格下に対する成績を見るため）
+        r["_eloA"], r["_eloB"] = round(elo[a]), round(elo[b])
         ga, gb = int(r["得点A"]), int(r["得点B"])
         if r["PK_A"] != "" and r["PK_B"] != "":
             sa = 0.5

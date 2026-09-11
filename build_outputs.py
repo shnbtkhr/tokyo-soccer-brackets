@@ -398,19 +398,20 @@ def build_teams(rows: list[dict]) -> list[dict]:
                 t["PK負" if pk else "敗"] += 1
             if not walk:
                 t["試合数"] += 1
-            sc = r["スコア"]
-            if side == "B" and sc:
-                a, b = r["得点A"], r["得点B"]
-                sc = (
-                    f"{b}-{a}"
-                    + (f" (PK {r['PK_B']}-{r['PK_A']})" if pk else "")
-                    + (" (延長)" if "(延長)" in r["スコア"] else "")
-                )
-            mark = "○" if won else "●" if lost else "－"
+            # その学校から見たスコア。PK戦は「PK勝 4-3」「PK負 2-3」と勝敗を文字でも書く
+            gf, ga = (r["得点A"], r["得点B"]) if side == "A" else (r["得点B"], r["得点A"])
+            pf, pa = (r["PK_A"], r["PK_B"]) if side == "A" else (r["PK_B"], r["PK_A"])
+            sc = f"{gf}-{ga}" if gf != "" and ga != "" else ""
+            if pk:
+                sc += f" PK{'勝' if won else '負'} {pf}-{pa}"
+            if "(延長)" in r["スコア"]:
+                sc += " 延長"
+            # 勝ちと負けを形で分ける（○ と ×）。塗りの有無だけの ○● は見分けにくい
+            mark = "○" if won else "×" if lost else "－"
             if walk:
                 sc = "不戦勝" if won else "不戦敗"
             t["_games"].append(
-                f"{r['ラウンド']} {mark}{sc} {r[f'チーム{other}']}".strip()
+                f"{r['ラウンド']} {mark} {sc} {r[f'チーム{other}']}".strip()
             )
             t["_last"] = (r["ラウンド"], won, r["ブロック"])
     out = []
@@ -556,7 +557,7 @@ def write_markdown(rows: list[dict], teams: list[dict], out_dir: Path) -> None:
                             "PK負",
                             "敗",
                             "最終到達",
-                            "戦績（○勝ち ●負け）",
+                            "戦績（○勝ち ×負け）",
                         ],
                         [
                             [
@@ -637,7 +638,7 @@ def write_school_index(teams: list[dict], path: Path) -> None:
                     "PK負",
                     "敗",
                     "最終到達",
-                    "戦績（○勝ち ●負け）",
+                    "戦績（○勝ち ×負け）",
                 ],
                 [
                     [
