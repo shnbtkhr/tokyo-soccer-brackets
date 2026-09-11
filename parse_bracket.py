@@ -962,6 +962,9 @@ def date_tokens_for(toks: list[Tok], orient: str, b: float) -> str | None:
     """試合線の列の日付。見出しは列の区切り（＝試合線の位置）の枝の側に置かれるので、そちらを優先する。
 
     左右対称の表では、右半分の見出しが左右反転して並ぶ。近さだけで選ぶと隣の列の日付を取ってしまう。
+
+    探す範囲は 14pt に留める。28pt に広げると空欄32試合が埋まる代わりに、列の間隔が狭い表で
+    正しかった16試合が隣の列の日付に変わった（2026-09-11 に全73本で比較）。
     """
     best = None
     inside = None
@@ -972,9 +975,9 @@ def date_tokens_for(toks: list[Tok], orient: str, b: float) -> str | None:
         c, _ = norm(orient, t.x1, t.y1)
         lo, hi = min(a, c), max(a, c)
         d = 0.0 if lo <= b <= hi else min(abs(b - lo), abs(b - hi))
-        if d <= 28 and (best is None or d < best[0]):
+        if d <= 14 and (best is None or d < best[0]):
             best = (d, t.text)
-        if hi <= b + 5 and b - hi <= 28 and (inside is None or b - hi < inside[0]):
+        if hi <= b + 3 and b - hi <= 14 and (inside is None or b - hi < inside[0]):
             inside = (b - hi, t.text)
     if inside:
         return inside[1]
