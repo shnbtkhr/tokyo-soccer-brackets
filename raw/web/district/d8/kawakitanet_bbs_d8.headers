@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Date: Fri, 11 Sep 2026 12:01:23 GMT
+Server: Apache
+Strict-Transport-Security: max-age=31536000
+Upgrade: h2
+Connection: Upgrade
+Vary: Accept-Encoding,User-Agent
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=UTF-8
+

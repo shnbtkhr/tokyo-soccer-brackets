@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=1024" />
+<meta name="description" content="GoalNoteクラウドは、サッカー・フットサル大会の運営・広報をアシストするサービスです。大会ページの作成から結果まで簡単入力。順位表や戦績表、トーナメント表、得点ランキング、懲罰などを自動で集計し公開。メンバー提出用紙や通告書も出力可能。" />
+<meta name="keywords" content="GoalNote クラウド,GoalNote CLOUD,GoalNote,Goal,Note,CLOUD,ゴールノートクラウド,ゴールノート,サッカー,Soccer,フットサル,記録,大会記録,試合記録,大会結果,試合結果" />
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="GoalNote クラウド" />
+<meta property="og:image" content="https://www.goalnote.net/common/img/sns_image.gif" />
+<meta property="og:url" content="https://www.goalnote.net/" />
+<meta property="og:site_name" content="GoalNote クラウド" />
+<meta property="og:description" content="GoalNote クラウドはサッカー/フットサル大会の結果公開をお手伝いする入力・集計機能を備えたサービスです。" />
+<meta property="og:locale" content="ja_JP" />
+<title>大会をみる : GoalNoteクラウド</title>
+<link rel="apple-touch-icon" href="common/img/apple-touch-icon.png" />
+<script src="common/js/jquery.min.js"></script>
+<script src="common/js/html5shiv.js"></script>
+<script src="common/js/functions.js"></script>
+<script src="common/js/common.js"></script>
+<script src="common/js/ajax.js"></script>
+<link rel="stylesheet" href="common/css/reset.css" />
+<link rel="stylesheet" href="common/css/style.css" />
+
+<!--script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45317753-1', 'goalnote.net');
+  ga('send', 'pageview');
+
+  //追加したコード
+  ga('create', 'UA-45317753-2', 'auto', {'name': 'feature phone'});
+  ga('feature phone.send', 'pageview');
+
+</script-->
+<script type="text/javascript">
+<!--
+var ajax = new Ajax();
+
+function GetArea() {
+	document.getElementsByName("area_city")[0].options.length = 1;
+
+	var optgroup = document.getElementsByName("area_city")[0].getElementsByTagName("optgroup");
+
+	for(var i=optgroup.length - 1; i>=0; i--) {
+		document.getElementsByName("area_city")[0].removeChild(optgroup[i]);
+	}
+
+	if(document.getElementsByName("area_code")[0].value != "") {
+		ajax.url = "script/GetArea.php";
+
+		ajax.ClearParam();
+
+		ajax.SetParam("area_code",document.getElementsByName("area_code")[0].value);
+
+		ajax.callback = function(ret) {
+			var text = ret.responseText;
+
+			if(text !== false) {
+				var response = JSON.parse(text);
+
+				var select = document.getElementsByName("area_city")[0];
+				var optgroup,option;
+
+				for(var i in response) {
+					optgroup = document.createElement("optgroup");
+
+					optgroup.setAttribute("label",i);
+
+					for(var j in response[i]) {
+						option = document.createElement("option");
+
+						option.value = response[i][j];
+
+						SetText(option,response[i][j]);
+
+						optgroup.appendChild(option);
+					}
+
+					select.appendChild(optgroup);
+				}
+			}
+		}
+
+		ajax.SendRequest();
+	}
+}
+
+function Search() {
+	document.getElementsByName("regist_date_yy")[0].setAttribute("search",document.getElementsByName("regist_date_yy")[0].value);
+	document.getElementsByName("regist_date_mm")[0].setAttribute("search",document.getElementsByName("regist_date_mm")[0].value);
+	document.getElementsByName("regist_date_dd")[0].setAttribute("search",document.getElementsByName("regist_date_dd")[0].value);
+
+	document.getElementsByName("area_code")[0].setAttribute("search",document.getElementsByName("area_code")[0].value);
+	document.getElementsByName("area_city")[0].setAttribute("search",document.getElementsByName("area_city")[0].value);
+	document.getElementsByName("free_word")[0].setAttribute("search",document.getElementsByName("free_word")[0].value);
+
+	CreateTournamentList('','');
+}
+
+function CreateTournamentList(limit,page) {
+	ajax.url = "script/CreateTournamentList.php";
+
+	ajax.ClearParam();
+
+	ajax.SetParam("regist_date_yy",document.getElementsByName("regist_date_yy")[0].getAttribute("search"));
+	ajax.SetParam("regist_date_mm",document.getElementsByName("regist_date_mm")[0].getAttribute("search"));
+	ajax.SetParam("regist_date_dd",document.getElementsByName("regist_date_dd")[0].getAttribute("search"));
+
+	ajax.SetParam("area_code",document.getElementsByName("area_code")[0].getAttribute("search"));
+	ajax.SetParam("area_city",document.getElementsByName("area_city")[0].getAttribute("search"));
+	ajax.SetParam("free_word",document.getElementsByName("free_word")[0].getAttribute("search"));
+
+	ajax.SetParam("uid",document.getElementsByName("uid")[0].value);
+
+	ajax.SetParam("limit",limit);
+	ajax.SetParam("page" ,page);
+
+	ajax.callback = function(ret) {
+		var text = ret.responseText;
+
+		if(text !== false) {
+			document.getElementById("section-result").innerHTML = text;
+		}
+	}
+
+	ajax.SendRequest();
+}
+
+function Init() {
+	GetArea();
+
+	document.getElementsByName("regist_date_yy")[0].setAttribute("search",document.getElementsByName("regist_date_yy")[0].getAttribute("default"));
+	document.getElementsByName("regist_date_mm")[0].setAttribute("search",document.getElementsByName("regist_date_mm")[0].getAttribute("default"));
+	document.getElementsByName("regist_date_dd")[0].setAttribute("search",document.getElementsByName("regist_date_dd")[0].getAttribute("default"));
+
+	CreateTournamentList('','');
+
+	var params = (new URL(document.location)).searchParams;
+
+	if(params.get("uid") != null) {
+		document.frm.action = "view.php";
+		document.frm.submit();
+	} else if(document.getElementsByName("uid")[0].value != "") {
+		document.getElementsByName("regist_date_yy")[0].value = document.getElementsByName("y")[0].value;
+
+		Search();
+	}
+}
+//-->
+</script>
+</head>
+
+<body class="detail" onload="Init();">
+
+<header>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3PF25ZG9H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q3PF25ZG9H');
+</script>
+
+<div id="title">
+<div class="title-wrap">
+<h1><a href="index.php"><img src="common/img/logo.gif" alt="GoalNoteクラウド" width="352" height="43"></a></h1>
+<p class="header-dnp-logo"><a href="http://www.dnp.co.jp/" target="_blank"><img src="common/img/logo_dnp.gif" alt="未来のあたりまえを作る。DNP" width="74" height="35"></a></p>
+<ul class="header-social-link">
+		<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.goalnote.net" target="_blank"><img src="common/img/head_ic_fb.gif" alt="Facebook" width="32" height="32"></a></li>
+	<li><a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.goalnote.net&text=GoalNote+%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%AF%E3%82%B5%E3%83%83%E3%82%AB%E3%83%BC%2F%E3%83%95%E3%83%83%E3%83%88%E3%82%B5%E3%83%AB%E5%A4%A7%E4%BC%9A%E3%81%AE%E7%B5%90%E6%9E%9C%E5%85%AC%E9%96%8B%E3%82%92%E3%81%8A%E6%89%8B%E4%BC%9D%E3%81%84%E3%81%99%E3%82%8B%E5%85%A5%E5%8A%9B%E3%83%BB%E9%9B%86%E8%A8%88%E6%A9%9F%E8%83%BD%E3%82%92%E5%82%99%E3%81%88%E3%81%9F%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%A7%E3%81%99%E3%80%82" rel="nofollow" target="_blank"><img src="common/img/head_ic_tw.gif" alt="Twitter" width="32" height="32"></a></li>
+	<li style="height: 32px;"><script type="text/javascript">LineIt.loadButton();</script>
+	<div class="line-it-button" style="display: none;" data-type="share-c" data-lang="ja"></div>
+	<script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer"></script></li>
+	</ul>
+</div>
+</div>
+
+<nav>
+<div class="nav-wrap">
+<ol>
+	<li id="menu0"><a href="/">HOME</a></li>
+	<li id="menu1"><a href="login.php">大会をつくる</a></li>
+	<li id="menu2"><a href="view.php">大会をみる</a></li>
+	<li id="menu3"><a href="about.php">GoalNoteクラウドとは</a></li>
+	<li id="menu4"><a href="regist.php">会員登録</a></li>
+	<li id="menu5"><a href="login.php">ログイン</a></li>
+</ol>
+</div>
+</nav>
+
+<h1><span>大会をみる</span></h1>
+
+</header>
+
+<div id="content">
+
+<div class="page-meta">
+<ul class="topicpath">
+<li><a href="index.php">TOP</a></li>
+<li class="active">大会をみる</li>
+</ul>
+<p class="user-name">こんばんは！ゲストさん</p>
+</div>
+
+<section style="display:;">
+<form name="frm" action="" onsubmit="return false;" method="post">
+<input type="hidden" name="uid" value="">
+<input type="hidden" name="y"   value="">
+<h2>大会検索</h2>
+<p>結果をご覧になりたい大会名を検索することができます。</p>
+<table class="table-form">
+	<tr>
+		<th>開催年月日</th>
+		<td>
+			<select name="regist_date_yy" search="" default="2026">
+				<option value="">▽選択してください</option>
+								<option value="2027">2027</option>
+								<option value="2026">2026</option>
+								<option value="2025">2025</option>
+								<option value="2024">2024</option>
+								<option value="2023">2023</option>
+								<option value="2022">2022</option>
+								<option value="2021">2021</option>
+								<option value="2020">2020</option>
+								<option value="2019">2019</option>
+								<option value="2018">2018</option>
+								<option value="2017">2017</option>
+								<option value="2016">2016</option>
+								<option value="2015">2015</option>
+								<option value="2014">2014</option>
+								<option value="2013">2013</option>
+								<option value="2012">2012</option>
+								<option value="2011">2011</option>
+								<option value="2010">2010</option>
+								<option value="2009">2009</option>
+								<option value="2008">2008</option>
+								<option value="2007">2007</option>
+								<option value="2006">2006</option>
+								<option value="2005">2005</option>
+								<option value="2004">2004</option>
+								<option value="2003">2003</option>
+								<option value="2002">2002</option>
+								<option value="2001">2001</option>
+								<option value="2000">2000</option>
+								<option value="1999">1999</option>
+								<option value="1998">1998</option>
+								<option value="1997">1997</option>
+								<option value="1996">1996</option>
+								<option value="1995">1995</option>
+								<option value="1994">1994</option>
+								<option value="1993">1993</option>
+							</select>
+			年
+			<select name="regist_date_mm" search="" default="9">
+				<option value="">▽</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+							</select>
+			月
+			<select name="regist_date_dd" search="" default="11">
+				<option value="">▽</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+								<option value="21">21</option>
+								<option value="22">22</option>
+								<option value="23">23</option>
+								<option value="24">24</option>
+								<option value="25">25</option>
+								<option value="26">26</option>
+								<option value="27">27</option>
+								<option value="28">28</option>
+								<option value="29">29</option>
+								<option value="30">30</option>
+								<option value="31">31</option>
+							</select>
+			日
+		</td>
+	</tr>
+	<tr>
+		<th>開催地</th>
+		<td>
+			<select name="area_code" search="" onchange="GetArea();">
+				<option value="">▽都道府県</option>
+								<option value="A0">全国</option>
+												<option value="AA">東日本</option>
+												<option value="AB">西日本</option>
+												<option value="01">北海道</option>
+												<option value="A2">東北</option>
+								<option value="02">　青森県</option>
+								<option value="03">　岩手県</option>
+								<option value="04">　宮城県</option>
+								<option value="05">　秋田県</option>
+								<option value="06">　山形県</option>
+								<option value="07">　福島県</option>
+												<option value="A3">関東</option>
+								<option value="08">　茨城県</option>
+								<option value="09">　栃木県</option>
+								<option value="10">　群馬県</option>
+								<option value="11">　埼玉県</option>
+								<option value="12">　千葉県</option>
+								<option value="13">　東京都</option>
+								<option value="14">　神奈川県</option>
+								<option value="19">　山梨県</option>
+												<option value="A4">北信越</option>
+								<option value="20">　長野県</option>
+								<option value="15">　新潟県</option>
+								<option value="16">　富山県</option>
+								<option value="17">　石川県</option>
+								<option value="18">　福井県</option>
+												<option value="A5">東海</option>
+								<option value="22">　静岡県</option>
+								<option value="23">　愛知県</option>
+								<option value="24">　三重県</option>
+								<option value="21">　岐阜県</option>
+												<option value="A6">関西</option>
+								<option value="25">　滋賀県</option>
+								<option value="26">　京都府</option>
+								<option value="27">　大阪府</option>
+								<option value="28">　兵庫県</option>
+								<option value="29">　奈良県</option>
+								<option value="30">　和歌山県</option>
+												<option value="A7">中国</option>
+								<option value="31">　鳥取県</option>
+								<option value="32">　島根県</option>
+								<option value="33">　岡山県</option>
+								<option value="34">　広島県</option>
+								<option value="35">　山口県</option>
+												<option value="A8">四国</option>
+								<option value="37">　香川県</option>
+								<option value="36">　徳島県</option>
+								<option value="38">　愛媛県</option>
+								<option value="39">　高知県</option>
+												<option value="A9">九州</option>
+								<option value="40">　福岡県</option>
+								<option value="41">　佐賀県</option>
+								<option value="42">　長崎県</option>
+								<option value="43">　熊本県</option>
+								<option value="44">　大分県</option>
+								<option value="45">　宮崎県</option>
+								<option value="46">　鹿児島県</option>
+								<option value="47">　沖縄県</option>
+												<option value="FF">その他地域</option>
+											</select>
+			<select name="area_city" search="">
+				<option value="">▽市区町村</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th>フリーワード</th>
+		<td>
+			<input type="text" name="free_word" class="wide" search=""><br>
+			チーム名・大会名が検索できます。
+		</td>
+	</tr>
+</table>
+<p class="btn"><button type="button" onclick="Search();">検索</button></p>
+
+</form>
+</section>
+
+<section id="section-result">
+</section>
+
+</div>
+
+<footer>
+<p class="page_top"><a href="#">▲</a></p>
+<ul class="links">
+	<li><a href="terms-of-service.php">利用規約</a></li>
+	<li><a href="privacy-policy.php">個人情報の取り扱いについて</a></li>
+	<li><a href="company-profile.php">運営会社</a></li>
+	<li><a href="law.php">特定商取引法に基づく表記</a></li>
+	<li><a href="faq.php">よくあるご質問</a></li>
+	<li><a href="contact.php">お問い合わせ</a></li>
+</ul>
+
+<p class="copyright" style="text-align:right;">
+	<a href="https://www.dnp-cd.co.jp/" target="_blank"><img src="common/img/logo_footer.jpg" width="250"/></a><br>
+	<small>&copy; 2016 DNP Communication Design Co., Ltd.</small>
+</p>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Server: nginx
+Date: Fri, 11 Sep 2026 11:55:25 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+P3P: CP='CAO PSA CONi OTR OUR DEM ONL'
+Expires: Mon, 26 Jul 1997 05:00:00 GMT
+Cache-Control: no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: PHPSESSID=e3ac5dc53b7d6713ee41024c8e7d2e95; path=/
+

@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Content-Length: 41836
+Content-Type: text/html; charset=utf-8
+Date: Fri, 11 Sep 2026 11:50:47 GMT
+Etag: W/"a36c-SeObXB1nRtEEXv5MXlVWMo+pVZY"
+Nel: {"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}
+Report-To: {"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=41PFSA9IdyVubd0gbupsil4ymVLCbFrvFOb0BVb2abM%3D\u0026sid=1b10b0ff-8a76-4548-befa-353fc6c6c045\u0026ts=1789127447"}],"max_age":3600}
+Reporting-Endpoints: heroku-nel="https://nel.heroku.com/reports?s=41PFSA9IdyVubd0gbupsil4ymVLCbFrvFOb0BVb2abM%3D&sid=1b10b0ff-8a76-4548-befa-353fc6c6c045&ts=1789127447"
+Server: Heroku
+Strict-Transport-Security: max-age=15552000; includeSubDomains
+Vary: Accept-Encoding
+Via: 1.1 heroku-router
+X-Download-Options: noopen
+X-Xss-Protection: 1; mode=block
+

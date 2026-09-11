@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 18136
+Content-Type: text/html
+X-Frame-Options: sameorigin
+Last-Modified: Mon, 18 May 2026 00:09:52 GMT
+ETag: "46d8-6520c61adbf28"
+X-Content-Type-Options: nosniff
+Via: 1.1 fc82bda04cb5f796b600fa06c9498722.cloudfront.net (CloudFront), 1.1 varnish
+X-Amz-Cf-Pop: NRT20-P9
+X-Amz-Cf-Id: KOe4Nj5o_vW3bIbc9VjM_hCTxVzN1DqZqGERqUuijA0ljXlxDDXJlQ==
+Accept-Ranges: bytes
+Age: 0
+Date: Fri, 11 Sep 2026 11:59:04 GMT
+X-Served-By: cache-nrt-rjaa8190034-NRT
+X-Cache: Miss from cloudfront, MISS
+X-Cache-Hits: 0
+X-Timer: S1789127945.799748,VS0,VE38
+Vary: Accept-Encoding
+
