@@ -125,6 +125,8 @@ def member_areas(refresh: bool) -> dict:
                 out[normalize(m[2])] = {"area": n, "city": city, "kind": kind, "name": m[2]}
             elif re.search(r"(区|市|町|村|島)$", line) and len(line) <= 8:
                 city = line
+    # 加盟校一覧のページに載っていない学校（ページ側の抜け）。狛江市の欄には若葉総合しか無いが、狛江は選手権・総体・関東予選に出ている
+    out.setdefault("狛江", {"area": 6, "city": "狛江市", "kind": "都立", "name": "狛江", "note": "加盟校一覧に載っていないため手で補った"})
     return out
 
 
