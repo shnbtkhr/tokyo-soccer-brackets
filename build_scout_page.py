@@ -231,6 +231,8 @@ def main() -> int:
         "method": manual.get("method", []),
         "styleNone": manual.get("styleNone", ""),
         "formNote": manual.get("formNote", []),
+        "pyramid": manual.get("pyramid", []),
+        "pyramidNote": manual.get("pyramidNote", ""),
     }
 
     html = (ROOT / "scout/scout_template.html").read_text(encoding="utf-8")

@@ -221,6 +221,14 @@ tr.hl.us td { background: var(--us-soft); }
     <div class="cap" style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><h2>勝ち抜きの見通し</h2><span class="hint">6校のうち、この山を勝ち抜いて二次予選【10】へ進む見込み</span></div>
     <svg class="chart" id="outlook" viewBox="0 0 760 236" role="img" aria-label="山を勝ち抜く見込みの棒グラフ"></svg>
     <div class="tablebox" id="outlookTable"></div>
+    <h3>過去の実績と今季の調子</h3>
+    <ul class="notes" id="formNote"></ul>
+  </section>
+
+  <section class="block panel">
+    <h2>リーグの階層</h2>
+    <div class="tablebox" id="pyramid"></div>
+    <p class="hint" id="pyramidNote"></p>
   </section>
 
   <section class="block panel">
@@ -280,7 +288,7 @@ $("#asOf").textContent = "データ: " + D.asOf;
 /* トーナメント表 */
 function renderBracket() {
   const svg = $("#bracket"); svg.replaceChildren();
-  const B = D.block, Y = (i) => 30 + i * 46, X0 = 134, X1 = 184, X2 = 250, X3 = 316, X4 = 344;
+  const B = D.block, Y = (i) => 30 + i * 46, X0 = 134, X1 = 184, X2 = 250, X3 = 316, X4 = 362;  // X4 は【208】の日付と重ならない位置
   const decided = {}; for (const d of D.decided) { decided[d.a] = d; decided[d.b] = d; }
   const sch = Object.fromEntries(D.schedule.filter((m) => m.no).map((m) => [m.no, m]));
   const line = (x1, y1, x2, y2, win) => svg.append(s("line", { x1, y1, x2, y2, class: "ln" + (win ? " win" : "") }));
@@ -327,7 +335,7 @@ function renderBracket() {
   svg.append(s("text", { class: "mno", x: X3 + 6, y: yf - 22 }, "【208】"));
   svg.append(s("text", { class: "mlab", x: X3 + 6, y: yf - 8 }, `${mf.date}`));
   svg.append(s("text", { class: "mlab", x: X3 + 6, y: yf + 16 }, mf.time));
-  svg.append(s("text", { class: "dest", x: X4 - 20, y: 16 }, "→【10】"));
+  svg.append(s("text", { class: "dest", x: X4 - 52, y: 16 }, "→【10】"));
   line(X4, yf, X4, 22, false);
 }
 
@@ -381,6 +389,48 @@ function eloChart(k) {
   return svg;
 }
 
+/* 今季のリーグ戦 */
+const LRES = { "勝": "w", "分": "d", "負": "l" };
+// データを作った日（asOf の先頭の日付）より前の試合でスコアが無いものは、延期か結果の掲載待ち
+const AS_OF = (D.asOf.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/) || []).slice(1).map(Number);
+function isPast(when) {
+  const m = /^(\d{2})\/(\d{2})/.exec(when || "");
+  if (!m || AS_OF.length < 3) return false;
+  return Number(m[1]) * 100 + Number(m[2]) < AS_OF[1] * 100 + AS_OF[2];
+}
+function leagueBlock(t, isMe) {
+  const wrap = h("div", { class: "figure" }, h("h3", {}, "今季のリーグ戦（2026年）"));
+  if (!t.leagues || !t.leagues.length) {
+    wrap.append(h("p", { class: "empty" }, "今季のリーグ戦の記録はまだ見つかっていない（所属リーグの結果ページが分かれば追加できる）。"));
+    return wrap;
+  }
+  for (const lg of t.leagues) {
+    const games = lg.games.slice().sort((a, b) => (a.when === "日付未登録" ? "" : a.when).localeCompare(b.when === "日付未登録" ? "" : b.when));
+    const played = games.filter((g) => g.res);
+    const cnt = (r) => played.filter((g) => g.res === r).length;
+    const gf = played.reduce((a, g) => a + g.gf, 0), ga = played.reduce((a, g) => a + g.ga, 0);
+    const row = lg.table.find((r) => r.team === lg.teamName);
+    const cls = isMe ? "hl us" : "hl";
+    const head = h("div", { class: "league-head" },
+      h("strong", {}, lg.league),
+      row ? h("span", { class: "pos" }, `${row.rank}位 / ${lg.table.length}チーム・勝点${row.pts}`) : null,
+      h("span", { class: "mono" }, `${played.length}試合 ${cnt("勝")}勝${cnt("分")}分${cnt("負")}敗・得点${gf} 失点${ga}`),
+      h("span", { class: "form", "aria-label": "勝敗の並び" }, played.map((g) => h("span", { class: LRES[g.res], title: `${g.when} ${g.opp} ${g.gf}-${g.ga}` }, g.res))));
+    const gtab = h("div", { class: "tablebox" }, h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "日付"), h("th", {}, ""), h("th", {}, "相手"), h("th", {}, "スコア"), h("th", {}, "結果"))),
+      h("tbody", {}, games.map((g) => h("tr", {}, h("td", { class: "n" }, g.when), h("td", {}, g.home ? "H" : "A"), h("td", {}, g.opp),
+        h("td", { class: "n" }, g.res ? `${g.gf}-${g.ga}` : (isPast(g.when) ? "結果なし" : "未実施")), h("td", {}, g.res ? h("span", { class: "res " + (g.res === "勝" ? "w" : g.res === "負" ? "l" : "") }, g.res) : ""))))));
+    const grid = h("div", { class: "league-grid" }, gtab);
+    if (lg.table.length) {
+      grid.append(h("div", { class: "tablebox" }, h("table", {},
+        h("thead", {}, h("tr", {}, h("th", {}, "順位"), h("th", {}, "チーム"), h("th", {}, "試合"), h("th", {}, "勝点"), h("th", {}, "得失点"))),
+        h("tbody", {}, lg.table.map((r) => h("tr", { class: r.team === lg.teamName ? cls : null }, h("td", { class: "n" }, r.rank), h("td", {}, r.team), h("td", { class: "n" }, r.gp), h("td", { class: "n" }, r.pts), h("td", { class: "n" }, (r.gd > 0 ? "+" : "") + r.gd)))))));
+    }
+    wrap.append(h("div", { class: "league" }, head, grid, h("p", { class: "hint" }, "出典: ", h("a", { href: lg.source, target: "_blank", rel: "noopener" }, lg.source))));
+  }
+  return wrap;
+}
+
 const RES = { "勝": "w", "負": "l", "PK勝": "pkw", "PK負": "pkl" };
 function resCell(g) { return h("span", { class: "res " + RES[g.res] }, g.res + (g.pk ? ` ${g.pk}` : "")); }
 function scoreText(g) { return `${g.gf}-${g.ga}` + (g.et ? "（延長）" : ""); }
@@ -429,6 +479,16 @@ function renderTeam() {
       h("dt", {}, "延長"), h("dd", {}, `${S.et}試合`),
       h("dt", {}, "直近（2025年度〜）"), h("dd", {}, R.n ? `${R.n}試合 ${R.w}勝 ${R.pkw}PK勝 ${R.pkl}PK負 ${R.l}敗・得点 ${R.gfPer} / 失点 ${R.gaPer}` : "―")));
   two.append(fig, num); box.append(two);
+
+  box.append(leagueBlock(t, isMe));
+  if (t.style) {
+    box.append(h("div", { class: "figure" }, h("h3", {}, "戦い方（観戦記事から）"),
+      h("ul", { class: "notes" }, t.style.points.map((p) => h("li", {}, p))),
+      t.style.caveat ? h("p", { class: "hint" }, t.style.caveat) : null,
+      h("ul", { class: "src-list" }, t.style.sources.map((sr) => h("li", {}, h("a", { href: sr.url, target: "_blank", rel: "noopener" }, sr.label))))));
+  } else if (!isMe && D.styleNone) {
+    box.append(h("div", { class: "figure" }, h("h3", {}, "戦い方（観戦記事から）"), h("p", { class: "empty" }, D.styleNone)));
+  }
 
   if (!isMe) {
     const cmp = h("div", { class: "figure" }, h("h3", {}, "武蔵丘との比較"));
@@ -504,5 +564,9 @@ function renderOutlook() {
 }
 
 $("#method").append(...D.method.map((m) => h("li", {}, m)));
+$("#formNote").append(...(D.formNote || []).map((m) => h("li", {}, m)));
+$("#pyramid").append(h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "階層"), h("th", {}, "構成"), h("th", {}, "この山の学校"))),
+  h("tbody", {}, (D.pyramid || []).map((p) => h("tr", {}, h("td", { style: "white-space:nowrap;font-weight:700" }, p.tier), h("td", {}, p.desc), h("td", {}, p.teams.join("、")))))));
+$("#pyramidNote").textContent = D.pyramidNote || "";
 renderBracket(); renderSched(); renderTeam(); renderOutlook();
 </script>
