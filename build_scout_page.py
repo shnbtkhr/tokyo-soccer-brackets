@@ -118,6 +118,8 @@ def main() -> int:
         if leagues_path.exists()
         else {}
     )
+    areas_path = ROOT / "out/scout/member_areas.json"
+    areas = json.loads(areas_path.read_text(encoding="utf-8")) if areas_path.exists() else {}
 
     block = a.get("block", list(manual.get("slots", {}).keys()))
     stages = {k: [] for k in block}
@@ -222,6 +224,7 @@ def main() -> int:
                 "stages": stages.get(k, []),
                 "info": manual.get("info", {}).get(k, {}),
                 "leagues": leagues.get(k, []),
+                "area": areas.get(k),
                 "style": manual.get("style", {}).get(k),
             }
             for k in block

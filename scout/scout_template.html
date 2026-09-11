@@ -447,7 +447,9 @@ function renderTeam() {
   else status = h("span", { class: "chip" }, "ブロック決勝で当たる可能性");
   const league = (t.info.facts || []).find((f) => f.label === "リーグ");
   box.append(h("div", { class: "team-head" },
-    h("div", {}, h("div", { class: "meta" }, h("span", { class: "mono" }, `${D.slots[k]}番`), status, t.names.length > 1 ? h("span", {}, "表記: " + t.names.join("・")) : null),
+    h("div", {}, h("div", { class: "meta" }, h("span", { class: "mono" }, `${D.slots[k]}番`), status,
+        t.area ? h("span", { title: "高体連の加盟校一覧による" }, `第${t.area.area}地区・${t.area.city}・${t.area.kind}`) : null,
+        t.names.length > 1 ? h("span", {}, "表記: " + t.names.join("・")) : null),
       h("div", { class: "nm", style: isMe ? "color:var(--us)" : null }, t.display)),
     h("div", { class: "meta" }, league ? league.value.replace(/（.*?）/, "") : "")));
   if (t.info.summary) box.append(h("p", { class: "lead" }, t.info.summary));

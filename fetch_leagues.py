@@ -104,7 +104,28 @@ def riverside(refresh: bool) -> dict:
 
 GOALNOTE = {  # goalnote（地区リーグ）: tid → {学校キー: そのリーグでのチーム名}
     18597: {"name": "NSリーグ2026", "teams": {"武蔵丘": ["都立武蔵丘高等学校A", "都立武蔵丘高等学校B"]}},
+    18409: {"name": "DUOリーグ2026", "teams": {"昭和第一": ["昭和第一A", "昭和第一B"]}},
 }
+
+
+def member_areas(refresh: bool) -> dict:
+    """高体連の加盟校一覧（地区・区市・学校）。学校キー → {地区, 区市, 設置, 表記}。"""
+    raw = fetch("https://tokyosoccer-u18.com/member/", RAW / "tokyosoccer_member.html", refresh).decode("utf-8", "replace")
+    s = BeautifulSoup(raw, "html.parser")
+    out = {}
+    for n in range(1, 9):
+        div = s.find(id=f"area{n}")
+        if not div:
+            continue
+        city = ""
+        for line in div.get_text("\n", strip=True).split("\n"):
+            m = re.fullmatch(r"[（(](都|私|国|区)[）)](.+)", line)
+            if m:
+                kind = {"都": "都立", "私": "私立", "国": "国立", "区": "区立"}[m[1]]
+                out[normalize(m[2])] = {"area": n, "city": city, "kind": kind, "name": m[2]}
+            elif re.search(r"(区|市|町|村|島)$", line) and len(line) <= 8:
+                city = line
+    return out
 
 
 def goalnote(refresh: bool) -> dict:
@@ -164,6 +185,9 @@ def main() -> int:
         data.setdefault(k, []).extend(v)
     out = ROOT / "out/scout/leagues_2026.json"
     out.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    areas = member_areas(args.refresh)
+    (ROOT / "out/scout/member_areas.json").write_text(json.dumps(areas, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"加盟校 {len(areas)}校", {n: sum(1 for v in areas.values() if v["area"] == n) for n in range(1, 9)})
     for t, lgs in data.items():
         for lg in lgs:
             played = [g for g in lg["games"] if g["res"]]
