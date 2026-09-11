@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>大会情報 | 東京都高等学校体育連盟 サッカー専門部</title>
+	<meta name="description" content="東京都高等学校体育連盟 サッカー専門部の公式Webサイトです。" />
+	<meta name="keywords" content="東京都,高等学校体育連盟,サッカー専門部,サッカー,東京都サッカー協会" />
+	<link rel="stylesheet" href="../css/normalize.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<link rel="stylesheet" href="../css/header.css" />
+	<script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="../js/script.js"></script>
+    <script>
+        $(function(){
+            $('select').change(function() {
+                if ($(this).val() != '') {
+                    var url = "./?year=" + $(this).val()
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<header class="header">
+    <div class="header-wrap">
+        <h1 class="logo"><a href="/"><img src="../img/logo.svg" alt="東京都高等学校体育連盟サッカー専門部 TOKYO High School Soccer"></a></h1>
+        <nav class="nav-menu" id="nav">
+            <p class="nav-child"></p>
+            <p class="nav-child"><a href="/information/">お知らせ</a></p>
+            <p class="nav-child current"><a href="/tournament/">大会情報</a></p>
+            <p class="nav-child"><a href="/aboutus/">高体連について</a></p>
+            <p class="nav-child"><a href="/member/">地区・加盟校</a></p>
+            <p class="nav-child last"><a href="http://tokyosoccer-u18.com/StaffHpData/Staff_menu.pdf" target="_blank">役員専用</a></p>
+            <span></span>
+        </nav><!-- /.nav-menu -->
+        <div class="menu-btn">
+            <a href="#"><span>&ensp;</span></a>
+        </div> 
+        <div class="nav-menu-sp">
+            <ul>
+                <li><a href="/information/">お知らせ</a></li>
+                <li><a href="/tournament/">大会情報</a></li>
+                <li><a href="/aboutus/">高体連について</a></li>
+                <li><a href="/member/">地区・加盟校</a></li>
+                <li><a href="http://tokyosoccer-u18.com/StaffHpData/Staff_menu.pdf" target="_blank">役員専用</a></li>
+            </ul>
+            <div class="documents-boxes">
+                <a href="/entrant/"><img src="../img/btn_entrant.png" alt="大会申込書"></a>
+                <a href="/others/"><img src="../img/btn_other.png" alt="その他書類"></a>
+            </div>
+        </div>
+    </div><!-- /.nav-wrap -->
+</header><!-- /.nav -->
+<div class="wrapper">
+    <div class="co_main tournament"></div>
+    <div class="co_sp_main tournament"></div>
+    <div class="contents">
+        <div class="tournament_year">
+            <p><span>2026</span>年度</p>
+            <select name="select_year" id="selectyear">
+                <option value='2026' selected>2026年度</option><option value='2025'>2025年度</option><option value='2024'>2024年度</option><option value='2023'>2023年度</option><option value='2022'>2022年度</option><option value='2021'>2021年度</option><option value='2020'>2020年度</option><option value='2019'>2019年度</option><option value='2018'>2018年度</option><option value='2017'>2017年度</option><option value='2016'>2016年度</option><option value='2015'>2015年度</option>            </select>
+        </div>
+        <ul class="tournament_list">
+            <li>
+                <div>開催日</div><div>名称</div><div>開催場所</div>
+            </li>
+            <li><div><p class='item-sp'>開催日</p><p><span>9/12</span>（土）</p></div><div><p class='item-sp'>名称</p><p><a href='https://www.raku-za.jp/reserve/tokyosoccer-u18/users/event/detail/KytCUkNnODlvekR4RHBnQnE0MXRzanFtNmZJL1lhcUNpN1RLM1JWQnYvTGdQaDJQUHpucVFldVJxNnA0YmJuelhBYWhYWXFGc3RPWE5TZHlJeWdmTXc9PQ--' target='_blank'>第105回全国高校サッカー選手権大会東京大会１次予選</a></p></div><div><p class='item-sp'>開催場所</p><p>トーナメントに記載</p></div></li><li><div><p class='item-sp'>開催日</p><p><span>9/4</span>（金）</p></div><div><p class='item-sp'>名称</p><p><a href='https://www.raku-za.jp/reserve/tokyosoccer-u18/users/event/detail/QmtiT0U2akRCU0gzQjlCYXUvVDcyNW1YZXgwM1crbTExKzE2V3A2dHR2TkRBR1J5V0h1NFRIcW5NZ0wxdmZWalFTUlJkRTUyMDQ0eWEzdVFIYnIySWc9PQ--' target='_blank'>【会場記号】第105回全国高校サッカー選手権大会東京大会１次予選</a></p></div><div><p class='item-sp'>開催場所</p><p>会場記号一覧</p></div></li><li><div><p class='item-sp'>開催日</p><p><span>6/14</span>（日）</p></div><div><p class='item-sp'>名称</p><p><a href='https://www.raku-za.jp/reserve/tokyosoccer-u18/users/event/detail/MHp4MnZDZ3J2czdmMTVwQ3hKT1NENUl1WnVIa1ltMkdoekQrNFQ2dUR4ZDZ4cUxYUjU2RElCUEthYWR1ZCtZN3RZU3ozUGhZdVdoaURwNDhhQ09UZ2c9PQ--' target='_blank'>令和8年度（2026年度）東京都高等学校総合体育大会二次トーナメント</a></p></div><div><p class='item-sp'>開催場所</p><p>トーナメント内に表記</p></div></li><li><div><p class='item-sp'>開催日</p><p><span>5/16</span>（土）</p></div><div><p class='item-sp'>名称</p><p><a href='https://www.raku-za.jp/reserve/tokyosoccer-u18/users/event/detail/U1h0bWo2b1VvYzJtQSt3WGFaTGJRM3dTcDc4OG9ibXRLN1F0WE1qSlJMdXZOT05tUWlCQlRmR2QzN3JFZk5OZHprY1NaTzkwMHJsWmdwdjNmZGIxcEE9PQ--' target='_blank'>令和8年度（2026年度）東京都高等学校総合体育大会一次トーナメント</a></p></div><div><p class='item-sp'>開催場所</p><p>トーナメント内に表記</p></div></li><li><div><p class='item-sp'>開催日</p><p><span>5/4</span>（月）</p></div><div><p class='item-sp'>名称</p><p><a href='https://www.raku-za.jp/reserve/tokyosoccer-u18/users/event/detail/Qm9KVkVzekxUc0F0Vm5lSWZ2ZlBVQWdUT083WGFySFhKTWh6UXliMytQWHpPYUF6OWVOUFNaQmVFWnM2c3hMWmJiaXBTMUxHc3k0QlAvWmhqdjkvUWc9PQ--' target='_blank'>2026年度（令和8年度）東京都高等学校総合体育大会支部予選</a></p></div><div><p class='item-sp'>開催場所</p><p>組み合わせに表示</p></div></li><li><div><p class='item-sp'>開催日</p><p><span>4/5</span>（日）</p></div><div><p class='item-sp'>名称</p><p><a href='https://www.raku-za.jp/reserve/tokyosoccer-u18/users/event/detail/NjdzclF2c2x0ZGRyZlBPUVZ1bExybS9jYjErblRwWHAydUNsYUc5elc2dk8yZmlxQWVJTVNyaFo4RDRBS0FNVGpsc1lMWUhKMk9iVXdpMGFXVGduU3c9PQ--' target='_blank'>2026年度 関東高校サッカー記念大会 東京都予選</a></p></div><div><p class='item-sp'>開催場所</p><p>組み合わせに表示</p></div></li>        </ul>
+    </div>
+    <footer>
+        <div class="foot-contents">
+            <ul>
+                <li><a href="http://www.tleague-u18.com" target="_blank"><img src="../img/foot_bnr_takamiya.png" alt="高宮杯 JFA-U18サッカーリーグ 東京" target="_blank"/></a></li>
+                <li><a href="http://www.tokyofa.or.jp" target="_blank"><img src="../img/foot_bnr_jfa.png" alt="公益財団法人 東京都サッカー協会 Tokyo Football Association"/></a></li>
+                <li><a href="https://www.tokyo-kotairen.gr.jp/" target="_blank"><img src="../img/foot_bnr_federation.png" alt="東京都高等学校体育連盟"/></a></li>
+            </ul>
+        </div>
+        <div class="documents-boxes">
+            <a href="/entrant/"><img src="../img/btn_entrant.png" alt="大会申込書"></a>
+            <a href="/others/"><img src="../img/btn_other.png" alt="その他書類"></a>
+        </div>
+        <p>Copyright (C) 東京都高等学校体育連盟サッカー専門部 All Rights Reserved.</p>
+    </footer>
+</div>
+
+<div class="paper_menu">
+    <ul>
+        <li>
+            <a href="/entrant/">
+                <p>大会申込書</p>
+                <img src="../img/side_co_entrant.png" alt="大会申込書">
+            </a>
+        </li>
+        <li>
+            <a href="/others/">
+                <p>その他書類</p>
+                <img src="../img/side_co_other.png" alt="その他書類">
+            </a>
+        </li>
+    </ul>
+</div>
+
+<p id="page-top"><a href=""><img src="/img/toTop.png"></a></p>
+
+</body>
+</html>
