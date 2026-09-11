@@ -1,12 +1,40 @@
 # tokyo-soccer-brackets
 
 東京都高体連サッカー専門部（tokyosoccer-u18.com）のトーナメント表 PDF から、対戦カード・スコア・勝者を読み取り、
-Gemini Notebook（旧 NotebookLM）に入れる構造化データを作る。
+Gemini Notebook（旧 NotebookLM）およびローカル AI（Claude Code / Antigravity）で高度な解析を行うデータ基盤＆スカウティングシステム。
 
-PDF をそのまま Notebook に入れると、枝の接続と赤線（勝ち上がり）が失われ、数字の羅列になる。
-PDF の線は細い塗り矩形として描かれているので、それを線分に戻し、赤い区間から勝者を機械的に決める。
+## 💡 システムの設計思想：2層ハイブリッド AI アーキテクチャ
+
+本プロジェクトは、役割の異なる 2 つの AI 環境を組み合わせることで高度なサッカー戦術分析を実現しています。
+
+```
+【入力素材（PDF/Web）】
+       │
+       ▼
+【ローカル高度 AI エンジン】 (Claude Code / Antigravity)
+ ├─ 幾何幾何学 PDF ベクトルパース (parse_bracket.py)
+ ├─ 経年減衰付き Elo レーティング計算 (analyze_team.py)
+ ├─ Tリーグ / 地区リーグ戦スクレイピング (fetch_leagues.py)
+ └─ 勝ち上がり確率シミュレーション & Webダッシュボード生成 (build_scout_page.py)
+       │
+       ├──────────────────────────────────────────┐
+       ▼                                          ▼
+【クラウド RAG 層】                          【インタラクティブ Web ダッシュボード】
+ (Gemini Notebook / NotebookLM)               (out/scout/musashigaoka.html 等)
+ └─ out/notebook/*.md 投入による自然言語 Q&A    └─ 指導者・選手向けリアルタイム分析・戦略閲覧
+```
+
+- **Gemini Notebook (NotebookLM) の役割**:
+  `out/notebook/*.md` や CSV データを投入し、「◯◯高校の全大会の成績は？」といった対話的な自然言語検索・Q&Aを担当。
+- **ローカル AI (Claude Code & Antigravity) の役割**:
+  Gemini Notebook へのデータ投入前後の「より高度・複雑な解析と開発」を担当。
+  - PDF の細い線分描画命令からの勝者・スコア復元
+  - 学年交代（3年生引退）を考慮した Elo レーティング補正
+  - トーナメント戦とリーグ戦データを複合したブロック優勝確率計算・スカウト HTML 自動生成
+  - ※ローカルでの開発・高度解析は **Claude Code** が主導し、Claude Code の休眠中（API制限時）は **Antigravity** が作業と改善を引き継ぎます。
 
 ## 使い方
+
 
 ```powershell
 uv sync

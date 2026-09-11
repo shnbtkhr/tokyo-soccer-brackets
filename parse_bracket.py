@@ -13,7 +13,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -26,7 +25,9 @@ GAP = 3.4  # 同一直線上で連結とみなす隙間（出口の線の太さ�
 J_TOL = 2.6  # 交点・端点判定の許容
 ZONE_IN = 36.0  # スコアを探す範囲（試合線から枝の側へ）
 ZONE_OUT = 16.0  # スコアを探す範囲（試合線から出口の側へ）
-ZONE_OUT_RETRY = 26.0  # スコアが1つも見つからない試合だけ、出口の側をここまで広げて探し直す
+ZONE_OUT_RETRY = (
+    26.0  # スコアが1つも見つからない試合だけ、出口の側をここまで広げて探し直す
+)
 
 MATCHNO = re.compile(r"[【\[［]\s*([0-9０-９]+)\s*[】\]］]")
 DATE_LINE = re.compile(r"^(?!\d{4}/)[0-9０-９/,，、・\s~〜月日土火水木金祝()（）予]+$")
@@ -36,16 +37,24 @@ PK_ANY = re.compile(r"^(\d+)\s*(PK|P|K)\s*(\d+)$")
 PK_WRAP = re.compile(r"^(\d+)[（(](\d+)PK(\d+)[）)](\d+)$")  # 「2（5PK3）2」
 MIXED = re.compile(r"(\d+|[PK延長])")
 KICKOFF = re.compile(r"\d{1,2}[:：]\d{2}")
-ADVANCE_CODE = re.compile(r"^[東中南西北]\s*\d+$")  # 支部予選の勝者が入る枠（「中1」など）
+ADVANCE_CODE = re.compile(
+    r"^[東中南西北]\s*\d+$"
+)  # 支部予選の勝者が入る枠（「中1」など）
 BOX_CODE = re.compile(r"^([A-ZＡ-Ｚ]|[東中南西北]\s*\d+)$")  # 勝者が入る次の段階の枠
 MARK = re.compile(r"^([A-Za-z]|[①-⑳]|[」「.*×・△〇◎●▲□■]|定)$")
 HALF_RE = re.compile(r"^(\d+)-(\d+)$")
-ZEN = str.maketrans("０１２３４５６７８９－−‐‑–—―ーｰＰＫ", "0123456789" + "-" * 9 + "PK")
+ZEN = str.maketrans(
+    "０１２３４５６７８９－−‐‑–—―ーｰＰＫ", "0123456789" + "-" * 9 + "PK"
+)
 NOTE_WORDS = ("延長", "不戦勝", "不戦敗", "棄権", "没収", "抽選", "中止")
 SUB_NOTE = re.compile(r"代表$|シード$|推薦$")
-LABEL_JUNK = re.compile(r"^(\d+|[A-Za-zＡ-Ｚ]|[A-Za-z]\d+|延長|不戦勝|不戦敗|棄権|代表|シード|[\dPK延長（）()]+|\d{1,2}[:：]\d{2}|[①-⑳]|[△〇◎●▲]|[東中南西北]\s*\d+|\d+-\d+)$")
+LABEL_JUNK = re.compile(
+    r"^(\d+|[A-Za-zＡ-Ｚ]|[A-Za-z]\d+|延長|不戦勝|不戦敗|棄権|代表|シード|[\dPK延長（）()]+|\d{1,2}[:：]\d{2}|[①-⑳]|[△〇◎●▲]|[東中南西北]\s*\d+|\d+-\d+)$"
+)
 NAME_TAIL = re.compile(r"(【[^】]*】|＜[^＞]*＞|<[^>]*>|\d+\.\S*|[△〇◎●▲]+|\d+)$")
-NAME_HEAD = re.compile(r"^(\d{4}/\d{1,2}/\d{1,2}|\d+[A-Z]?)")  # 表の作成日やシード番号が名前の前に付くことがある
+NAME_HEAD = re.compile(
+    r"^(\d{4}/\d{1,2}/\d{1,2}|\d+[A-Z]?)"
+)  # 表の作成日やシード番号が名前の前に付くことがある
 NAME_NOISE = re.compile(r"[＝=：:]|【|】|こと|会場|開始|用意|用紙|確認|注意|^・.{3,}")
 
 
@@ -84,9 +93,13 @@ def raw_segments(page) -> list[Seg]:
         if min(w, h) > THIN or max(w, h) < 1.0:
             return
         if w >= h:
-            out.append(Seg("h", (r.y0 + r.y1) / 2, r.x0, r.x1, [(r.x0, r.x1)] if red else []))
+            out.append(
+                Seg("h", (r.y0 + r.y1) / 2, r.x0, r.x1, [(r.x0, r.x1)] if red else [])
+            )
         else:
-            out.append(Seg("v", (r.x0 + r.x1) / 2, r.y0, r.y1, [(r.y0, r.y1)] if red else []))
+            out.append(
+                Seg("v", (r.x0 + r.x1) / 2, r.y0, r.y1, [(r.y0, r.y1)] if red else [])
+            )
 
     def add_line(p, q, red: bool) -> None:
         if abs(p.y - q.y) < 0.6:
@@ -134,7 +147,10 @@ def drop_dashes(segs: list[Seg]) -> list[Seg]:
     """
     drop: set = set()
     for o in "hv":
-        ss = sorted((s for s in segs if s.o == o and not s.red), key=lambda s: (round(s.c * 2), s.a0))
+        ss = sorted(
+            (s for s in segs if s.o == o and not s.red),
+            key=lambda s: (round(s.c * 2), s.a0),
+        )
         i = 0
         while i < len(ss):
             run = [ss[i]]
@@ -180,7 +196,9 @@ def merge_segments(segs: list[Seg]) -> list[Seg]:
                 wsum = sum(r.a1 - r.a0 + 0.01 for r in run)
                 c = sum(r.c * (r.a1 - r.a0 + 0.01) for r in run) / wsum
                 reds = _union([iv for r in run for iv in r.red], GAP)
-                res.append(Seg(o, c, min(r.a0 for r in run), max(r.a1 for r in run), reds))
+                res.append(
+                    Seg(o, c, min(r.a0 for r in run), max(r.a1 for r in run), reds)
+                )
                 if s is not None:
                     run, end = [s], s.a1
     for i, s in enumerate(res):
@@ -202,7 +220,10 @@ def attachments(segs: list[Seg]) -> dict[int, list]:
     att: dict[int, list] = {s.id: [] for s in segs}
     for h in H:
         for v in V:
-            if v.a0 - J_TOL <= h.c <= v.a1 + J_TOL and h.a0 - J_TOL <= v.c <= h.a1 + J_TOL:
+            if (
+                v.a0 - J_TOL <= h.c <= v.a1 + J_TOL
+                and h.a0 - J_TOL <= v.c <= h.a1 + J_TOL
+            ):
                 ph, pv = _pos(h, v.c), _pos(v, h.c)
                 att[h.id].append((v, ph, pv))
                 att[v.id].append((h, pv, ph))
@@ -261,11 +282,15 @@ def page_tokens(page) -> list[Tok]:
 
             stripped = text.strip()
             if DATE_HAS.search(stripped) and DATE_LINE.match(stripped):
-                toks.append(mk([c for c in chars if not c[0].isspace()], "date", stripped))
+                toks.append(
+                    mk([c for c in chars if not c[0].isspace()], "date", stripped)
+                )
                 continue
             for mm in MATCHNO.finditer(text):
                 i0, i1 = mm.span()
-                num = mm.group(1).translate(str.maketrans("０１２３４５６７８９", "0123456789"))
+                num = mm.group(1).translate(
+                    str.maketrans("０１２３４５６７８９", "0123456789")
+                )
                 toks.append(mk(chars[i0:i1], "matchno", num))
                 for i in range(i0, i1):
                     used[i] = True
@@ -280,7 +305,10 @@ def page_tokens(page) -> list[Tok]:
                     both_digits = cur[-1][0].isdigit() and ch[0].isdigit()
                     # 隣の列の縦書きの文字が同じ行に入っていることがある。斜めに並ぶ2文字は切る
                     sz = max(ch[2], 1.0)
-                    diagonal = abs((bb[1] + bb[3]) - (pb[1] + pb[3])) / 2 > 0.35 * sz and abs((bb[0] + bb[2]) - (pb[0] + pb[2])) / 2 > 0.35 * sz
+                    diagonal = (
+                        abs((bb[1] + bb[3]) - (pb[1] + pb[3])) / 2 > 0.35 * sz
+                        and abs((bb[0] + bb[2]) - (pb[0] + pb[2])) / 2 > 0.35 * sz
+                    )
                     if diagonal or gap > (0.2 if both_digits else 0.6) * sz:
                         toks.append(mk(cur))
                         cur = []
@@ -305,7 +333,14 @@ def merge_split_matchno(toks: list[Tok]) -> list[Tok]:
     drop: set = set()
     add: list[Tok] = []
     for o in opens:
-        same = [t for t in toks if t.kind == "text" and id(t) not in drop and abs(t.cy - o.cy) < 2.5 and 0 < t.x0 - o.x0 < 40]
+        same = [
+            t
+            for t in toks
+            if t.kind == "text"
+            and id(t) not in drop
+            and abs(t.cy - o.cy) < 2.5
+            and 0 < t.x0 - o.x0 < 40
+        ]
         close = [t for t in same if t.text in ("】", "]", "］")]
         if not close:
             continue
@@ -314,7 +349,18 @@ def merge_split_matchno(toks: list[Tok]) -> list[Tok]:
         if len(inner) != 1:
             continue
         n = inner[0]
-        add.append(Tok(n.text, o.x0, min(o.y0, n.y0, c.y0), c.x1, max(o.y1, n.y1, c.y1), n.size, n.red, "matchno"))
+        add.append(
+            Tok(
+                n.text,
+                o.x0,
+                min(o.y0, n.y0, c.y0),
+                c.x1,
+                max(o.y1, n.y1, c.y1),
+                n.size,
+                n.red,
+                "matchno",
+            )
+        )
         drop.update({id(o), id(n), id(c)})
     return [t for t in toks if id(t) not in drop] + add
 
@@ -346,7 +392,7 @@ class Match:
     id: int = 0
     child: dict = field(default_factory=dict)  # slot -> Match
     leaf: dict = field(default_factory=dict)  # slot -> (x, y)
-    parent: "Match | None" = None
+    parent: Match | None = None
     parent_slot: int = 0
     tokens: list = field(default_factory=list)
 
@@ -367,7 +413,9 @@ def find_matches(segs: list[Seg], att: dict) -> list[Match]:
 
     def closes(o: str, c: float, lo: float, hi: float) -> bool:
         return any(
-            abs(t.c - c) <= J_TOL * 1.5 and abs(t.a0 - lo) <= J_TOL * 1.5 and abs(t.a1 - hi) <= J_TOL * 1.5
+            abs(t.c - c) <= J_TOL * 1.5
+            and abs(t.a0 - lo) <= J_TOL * 1.5
+            and abs(t.a1 - hi) <= J_TOL * 1.5
             for t in by_key.get(o, [])
         )
 
@@ -382,13 +430,15 @@ def find_matches(segs: list[Seg], att: dict) -> list[Match]:
         (S1, _, p1), (S2, _, p2), (S0, _, p0) = lo[0], hi[0], mid[0]
         if "mid" in (p1, p2, p0):
             continue
-        side = lambda p: 1 if p == "lo" else -1  # noqa: E731  交点から線分が伸びる向き
+        side = lambda p: 1 if p == "lo" else -1
         s1, s2, s0 = side(p1), side(p2), side(p0)
         if not (s1 == s2 == -s0):
             continue
         f1 = S1.a1 if p1 == "lo" else S1.a0
         f2 = S2.a1 if p2 == "lo" else S2.a0
-        if abs(f1 - f2) <= J_TOL * 2 and closes(B.o, (f1 + f2) / 2, min(S1.c, S2.c), max(S1.c, S2.c)):
+        if abs(f1 - f2) <= J_TOL * 2 and closes(
+            B.o, (f1 + f2) / 2, min(S1.c, S2.c), max(S1.c, S2.c)
+        ):
             continue  # 4辺が閉じている＝名前の囲み枠
         if B.o == "v":
             orient = "LR" if s0 > 0 else "RL"
@@ -416,7 +466,14 @@ def link_tree(matches: list[Match]) -> None:
 # ---------------------------------------------------------------- 読み取り
 
 
-def leaf_candidates(toks: list[Tok], orient: str, F: tuple[float, float], band: tuple[float, float], used: set, reach_in: float = 0.0) -> list:
+def leaf_candidates(
+    toks: list[Tok],
+    orient: str,
+    F: tuple[float, float],
+    band: tuple[float, float],
+    used: set,
+    reach_in: float = 0.0,
+) -> list:
     """葉の外側（X' が小さい側）で、Y' が帯に入る文字を近い順に返す。
 
     reach_in > 0 のときは、枝の線の真上・真下（葉から reach_in まで内側）にある文字も候補にする。
@@ -474,15 +531,23 @@ def leaf_label(cands: list, orient: str, depth: float) -> tuple[str, list]:
     if not NAME_TAIL.sub("", name).strip():
         # 大きな字の注記にまぎれて、学校名が小さな字で書かれていることがある
         rest = [t for t in good if not SUB_NOTE.search(t.text)]
-        rest.sort(key=(lambda t: (round(-t.cx / 8), t.cy)) if orient in ("BT", "TB") else (lambda t: (round(t.cy / 4), t.cx)))
+        rest.sort(
+            key=(lambda t: (round(-t.cx / 8), t.cy))
+            if orient in ("BT", "TB")
+            else (lambda t: (round(t.cy / 4), t.cx))
+        )
         name, main = "".join(t.text for t in rest), rest
     prev = None
-    while prev != name:  # 表の注記が名前の前後に付くことがある（「中大杉並【会場】」「2022/5/4学習院」「都・立川国際中等40」）
+    while (
+        prev != name
+    ):  # 表の注記が名前の前後に付くことがある（「中大杉並【会場】」「2022/5/4学習院」「都・立川国際中等40」）
         prev, name = name, NAME_HEAD.sub("", NAME_TAIL.sub("", name)).strip()
     # 縦書きの「都・」が別の列に置かれ、後ろに回ることがある（「東大和都・」）
     name = re.sub(r"^(.+?)(都・|私・|国・)$", r"\2\1", name)
     sub = [t.text for t in good if t not in main]
-    return name, picked + ([Tok(" / ".join(sub), 0, 0, 0, 0, 0, False, "sub")] if sub else [])
+    return name, picked + (
+        [Tok(" / ".join(sub), 0, 0, 0, 0, 0, False, "sub")] if sub else []
+    )
 
 
 def assign_score_tokens(toks: list[Tok], matches: list[Match], used: set) -> None:
@@ -499,7 +564,11 @@ def assign_score_tokens(toks: list[Tok], matches: list[Match], used: set) -> Non
             dx = tx - m.b
             _, e0 = norm(m.orient, t.x0, t.y0)
             _, e1 = norm(m.orient, t.x1, t.y1)
-            if ZONE_OUT < dx <= ZONE_OUT_RETRY and m.bar.a0 - 0.5 <= min(e0, e1) and max(e0, e1) <= m.bar.a1 + 0.5:
+            if (
+                ZONE_OUT < dx <= ZONE_OUT_RETRY
+                and m.bar.a0 - 0.5 <= min(e0, e1)
+                and max(e0, e1) <= m.bar.a1 + 0.5
+            ):
                 m.tokens.append(t)
                 taken.add(id(t))
 
@@ -510,7 +579,9 @@ def _assign_score_tokens(toks: list[Tok], matches: list[Match], used: set) -> No
             continue
         best = None
         # 「P4 / K5」は出口の側、次の枠の手前に離して書かれることがある
-        zone_out = ZONE_OUT_RETRY if re.fullmatch(r"[PK]\s*\d+", t.text.strip()) else ZONE_OUT
+        zone_out = (
+            ZONE_OUT_RETRY if re.fullmatch(r"[PK]\s*\d+", t.text.strip()) else ZONE_OUT
+        )
         for m in matches:
             tx, ty = norm(m.orient, t.cx, t.cy)
             lo, hi = m.bar.a0, m.bar.a1
@@ -539,14 +610,22 @@ def _assign_score_tokens(toks: list[Tok], matches: list[Match], used: set) -> No
             for m in matches:
                 tx, ty = norm(m.orient, t.cx, t.cy)
                 dx = tx - m.b
-                if abs(ty - m.j) <= 12 and -80 <= dx <= 0 and (best is None or abs(dx) < best[0]):
+                if (
+                    abs(ty - m.j) <= 12
+                    and -80 <= dx <= 0
+                    and (best is None or abs(dx) < best[0])
+                ):
                     best = (abs(dx), m)
         elif any(w in txt for w in ("棄権", "不戦", "辞退")):
             # 「棄権」は枝の途中に書かれることがある。試合線の幅の中で、枝の側へ遠くまで探す
             for m in matches:
                 tx, ty = norm(m.orient, t.cx, t.cy)
                 dx = tx - m.b
-                if m.bar.a0 - 3 <= ty <= m.bar.a1 + 3 and -130 <= dx <= 26 and (best is None or abs(dx) < best[0]):
+                if (
+                    m.bar.a0 - 3 <= ty <= m.bar.a1 + 3
+                    and -130 <= dx <= 26
+                    and (best is None or abs(dx) < best[0])
+                ):
                     best = (abs(dx), m)
         if best is not None:
             best[1].tokens.append(t)
@@ -560,7 +639,17 @@ def parse_scores(m: Match) -> dict:
     同じ段に数字が2つあれば、Y' の小さいほうが枠1。1つだけなら出口の位置で枠を決める。
     PK は「0P4 / 0K5」「1PK1 / 1PK4」（枠ごと）、「7PK8」（両チーム）、「0 P 3」（分かち書き）がある。
     """
-    res = {"score1": None, "score2": None, "pk1": None, "pk2": None, "halves": [], "notes": [], "match_no": None, "kickoff": None, "marks": []}
+    res = {
+        "score1": None,
+        "score2": None,
+        "pk1": None,
+        "pk2": None,
+        "halves": [],
+        "notes": [],
+        "match_no": None,
+        "kickoff": None,
+        "marks": [],
+    }
     rows: list[tuple[float, int | None, int | None]] = []  # (dX, 枠1, 枠2)
     items: list[tuple[float, float, Tok]] = []  # (dX, Y', tok)
     for t in m.tokens:
@@ -577,10 +666,18 @@ def parse_scores(m: Match) -> dict:
             continue
         mm = PK_WRAP.match(txt)
         if mm:
-            res["score1"], res["pk1"], res["pk2"], res["score2"] = (int(g) for g in mm.groups())
+            res["score1"], res["pk1"], res["pk2"], res["score2"] = (
+                int(g) for g in mm.groups()
+            )
             return res
         # 「0延2」「P3」のような混在文字列は、文字の位置を按分して部品に割る
-        if MIXED.fullmatch(txt) is None and re.fullmatch(r"[\dPK延長]+", txt) and re.search(r"\d", txt) and re.search(r"[PK延長]", txt) and not PK_ANY.match(txt):
+        if (
+            MIXED.fullmatch(txt) is None
+            and re.fullmatch(r"[\dPK延長]+", txt)
+            and re.search(r"\d", txt)
+            and re.search(r"[PK延長]", txt)
+            and not PK_ANY.match(txt)
+        ):
             parts = MIXED.findall(txt)
             n = len(txt)
             pos = 0
@@ -589,31 +686,74 @@ def parse_scores(m: Match) -> dict:
                 pos = i0 + len(part)
                 f0, f1 = i0 / n, pos / n
                 if m.orient in ("LR", "RL") or (t.x1 - t.x0) >= (t.y1 - t.y0):
-                    sub = Tok(part, t.x0 + (t.x1 - t.x0) * f0, t.y0, t.x0 + (t.x1 - t.x0) * f1, t.y1, t.size, t.red, "piece")
+                    sub = Tok(
+                        part,
+                        t.x0 + (t.x1 - t.x0) * f0,
+                        t.y0,
+                        t.x0 + (t.x1 - t.x0) * f1,
+                        t.y1,
+                        t.size,
+                        t.red,
+                        "piece",
+                    )
                 else:
-                    sub = Tok(part, t.x0, t.y0 + (t.y1 - t.y0) * f0, t.x1, t.y0 + (t.y1 - t.y0) * f1, t.size, t.red, "piece")
+                    sub = Tok(
+                        part,
+                        t.x0,
+                        t.y0 + (t.y1 - t.y0) * f0,
+                        t.x1,
+                        t.y0 + (t.y1 - t.y0) * f1,
+                        t.size,
+                        t.red,
+                        "piece",
+                    )
                 sx, sy = norm(m.orient, sub.cx, sub.cy)
                 items.append((sx - m.b, sy, sub))
             continue
         items.append((tx - m.b, ty, t))
 
     # 注記は1文字ずつ分かれていることがある（「不 戦 勝」）ので、つないでから探す
-    words = "".join(t.text.strip() for _, _, t in sorted(items, key=lambda p: (round(p[2].cx / 6), p[2].cy)) if not INT.match(t.text.strip()))
-    words += "".join(t.text.strip() for _, _, t in sorted(items, key=lambda p: (round(p[2].cy / 4), p[2].cx)) if not INT.match(t.text.strip()))
+    words = "".join(
+        t.text.strip()
+        for _, _, t in sorted(items, key=lambda p: (round(p[2].cx / 6), p[2].cy))
+        if not INT.match(t.text.strip())
+    )
+    words += "".join(
+        t.text.strip()
+        for _, _, t in sorted(items, key=lambda p: (round(p[2].cy / 4), p[2].cx))
+        if not INT.match(t.text.strip())
+    )
     for w in NOTE_WORDS:
         if w in words:
             res["notes"].append(w)
-    if "不戦" in words and "不戦勝" not in res["notes"] and "不戦敗" not in res["notes"]:
-        res["notes"].append("不戦勝")  # 縦書きの「不戦勝」は末尾の文字が探す範囲から外れることがある
+    if (
+        "不戦" in words
+        and "不戦勝" not in res["notes"]
+        and "不戦敗" not in res["notes"]
+    ):
+        res["notes"].append(
+            "不戦勝"
+        )  # 縦書きの「不戦勝」は末尾の文字が探す範囲から外れることがある
     if "位決定" in words:
         res["notes"].append("3位決定戦")
+
     # 「3位決定戦」の「3」のように、文字にくっついた数字はスコアではない
     def glued(t: Tok) -> bool:
         for _, _, u in items:
-            if u is t or not u.text.strip() or u.text.strip()[0] not in "位回年月日次地組":
+            if (
+                u is t
+                or not u.text.strip()
+                or u.text.strip()[0] not in "位回年月日次地組"
+            ):
                 continue
-            below = -1.0 <= u.y0 - t.y1 <= 0.6 * t.size and min(t.x1, u.x1) - max(t.x0, u.x0) > 0
-            right = -1.0 <= u.x0 - t.x1 <= 0.4 * t.size and min(t.y1, u.y1) - max(t.y0, u.y0) > 0
+            below = (
+                -1.0 <= u.y0 - t.y1 <= 0.6 * t.size
+                and min(t.x1, u.x1) - max(t.x0, u.x0) > 0
+            )
+            right = (
+                -1.0 <= u.x0 - t.x1 <= 0.4 * t.size
+                and min(t.y1, u.y1) - max(t.y0, u.y0) > 0
+            )
             if below or right:
                 return True
         return False
@@ -621,10 +761,16 @@ def parse_scores(m: Match) -> dict:
     items = [p for p in items if not (INT.match(p[2].text.strip()) and glued(p[2]))]
     if "3位決定戦" in res["notes"]:
         items = [p for p in items if not set(p[2].text.strip()) <= set("3位決定戦")]
-    items = [p for p in items if not any(w in p[2].text or p[2].text in w for w in NOTE_WORDS)]
+    items = [
+        p
+        for p in items
+        if not any(w in p[2].text or p[2].text in w for w in NOTE_WORDS)
+    ]
 
     # PK
-    pk_toks = [(dx, ty, t, mm) for dx, ty, t in items if (mm := PK_ANY.match(t.text.strip()))]
+    pk_toks = [
+        (dx, ty, t, mm) for dx, ty, t in items if (mm := PK_ANY.match(t.text.strip()))
+    ]
     pk_main: dict[int, int] = {}
     if len(pk_toks) == 1 and pk_toks[0][3].group(2) == "PK":
         mm = pk_toks[0][3]
@@ -633,7 +779,13 @@ def parse_scores(m: Match) -> dict:
         pk_toks.sort(key=lambda p: p[1])
         for i, (_, ty, t, mm) in enumerate(pk_toks[:2]):
             letter = mm.group(2)
-            k = 1 if letter == "P" else 2 if letter == "K" else (i + 1 if len(pk_toks) >= 2 else (1 if ty < m.j else 2))
+            k = (
+                1
+                if letter == "P"
+                else 2
+                if letter == "K"
+                else (i + 1 if len(pk_toks) >= 2 else (1 if ty < m.j else 2))
+            )
             pk_main[k] = int(mm.group(1))
             res[f"pk{k}"] = int(mm.group(3))
     items = [p for p in items if not PK_ANY.match(p[2].text.strip())]
@@ -642,10 +794,19 @@ def parse_scores(m: Match) -> dict:
     et_main: dict[int, int] = {}
     et_reg: dict[int, int] = {}
     # 延/長 は「0延2」を割った部品のときだけ扱う。単独の「延」「長」は縦書きの「延長」の1文字
-    for dx, ty, t in [p for p in items if p[2].text.strip() in ("P", "K") or (p[2].text.strip() in ("延", "長") and p[2].kind == "piece")]:
+    for dx, ty, t in [
+        p
+        for p in items
+        if p[2].text.strip() in ("P", "K")
+        or (p[2].text.strip() in ("延", "長") and p[2].kind == "piece")
+    ]:
         letter = t.text.strip()
         k = 1 if letter in ("P", "延") else 2
-        line = [p for p in items if abs(p[1] - ty) < 3 and INT.match(p[2].text.strip()) and p in items]
+        line = [
+            p
+            for p in items
+            if abs(p[1] - ty) < 3 and INT.match(p[2].text.strip()) and p in items
+        ]
         after = [p for p in line if p[0] > dx]
         before = [p for p in line if p[0] < dx]
         a = min(after, key=lambda p: p[0]) if after else None
@@ -684,16 +845,41 @@ def parse_scores(m: Match) -> dict:
         fixed = []
         for dx, ty, t in items:
             txt = t.text.strip()
-            same_row = [p for p in items if p[2] is not t and abs(p[0] - dx) <= 3 and INT.match(p[2].text.strip())]
-            if INT.match(txt) and len(txt) == 2 and abs(ty - m.j) < 2.0 and not same_row:
+            same_row = [
+                p
+                for p in items
+                if p[2] is not t
+                and abs(p[0] - dx) <= 3
+                and INT.match(p[2].text.strip())
+            ]
+            if (
+                INT.match(txt)
+                and len(txt) == 2
+                and abs(ty - m.j) < 2.0
+                and not same_row
+            ):
                 w = (t.x1 - t.x0) / 2
-                fixed.append((dx, ty - w / 2, Tok(txt[0], t.x0, t.y0, t.x0 + w, t.y1, t.size, t.red)))
-                fixed.append((dx, ty + w / 2, Tok(txt[1], t.x0 + w, t.y0, t.x1, t.y1, t.size, t.red)))
+                fixed.append(
+                    (
+                        dx,
+                        ty - w / 2,
+                        Tok(txt[0], t.x0, t.y0, t.x0 + w, t.y1, t.size, t.red),
+                    )
+                )
+                fixed.append(
+                    (
+                        dx,
+                        ty + w / 2,
+                        Tok(txt[1], t.x0 + w, t.y0, t.x1, t.y1, t.size, t.red),
+                    )
+                )
             else:
                 fixed.append((dx, ty, t))
         items = fixed
     # 数字を段にまとめる
-    ints = sorted((dx, ty, int(t.text)) for dx, ty, t in items if INT.match(t.text.strip()))
+    ints = sorted(
+        (dx, ty, int(t.text)) for dx, ty, t in items if INT.match(t.text.strip())
+    )
     groups: list[list] = []
     for it in ints:
         if groups and it[0] - groups[-1][-1][0] <= 3.0:
@@ -709,31 +895,56 @@ def parse_scores(m: Match) -> dict:
                 res["notes"].append("extra:" + ",".join(str(p[2]) for p in g[1:-1]))
         else:
             rows.append((dx, g[0][2], None) if g[0][1] < m.j else (dx, None, g[0][2]))
-    others = [t.text.strip() for _, _, t in items if not INT.match(t.text.strip()) and not HALF_RE.match(t.text.strip()) and t.text.strip() not in ("-", "－")]
+    others = [
+        t.text.strip()
+        for _, _, t in items
+        if not INT.match(t.text.strip())
+        and not HALF_RE.match(t.text.strip())
+        and t.text.strip() not in ("-", "－")
+    ]
     if others:
         res["notes"].append("text:" + " ".join(others))
 
     if pk_main:
         res["score1"], res["score2"] = pk_main.get(1), pk_main.get(2)
-        res["halves"] = [f"{a}-{b}" for _, a, b in sorted(rows, key=lambda r: abs(r[0]))]
+        res["halves"] = [
+            f"{a}-{b}" for _, a, b in sorted(rows, key=lambda r: abs(r[0]))
+        ]
         return res
     if rows:
         out_rows = [r for r in rows if r[0] > 0.5]
-        main = min(out_rows, key=lambda r: r[0]) if out_rows else min(rows, key=lambda r: abs(r[0]))
+        main = (
+            min(out_rows, key=lambda r: r[0])
+            if out_rows
+            else min(rows, key=lambda r: abs(r[0]))
+        )
         # 2つの数字が少しずれた段に書かれていることがある。片側ずつの段が近ければ1つにまとめる
         if (main[1] is None) != (main[2] is None):
             need = 1 if main[1] is None else 2
-            mates = [r for r in rows if r is not main and r[need] is not None and r[3 - need] is None and abs(r[0] - main[0]) <= 10]
+            mates = [
+                r
+                for r in rows
+                if r is not main
+                and r[need] is not None
+                and r[3 - need] is None
+                and abs(r[0] - main[0]) <= 10
+            ]
             if mates:
                 mate = min(mates, key=lambda r: abs(r[0] - main[0]))
                 rows.remove(mate)
-                merged = (main[0], mate[1] if need == 1 else main[1], mate[2] if need == 2 else main[2])
+                merged = (
+                    main[0],
+                    mate[1] if need == 1 else main[1],
+                    mate[2] if need == 2 else main[2],
+                )
                 rows[rows.index(main)] = merged
                 main = merged
         res["score1"], res["score2"] = main[1], main[2]
         rest = [r for r in rows if r is not main]
         rest.sort(key=lambda r: abs(r[0]))
-        res["halves"] = [f"{'' if a is None else a}-{'' if b is None else b}" for _, a, b in rest]
+        res["halves"] = [
+            f"{'' if a is None else a}-{'' if b is None else b}" for _, a, b in rest
+        ]
     return res
 
 
@@ -761,9 +972,9 @@ def date_tokens_for(toks: list[Tok], orient: str, b: float) -> str | None:
         c, _ = norm(orient, t.x1, t.y1)
         lo, hi = min(a, c), max(a, c)
         d = 0.0 if lo <= b <= hi else min(abs(b - lo), abs(b - hi))
-        if d <= 14 and (best is None or d < best[0]):
+        if d <= 28 and (best is None or d < best[0]):
             best = (d, t.text)
-        if hi <= b + 3 and b - hi <= 14 and (inside is None or b - hi < inside[0]):
+        if hi <= b + 5 and b - hi <= 28 and (inside is None or b - hi < inside[0]):
             inside = (b - hi, t.text)
     if inside:
         return inside[1]
@@ -785,12 +996,20 @@ def root_label(toks: list[Tok], m: Match, used: set) -> tuple[str, list[Tok]]:
             found.append((tx - fx, t))
     found.sort(key=lambda p: p[0])
     ts = [t for _, t in found[:6]]
-    joined = "".join(t.text.strip() for t in sorted(ts, key=lambda t: (round(t.cx / 6), t.cy)))
+    joined = "".join(
+        t.text.strip() for t in sorted(ts, key=lambda t: (round(t.cx / 6), t.cy))
+    )
     if "位決" in joined:
         # 3位決定戦の小さな山。出口の先の「3位決定戦」の縦書き（数字の3を含む）を、「位」と同じ列だけ取る
         col = next(t for t in ts if "位" in t.text)
-        return "3位決定戦", [t for t in ts if abs(t.cx - col.cx) < 4 or set(t.text.strip()) <= set("3位決定戦")]
-    ts = [t for t in ts if t.kind == "matchno" or not INT.match(t.text.strip())][:3]  # 決勝のスコアを箱の名前と取り違えない
+        return "3位決定戦", [
+            t
+            for t in ts
+            if abs(t.cx - col.cx) < 4 or set(t.text.strip()) <= set("3位決定戦")
+        ]
+    ts = [t for t in ts if t.kind == "matchno" or not INT.match(t.text.strip())][
+        :3
+    ]  # 決勝のスコアを箱の名前と取り違えない
     codes = [t for t in ts if t.kind == "matchno" or BOX_CODE.match(t.text.strip())]
     if codes:
         # 行き先の枠の名前（「南1」「A」「【1】」）が見つかれば、最も近い1つだけを使う
@@ -823,7 +1042,11 @@ def parse_page(page, pno: int) -> dict:
 
     roots = [m for m in matches if m.parent is None]
     tree_of: dict[int, int] = {}
-    for ti, r in enumerate(sorted(roots, key=lambda r: (r.bar.point(r.bar.a0)[1], r.bar.point(r.bar.a0)[0]))):
+    for ti, r in enumerate(
+        sorted(
+            roots, key=lambda r: (r.bar.point(r.bar.a0)[1], r.bar.point(r.bar.a0)[0])
+        )
+    ):
         stack = [r]
         while stack:
             x = stack.pop()
@@ -842,20 +1065,29 @@ def parse_page(page, pno: int) -> dict:
         lo = (ys[i - 1] - fy) / 2 if i > 0 else -26.0
         hi = (ys[i + 1] - fy) / 2 if i + 1 < len(ys) else 26.0
         bands.append((max(lo, -26.0), min(hi, 26.0)))
-    cands = [leaf_candidates(toks, m.orient, F, bands[i], used) for i, (m, _, F) in enumerate(pts)]
+    cands = [
+        leaf_candidates(toks, m.orient, F, bands[i], used)
+        for i, (m, _, F) in enumerate(pts)
+    ]
     # 名前欄の深さ：木ごとに、各葉から名前がどこまで届くかの上位を取る。均等割付の縦書きにも効く
     depth_of_tree: dict[int, float] = {}
     for ti in set(tree_of.values()):
         idx = [i for i, (m, _, _) in enumerate(pts) if tree_of[m.id] == ti]
         gap = 45.0 if pts[idx[0]][0].orient in ("BT", "TB") else 16.0
-        reaches = sorted(r for i in idx if (r := chain_reach(cands[i], gap)) is not None)
-        depth_of_tree[ti] = reaches[min(len(reaches) - 1, int(len(reaches) * 0.9))] if reaches else 60.0
+        reaches = sorted(
+            r for i in idx if (r := chain_reach(cands[i], gap)) is not None
+        )
+        depth_of_tree[ti] = (
+            reaches[min(len(reaches) - 1, int(len(reaches) * 0.9))] if reaches else 60.0
+        )
     for i, (m, slot, F) in enumerate(pts):
         name, picked = leaf_label(cands[i], m.orient, depth_of_tree[tree_of[m.id]])
         if not name:
             # 枝の線が名前の上を通っている形。線の長さの範囲で、線に沿った文字を探す
             S = m.s1 if slot == 1 else m.s2
-            wide = leaf_candidates(toks, m.orient, F, bands[i], used, reach_in=(S.a1 - S.a0) * 0.6)
+            wide = leaf_candidates(
+                toks, m.orient, F, bands[i], used, reach_in=(S.a1 - S.a0) * 0.6
+            )
             name, picked = leaf_label(wide, m.orient, depth_of_tree[tree_of[m.id]])
         fx = norm(m.orient, *F)[0]
         for t in picked:
@@ -867,7 +1099,15 @@ def parse_page(page, pno: int) -> dict:
                 e = max(norm(m.orient, t.x0, t.y0)[0], norm(m.orient, t.x1, t.y1)[0])
                 if e < fx + 3:
                     used.add(id(t))
-        leaves.append({"match": m.id, "slot": slot, "name": name, "point": F, "sub": [t.text for t in picked if t.kind == "sub"]})
+        leaves.append(
+            {
+                "match": m.id,
+                "slot": slot,
+                "name": name,
+                "point": F,
+                "sub": [t.text for t in picked if t.kind == "sub"],
+            }
+        )
 
     # 決勝の出口の先にある箱の名前（「南1」「A」「【1】」など）を先に取り、スコア候補から外す
     roots_label: dict[int, str] = {}
@@ -909,25 +1149,45 @@ def parse_page(page, pno: int) -> dict:
                 "col": col_of[m.id],
                 "ncol": ncol_of_tree[ti],
                 "date": date_tokens_for(toks, m.orient, m.b),
-                "slot1": {"leaf": leaf_name[(m.id, 1)]["name"]} if 1 in m.leaf else {"from": m.child[1].id},
-                "slot2": {"leaf": leaf_name[(m.id, 2)]["name"]} if 2 in m.leaf else {"from": m.child[2].id},
+                "slot1": {"leaf": leaf_name[(m.id, 1)]["name"]}
+                if 1 in m.leaf
+                else {"from": m.child[1].id},
+                "slot2": {"leaf": leaf_name[(m.id, 2)]["name"]}
+                if 2 in m.leaf
+                else {"from": m.child[2].id},
                 "leaf_sub1": leaf_name[(m.id, 1)]["sub"] if 1 in m.leaf else [],
                 "leaf_sub2": leaf_name[(m.id, 2)]["sub"] if 2 in m.leaf else [],
                 "winner_slot": w,
                 "red": [round(r1, 2), round(r2, 2)],
                 "parent": m.parent.id if m.parent else None,
                 "parent_slot": m.parent_slot,
-                "bar": [m.bar.o, round(m.bar.c, 1), round(m.bar.a0, 1), round(m.bar.a1, 1)],
+                "bar": [
+                    m.bar.o,
+                    round(m.bar.c, 1),
+                    round(m.bar.a0, 1),
+                    round(m.bar.a1, 1),
+                ],
                 "j": round(m.j, 1),
                 "root_label": roots_label.get(m.id),
                 "tokens": [f"{t.text}@{t.cx:.0f},{t.cy:.0f}" for t in m.tokens],
                 **sc,
-                "notes": sc["notes"] + (["3位決定戦"] if roots_label.get(m.id) == "3位決定戦" and "3位決定戦" not in sc["notes"] else []),
+                "notes": sc["notes"]
+                + (
+                    ["3位決定戦"]
+                    if roots_label.get(m.id) == "3位決定戦"
+                    and "3位決定戦" not in sc["notes"]
+                    else []
+                ),
             }
         )
     used.update(id(t) for m in matches for t in m.tokens)
     out_matches.extend(facing_finals(pairs, toks, used, len(matches)))
-    return {"page": pno, "size": [page.rect.width, page.rect.height], "matches": out_matches, "leaves": leaves}
+    return {
+        "page": pno,
+        "size": [page.rect.width, page.rect.height],
+        "matches": out_matches,
+        "leaves": leaves,
+    }
 
 
 FACING_SCORE = re.compile(r"^([0-9OＯ]+)\s*-\s*([0-9OＯ]+)$")
@@ -948,13 +1208,17 @@ def facing_pairs(matches: list[Match], toks: list[Tok]) -> list[tuple]:
             if not (abs(L.j - R.j) <= 4 and -5 <= re_ - le <= 160):
                 continue
             y = (L.j + R.j) / 2
-            between = [t for t in toks if le - 5 <= t.cx <= re_ + 5 and abs(t.cy - y) <= 30]
+            between = [
+                t for t in toks if le - 5 <= t.cx <= re_ + 5 and abs(t.cy - y) <= 30
+            ]
             if any(FACING_SCORE.match(t.text.strip()) for t in between):
                 out.append((L, R, le, re_))
     return out
 
 
-def facing_finals(pairs: list[tuple], toks: list[Tok], used: set, next_id: int) -> list[dict]:
+def facing_finals(
+    pairs: list[tuple], toks: list[Tok], used: set, next_id: int
+) -> list[dict]:
     """向かい合った決勝を試合として足す。
 
     試合線の形を持たないので、2本の出口の線の端の間にあるスコアから勝者を決める。
@@ -963,14 +1227,24 @@ def facing_finals(pairs: list[tuple], toks: list[Tok], used: set, next_id: int) 
     for L, R, le, re_ in pairs:
         if True:
             y = (L.j + R.j) / 2
-            box = [t for t in toks if id(t) not in used and le - 5 <= t.cx <= re_ + 5 and abs(t.cy - y) <= 30]
+            box = [
+                t
+                for t in toks
+                if id(t) not in used
+                and le - 5 <= t.cx <= re_ + 5
+                and abs(t.cy - y) <= 30
+            ]
             s1 = s2 = None
             for t in box:
                 mm = FACING_SCORE.match(t.text.strip())
                 if mm:
-                    s1, s2 = (int(g.replace("O", "0").replace("Ｏ", "0")) for g in mm.groups())
+                    s1, s2 = (
+                        int(g.replace("O", "0").replace("Ｏ", "0")) for g in mm.groups()
+                    )
             if s1 is None:
-                ints = sorted((t for t in box if INT.match(t.text.strip())), key=lambda t: t.cx)
+                ints = sorted(
+                    (t for t in box if INT.match(t.text.strip())), key=lambda t: t.cx
+                )
                 if len(ints) >= 2:
                     s1, s2 = int(ints[0].text), int(ints[-1].text)
             out.append(
@@ -1089,19 +1363,47 @@ def draw_overlay(path: Path, result: dict, out_dir: Path, dpi: int = 150) -> lis
             if ok and s1 is not None and s2 is not None:
                 w1 = (s1, m["pk1"] or 0) > (s2, m["pk2"] or 0)
                 w2 = (s2, m["pk2"] or 0) > (s1, m["pk1"] or 0)
-                consistent = (m["winner_slot"] == 1 and w1) or (m["winner_slot"] == 2 and w2)
-            color = (0, 0.7, 0) if ok and consistent else ((1, 0.55, 0) if not ok else (0.9, 0, 0.9))
-            page.draw_circle(pymupdf.Point(jx, jy), 3.2, color=color, fill=color, overlay=True)
+                consistent = (m["winner_slot"] == 1 and w1) or (
+                    m["winner_slot"] == 2 and w2
+                )
+            color = (
+                (0, 0.7, 0)
+                if ok and consistent
+                else ((1, 0.55, 0) if not ok else (0.9, 0, 0.9))
+            )
+            page.draw_circle(
+                pymupdf.Point(jx, jy), 3.2, color=color, fill=color, overlay=True
+            )
             label = f"{s1 if s1 is not None else '?'}-{s2 if s2 is not None else '?'}"
             if m["pk1"] is not None:
                 label += f"(PK{m['pk1']}-{m['pk2']})"
             if m["winner"]:
                 label += " " + m["winner"]
-            page.insert_text(pymupdf.Point(jx + 3, jy - 3), label, fontsize=4.2, fontname="japan", color=(0, 0, 0.85), overlay=True)
+            page.insert_text(
+                pymupdf.Point(jx + 3, jy - 3),
+                label,
+                fontsize=4.2,
+                fontname="japan",
+                color=(0, 0, 0.85),
+                overlay=True,
+            )
         for lf in p["leaves"]:
             x, y = lf["point"]
-            page.draw_circle(pymupdf.Point(x, y), 1.8, color=(0, 0.3, 1), fill=(0, 0.3, 1), overlay=True)
-            page.insert_text(pymupdf.Point(x + 2, y + 5), lf["name"] or "??", fontsize=4.2, fontname="japan", color=(0, 0.3, 1), overlay=True)
+            page.draw_circle(
+                pymupdf.Point(x, y),
+                1.8,
+                color=(0, 0.3, 1),
+                fill=(0, 0.3, 1),
+                overlay=True,
+            )
+            page.insert_text(
+                pymupdf.Point(x + 2, y + 5),
+                lf["name"] or "??",
+                fontsize=4.2,
+                fontname="japan",
+                color=(0, 0.3, 1),
+                overlay=True,
+            )
         pix = page.get_pixmap(dpi=dpi)
         out = out_dir / f"{path.stem}_p{p['page']}.png"
         pix.save(out)
@@ -1113,14 +1415,18 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("pdfs", nargs="+", type=Path)
     ap.add_argument("--out", type=Path, default=Path("out/json"))
-    ap.add_argument("--overlay", type=Path, default=None, help="オーバーレイ PNG の出力先")
+    ap.add_argument(
+        "--overlay", type=Path, default=None, help="オーバーレイ PNG の出力先"
+    )
     args = ap.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
     if args.overlay:
         args.overlay.mkdir(parents=True, exist_ok=True)
     for path in args.pdfs:
         res = parse_pdf(path)
-        (args.out / f"{path.stem}.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+        (args.out / f"{path.stem}.json").write_text(
+            json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8"
+        )
         if args.overlay:
             draw_overlay(path, res, args.overlay)
         n = sum(len(p["matches"]) for p in res["pages"])

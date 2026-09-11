@@ -20,46 +20,123 @@ import pymupdf
 
 ROOT = Path(__file__).parent
 BASE_URL = "https://tokyosoccer-u18.com"
-SHIBU = {"higashi": "東支部（第1・2地区）", "naka": "中支部（第3・4地区）", "minami": "南支部（第5・6地区）", "nishi": "西支部（第7・8地区）"}
+SHIBU = {
+    "higashi": "東支部（第1・2地区）",
+    "naka": "中支部（第3・4地区）",
+    "minami": "南支部（第5・6地区）",
+    "nishi": "西支部（第7・8地区）",
+}
 SERIES_TITLE = {
     "総体": "高校総体（インターハイ）東京都予選",
     "選手権": "全国高校サッカー選手権 東京大会",
     "新人戦": "地区新人選手権大会",
     "関東": "関東高校サッカー大会 東京都予選",
 }
-SERIES_FILE = {"総体": "sotai", "選手権": "senshuken", "新人戦": "shinjin", "関東": "kanto"}
+SERIES_FILE = {
+    "総体": "sotai",
+    "選手権": "senshuken",
+    "新人戦": "shinjin",
+    "関東": "kanto",
+}
 
 
 def file_meta(stem: str) -> dict:
     if m := re.fullmatch(r"sotai(\d\d)_(1|2)jt", stem):
         y = 2000 + int(m[1])
-        return {"series": "総体", "year": y, "stage": "一次トーナメント" if m[2] == "1" else "二次トーナメント", "area": "", "order": int(m[2]) + 1, "url": f"{BASE_URL}/SOTAI{m[1]}/{stem}.pdf"}
+        return {
+            "series": "総体",
+            "year": y,
+            "stage": "一次トーナメント" if m[2] == "1" else "二次トーナメント",
+            "area": "",
+            "order": int(m[2]) + 1,
+            "url": f"{BASE_URL}/SOTAI{m[1]}/{stem}.pdf",
+        }
     if m := re.fullmatch(r"(\d\d)sotai_\d*(higashi|naka|minami|nishi)\d*", stem):
         y = 2000 + int(m[1])
-        return {"series": "総体", "year": y, "stage": "支部予選", "area": SHIBU[m[2]], "order": 1, "url": f"{BASE_URL}/SOTAI{m[1]}/{stem}.pdf"}
+        return {
+            "series": "総体",
+            "year": y,
+            "stage": "支部予選",
+            "area": SHIBU[m[2]],
+            "order": 1,
+            "url": f"{BASE_URL}/SOTAI{m[1]}/{stem}.pdf",
+        }
     if m := re.fullmatch(r"sen(\d\d)_(1|2)j", stem):
         y = 2000 + int(m[1])
-        return {"series": "選手権", "year": y, "stage": f"第{y - 2022 + 101}回 " + ("一次予選" if m[2] == "1" else "二次予選"), "area": "", "order": int(m[2]), "url": f"{BASE_URL}/SEN{m[1]}/{stem}.pdf"}
+        return {
+            "series": "選手権",
+            "year": y,
+            "stage": f"第{y - 2022 + 101}回 "
+            + ("一次予選" if m[2] == "1" else "二次予選"),
+            "area": "",
+            "order": int(m[2]),
+            "url": f"{BASE_URL}/SEN{m[1]}/{stem}.pdf",
+        }
     if m := re.fullmatch(r"sinj(\d\d)_(\d)", stem):
         y = 2000 + int(m[1])
-        return {"series": "新人戦", "year": y, "stage": "地区大会", "area": f"第{m[2]}地区", "order": int(m[2]), "url": f"{BASE_URL}/SINJ{m[1]}/{stem}.pdf"}
+        return {
+            "series": "新人戦",
+            "year": y,
+            "stage": "地区大会",
+            "area": f"第{m[2]}地区",
+            "order": int(m[2]),
+            "url": f"{BASE_URL}/SINJ{m[1]}/{stem}.pdf",
+        }
     if stem == "kanto2024":
-        return {"series": "関東", "year": 2024, "stage": "東京都予選", "area": "", "order": 1, "url": f"{BASE_URL}/SINJ23/{stem}.pdf"}
+        return {
+            "series": "関東",
+            "year": 2024,
+            "stage": "東京都予選",
+            "area": "",
+            "order": 1,
+            "url": f"{BASE_URL}/SINJ23/{stem}.pdf",
+        }
     if stem == "2025kanto":
-        return {"series": "関東", "year": 2025, "stage": "東京都予選", "area": "", "order": 1, "url": f"{BASE_URL}/SINJ24/{stem}.pdf"}
+        return {
+            "series": "関東",
+            "year": 2025,
+            "stage": "東京都予選",
+            "area": "",
+            "order": 1,
+            "url": f"{BASE_URL}/SINJ24/{stem}.pdf",
+        }
     raise ValueError(stem)
+
+
+_ALIASES_CACHE: dict | None = None
+
+
+def _load_aliases() -> dict:
+    global _ALIASES_CACHE
+    if _ALIASES_CACHE is None:
+        p = ROOT / "scout/school_aliases.json"
+        if p.exists():
+            try:
+                _ALIASES_CACHE = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                _ALIASES_CACHE = {}
+        else:
+            _ALIASES_CACHE = {}
+    return _ALIASES_CACHE
 
 
 def normalize(name: str) -> str:
     """名寄せ用のキー。原文は別に残すので、ここでは多少強引に寄せてよい。"""
-    s = unicodedata.normalize("NFKC", name or "")
+    raw = (name or "").strip()
+    aliases = _load_aliases()
+    exact_map = aliases.get("exact_map", {})
+    if raw in exact_map:
+        return exact_map[raw]
+
+    s = unicodedata.normalize("NFKC", raw)
     s = re.sub(r"[(（][^)）]*[)）]", "", s)
     s = re.sub(r"\s+", "", s)
     s = re.sub(r"^(東京都立|都立|都・|国立|国・|私立|私・|区立)", "", s)
     s = re.sub(r"^都(?=[^市・])(?=.{2,})", "", s)  # 「都日比谷」。都市大は残す
-    s = re.sub(r"(高等学校|高校)$", "", s)
+    s = re.sub(r"(高等学校|高校|高等科)$", "", s)
     s = re.sub(r"(?<=[一-龥])ケ(?=[一-龥])", "ヶ", s)
-    return s.translate(str.maketrans("國學髙﨑", "国学高崎"))
+    res = s.translate(str.maketrans("國學髙﨑", "国学高崎"))
+    return exact_map.get(res, res)
 
 
 def load_corrections() -> dict:
@@ -88,7 +165,9 @@ def round_names(page: dict, block_mode: bool) -> dict[int, str]:
     for m in ms:
         if m["orient"] == "facing":
             by = {x["id"]: x for x in ms}
-            facing_trees.update({by[m["slot1"]["from"]]["tree"], by[m["slot2"]["from"]]["tree"]})
+            facing_trees.update(
+                {by[m["slot1"]["from"]]["tree"], by[m["slot2"]["from"]]["tree"]}
+            )
     names = {}
     size = defaultdict(int)
     for m in ms:
@@ -99,7 +178,9 @@ def round_names(page: dict, block_mode: bool) -> dict[int, str]:
             names[m["id"]] = "決勝"
             continue
         # 大きな山の横にある1試合だけの山は3位決定戦（「3決」とだけ書かれた表や、何も書かれていない表がある）
-        if "3位決定戦" in m["notes"] or (not block_mode and size[m["tree"]] == 1 and big > 3):
+        if "3位決定戦" in m["notes"] or (
+            not block_mode and size[m["tree"]] == 1 and big > 3
+        ):
             names[m["id"]] = "3位決定戦"
             continue
         rfin = m["ncol"] - m["col"] + (1 if m["tree"] in facing_trees else 0)
@@ -107,7 +188,9 @@ def round_names(page: dict, block_mode: bool) -> dict[int, str]:
             # 小さな山が並ぶ表（一次予選・支部予選）。山の最後だけ「ブロック決勝」、ほかは回戦で呼ぶ
             names[m["id"]] = "ブロック決勝" if rfin == 0 else f"{m['col']}回戦"
         else:
-            names[m["id"]] = {0: "決勝", 1: "準決勝", 2: "準々決勝"}.get(rfin, f"{m['col']}回戦")
+            names[m["id"]] = {0: "決勝", 1: "準決勝", 2: "準々決勝"}.get(
+                rfin, f"{m['col']}回戦"
+            )
     return names
 
 
@@ -147,8 +230,19 @@ def build() -> None:
         r = json.loads(path.read_text(encoding="utf-8"))
         stem = path.stem
         meta = file_meta(stem)
-        pdf_title = pymupdf.open(ROOT / "pdfs" / f"{stem}.pdf").metadata.get("title") or ""
-        n_trees = max(len({m["tree"] for m in p["matches"] if m["tree"] >= 0 and "3位決定戦" not in m["notes"]}) for p in r["pages"])
+        pdf_title = (
+            pymupdf.open(ROOT / "pdfs" / f"{stem}.pdf").metadata.get("title") or ""
+        )
+        n_trees = max(
+            len(
+                {
+                    m["tree"]
+                    for m in p["matches"]
+                    if m["tree"] >= 0 and "3位決定戦" not in m["notes"]
+                }
+            )
+            for p in r["pages"]
+        )
         block_mode = n_trees > 2
         for p in r["pages"]:
             apply_corrections(stem, p["matches"], fixes)
@@ -164,11 +258,24 @@ def build() -> None:
                 block = ""
                 if m["orient"] != "facing":
                     lab = tree_label.get(m["tree"], "")
-                    if meta["series"] == "選手権" and meta["stage"].endswith("二次予選"):
+                    if meta["series"] == "選手権" and meta["stage"].endswith(
+                        "二次予選"
+                    ):
                         block = "Aブロック" if m["tree"] == 0 else "Bブロック"
-                    elif block_mode and lab and lab != "3位決定戦" and not re.search(r"[ぁ-ん]", lab) and len(lab) <= 6:
+                    elif (
+                        block_mode
+                        and lab
+                        and lab != "3位決定戦"
+                        and not re.search(r"[ぁ-ん]", lab)
+                        and len(lab) <= 6
+                    ):
                         block = "→" + unicodedata.normalize("NFKC", lab)
-                notes = [n for n in m["notes"] if not n.startswith(("extra:", "text:", "facing")) and not (n == "延長" and m["pk1"] is None)]
+                notes = [
+                    n
+                    for n in m["notes"]
+                    if not n.startswith(("extra:", "text:", "facing"))
+                    and not (n == "延長" and m["pk1"] is None)
+                ]
                 rows.append(
                     {
                         "年度": meta["year"],
@@ -189,14 +296,30 @@ def build() -> None:
                         "PK_A": "" if m["pk1"] is None else m["pk1"],
                         "PK_B": "" if m["pk2"] is None else m["pk2"],
                         "前後半": " / ".join(m["halves"]),
-                        "勝者": (m["team1"] if w == 1 else m["team2"] if w == 2 else "") or "",
+                        "勝者": (m["team1"] if w == 1 else m["team2"] if w == 2 else "")
+                        or "",
                         "状態": status_of(m),
-                        "備考": " ".join(notes + (["目視で訂正"] if m.get("corrected") else [])),
+                        "備考": " ".join(
+                            notes + (["目視で訂正"] if m.get("corrected") else [])
+                        ),
                         "チームA_正規化": normalize(m["team1"]),
                         "チームB_正規化": normalize(m["team2"]),
                         "出典PDF": meta["url"],
                         "PDFタイトル": pdf_title,
-                        "_order": (meta["series"], meta["year"], meta["order"], meta["area"], p["page"], block if m["orient"] != "facing" else "~", 98 if names[m["id"]] == "3位決定戦" else m["col"] if m["orient"] != "facing" else 99, m["bar"][2] if m["orient"] != "facing" else 9999),
+                        "_order": (
+                            meta["series"],
+                            meta["year"],
+                            meta["order"],
+                            meta["area"],
+                            p["page"],
+                            block if m["orient"] != "facing" else "~",
+                            98
+                            if names[m["id"]] == "3位決定戦"
+                            else m["col"]
+                            if m["orient"] != "facing"
+                            else 99,
+                            m["bar"][2] if m["orient"] != "facing" else 9999,
+                        ),
                         "_winner_slot": w,
                     }
                 )
@@ -209,7 +332,22 @@ def build() -> None:
         wr.writerows(rows)
     teams = build_teams(rows)
     with (out / "teams.csv").open("w", encoding="utf-8-sig", newline="") as f:
-        tc = ["年度", "大会", "段階", "地区・支部", "学校", "学校_正規化", "試合数", "勝", "PK勝", "PK負", "敗", "不戦勝", "最終到達", "戦績"]
+        tc = [
+            "年度",
+            "大会",
+            "段階",
+            "地区・支部",
+            "学校",
+            "学校_正規化",
+            "試合数",
+            "勝",
+            "PK勝",
+            "PK負",
+            "敗",
+            "不戦勝",
+            "最終到達",
+            "戦績",
+        ]
         wr = csv.DictWriter(f, fieldnames=tc, extrasaction="ignore")
         wr.writeheader()
         wr.writerows(teams)
@@ -228,7 +366,26 @@ def build_teams(rows: list[dict]) -> list[dict]:
             if not name:
                 continue
             key = (r["年度"], r["大会"], r["段階"], r["地区・支部"], normalize(name))
-            t = acc.setdefault(key, {"年度": r["年度"], "大会": r["大会"], "段階": r["段階"], "地区・支部": r["地区・支部"], "学校": name, "学校_正規化": normalize(name), "試合数": 0, "勝": 0, "PK勝": 0, "PK負": 0, "敗": 0, "不戦勝": 0, "最終到達": "", "_games": [], "_last": None})
+            t = acc.setdefault(
+                key,
+                {
+                    "年度": r["年度"],
+                    "大会": r["大会"],
+                    "段階": r["段階"],
+                    "地区・支部": r["地区・支部"],
+                    "学校": name,
+                    "学校_正規化": normalize(name),
+                    "試合数": 0,
+                    "勝": 0,
+                    "PK勝": 0,
+                    "PK負": 0,
+                    "敗": 0,
+                    "不戦勝": 0,
+                    "最終到達": "",
+                    "_games": [],
+                    "_last": None,
+                },
+            )
             won = r["勝者"] == name
             lost = bool(r["勝者"]) and not won
             pk = r["PK_A"] != "" and r["PK_B"] != ""
@@ -244,11 +401,17 @@ def build_teams(rows: list[dict]) -> list[dict]:
             sc = r["スコア"]
             if side == "B" and sc:
                 a, b = r["得点A"], r["得点B"]
-                sc = f"{b}-{a}" + (f" (PK {r['PK_B']}-{r['PK_A']})" if pk else "") + (" (延長)" if "(延長)" in r["スコア"] else "")
+                sc = (
+                    f"{b}-{a}"
+                    + (f" (PK {r['PK_B']}-{r['PK_A']})" if pk else "")
+                    + (" (延長)" if "(延長)" in r["スコア"] else "")
+                )
             mark = "○" if won else "●" if lost else "－"
             if walk:
                 sc = "不戦勝" if won else "不戦敗"
-            t["_games"].append(f"{r['ラウンド']} {mark}{sc} {r[f'チーム{other}']}".strip())
+            t["_games"].append(
+                f"{r['ラウンド']} {mark}{sc} {r[f'チーム{other}']}".strip()
+            )
             t["_last"] = (r["ラウンド"], won, r["ブロック"])
     out = []
     for t in acc.values():
@@ -261,7 +424,9 @@ def build_teams(rows: list[dict]) -> list[dict]:
             elif rnd == "決勝":
                 t["最終到達"] = "優勝"
             elif rnd == "ブロック決勝":
-                t["最終到達"] = "ブロック決勝勝利" + (f"（{block[1:]}へ進出）" if block.startswith("→") else "")
+                t["最終到達"] = "ブロック決勝勝利" + (
+                    f"（{block[1:]}へ進出）" if block.startswith("→") else ""
+                )
             else:
                 # 開催中の大会で、次の試合がまだ行われていない
                 t["最終到達"] = f"{rnd}勝利（次戦未実施）" if rnd else ""
@@ -269,12 +434,20 @@ def build_teams(rows: list[dict]) -> list[dict]:
             t["最終到達"] = f"{rnd}敗退" if rnd else ""
         t["戦績"] = " → ".join(t["_games"])
         out.append(t)
-    out.sort(key=lambda t: (t["大会"], t["年度"], t["段階"], t["地区・支部"], t["学校_正規化"]))
+    out.sort(
+        key=lambda t: (
+            t["大会"],
+            t["年度"],
+            t["段階"],
+            t["地区・支部"],
+            t["学校_正規化"],
+        )
+    )
     return out
 
 
 def md_table(headers: list[str], rows: list[list]) -> str:
-    esc = lambda v: str(v).replace("|", "／")  # noqa: E731
+    esc = lambda v: str(v).replace("|", "／")
     lines = ["| " + " | ".join(headers) + " |", "|" + "---|" * len(headers)]
     lines += ["| " + " | ".join(esc(v) for v in r) + " |" for r in rows]
     return "\n".join(lines)
@@ -313,20 +486,60 @@ def write_markdown(rows: list[dict], teams: list[dict], out_dir: Path) -> None:
                     stages.append(k)
             for stage, area in stages:
                 sr = [r for r in yr if (r["段階"], r["地区・支部"]) == (stage, area)]
-                parts.append(f"### {y}年度 {title}{'' if stage in title else ' ' + stage}{' ' + area if area else ''}")
+                parts.append(
+                    f"### {y}年度 {title}{'' if stage in title else ' ' + stage}{' ' + area if area else ''}"
+                )
                 parts.append("")
-                parts.append(f"出典: {sr[0]['出典PDF']}（PDF タイトル: {sr[0]['PDFタイトル'] or 'なし'}）")
+                parts.append(
+                    f"出典: {sr[0]['出典PDF']}（PDF タイトル: {sr[0]['PDFタイトル'] or 'なし'}）"
+                )
                 if "作業用" in (sr[0]["PDFタイトル"] or ""):
-                    parts.append("注意: この PDF のタイトルは「作業用」となっており、最終版でない可能性がある。")
+                    parts.append(
+                        "注意: この PDF のタイトルは「作業用」となっており、最終版でない可能性がある。"
+                    )
                 pending = sum(r["状態"] == "未実施" for r in sr)
                 if pending:
-                    parts.append(f"注意: {pending} 試合が PDF 作成時点で未実施（開催中の大会）。")
+                    parts.append(
+                        f"注意: {pending} 試合が PDF 作成時点で未実施（開催中の大会）。"
+                    )
                 parts.append("")
                 table = [
-                    [r["ブロック"], r["ラウンド"], r["日付"], r["チームA"], r["スコア"], r["チームB"], r["勝者"], r["状態"] if r["状態"] != "終了" else "", " ".join(x for x in [r["前後半"] and f"前後半 {r['前後半']}", r["備考"]] if x)]
+                    [
+                        r["ブロック"],
+                        r["ラウンド"],
+                        r["日付"],
+                        r["チームA"],
+                        r["スコア"],
+                        r["チームB"],
+                        r["勝者"],
+                        r["状態"] if r["状態"] != "終了" else "",
+                        " ".join(
+                            x
+                            for x in [
+                                r["前後半"] and f"前後半 {r['前後半']}",
+                                r["備考"],
+                            ]
+                            if x
+                        ),
+                    ]
                     for r in sr
                 ]
-                parts.append(md_table(["ブロック", "ラウンド", "日付", "チームA", "スコア", "チームB", "勝者", "状態", "備考"], table))
+                parts.append(
+                    md_table(
+                        [
+                            "ブロック",
+                            "ラウンド",
+                            "日付",
+                            "チームA",
+                            "スコア",
+                            "チームB",
+                            "勝者",
+                            "状態",
+                            "備考",
+                        ],
+                        table,
+                    )
+                )
                 parts.append("")
             yt = [t for t in ts if t["年度"] == y]
             if yt:
@@ -334,14 +547,41 @@ def write_markdown(rows: list[dict], teams: list[dict], out_dir: Path) -> None:
                 parts.append("")
                 parts.append(
                     md_table(
-                        ["学校", "段階", "試合数", "勝", "PK勝", "PK負", "敗", "最終到達", "戦績（○勝ち ●負け）"],
-                        [[t["学校"], f"{t['段階']}{' ' + t['地区・支部'] if t['地区・支部'] else ''}", t["試合数"], t["勝"], t["PK勝"], t["PK負"], t["敗"], t["最終到達"], t["戦績"]] for t in sorted(yt, key=lambda t: (t["学校_正規化"], t["段階"]))],
+                        [
+                            "学校",
+                            "段階",
+                            "試合数",
+                            "勝",
+                            "PK勝",
+                            "PK負",
+                            "敗",
+                            "最終到達",
+                            "戦績（○勝ち ●負け）",
+                        ],
+                        [
+                            [
+                                t["学校"],
+                                f"{t['段階']}{' ' + t['地区・支部'] if t['地区・支部'] else ''}",
+                                t["試合数"],
+                                t["勝"],
+                                t["PK勝"],
+                                t["PK負"],
+                                t["敗"],
+                                t["最終到達"],
+                                t["戦績"],
+                            ]
+                            for t in sorted(
+                                yt, key=lambda t: (t["学校_正規化"], t["段階"])
+                            )
+                        ],
                     )
                 )
                 parts.append("")
         path = out_dir / f"{SERIES_FILE[series]}.md"
         path.write_text("\n".join(parts), encoding="utf-8")
-        print(f"{path.name}: {len(rs)} matches, {len(path.read_text(encoding='utf-8'))} chars")
+        print(
+            f"{path.name}: {len(rs)} matches, {len(path.read_text(encoding='utf-8'))} chars"
+        )
     write_school_index(teams, out_dir / "schools.md")
 
 
@@ -370,22 +610,57 @@ def write_school_index(teams: list[dict], path: Path) -> None:
         "",
     ]
     for key in sorted(by_school, key=lambda k: (-len(by_school[k]), k)):
-        ts = sorted(by_school[key], key=lambda t: (t["年度"], SERIES_ORDER[t["大会"]], t["段階"]))
+        ts = sorted(
+            by_school[key],
+            key=lambda t: (t["年度"], SERIES_ORDER[t["大会"]], t["段階"]),
+        )
         names = sorted({t["学校"] for t in ts})
-        tot = {k: sum(int(t[k]) for t in ts) for k in ("試合数", "勝", "PK勝", "PK負", "敗")}
+        tot = {
+            k: sum(int(t[k]) for t in ts)
+            for k in ("試合数", "勝", "PK勝", "PK負", "敗")
+        }
         parts.append(f"## {key}")
         parts.append("")
-        parts.append(f"表記: {'、'.join(names)}　／　通算: {tot['試合数']}試合 {tot['勝']}勝 {tot['PK勝']}PK勝 {tot['PK負']}PK負 {tot['敗']}敗")
+        parts.append(
+            f"表記: {'、'.join(names)}　／　通算: {tot['試合数']}試合 {tot['勝']}勝 {tot['PK勝']}PK勝 {tot['PK負']}PK負 {tot['敗']}敗"
+        )
         parts.append("")
         parts.append(
             md_table(
-                ["年度", "大会", "段階", "試合数", "勝", "PK勝", "PK負", "敗", "最終到達", "戦績（○勝ち ●負け）"],
-                [[t["年度"], t["大会"], f"{t['段階']}{' ' + t['地区・支部'] if t['地区・支部'] else ''}", t["試合数"], t["勝"], t["PK勝"], t["PK負"], t["敗"], t["最終到達"], t["戦績"]] for t in ts],
+                [
+                    "年度",
+                    "大会",
+                    "段階",
+                    "試合数",
+                    "勝",
+                    "PK勝",
+                    "PK負",
+                    "敗",
+                    "最終到達",
+                    "戦績（○勝ち ●負け）",
+                ],
+                [
+                    [
+                        t["年度"],
+                        t["大会"],
+                        f"{t['段階']}{' ' + t['地区・支部'] if t['地区・支部'] else ''}",
+                        t["試合数"],
+                        t["勝"],
+                        t["PK勝"],
+                        t["PK負"],
+                        t["敗"],
+                        t["最終到達"],
+                        t["戦績"],
+                    ]
+                    for t in ts
+                ],
             )
         )
         parts.append("")
     path.write_text("\n".join(parts), encoding="utf-8")
-    print(f"{path.name}: {len(by_school)} schools, {len(path.read_text(encoding='utf-8'))} chars")
+    print(
+        f"{path.name}: {len(by_school)} schools, {len(path.read_text(encoding='utf-8'))} chars"
+    )
 
 
 if __name__ == "__main__":
