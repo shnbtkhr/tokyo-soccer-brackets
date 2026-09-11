@@ -26,12 +26,14 @@ Gemini Notebook（旧 NotebookLM）およびローカル AI（Claude Code / Anti
 
 - **Gemini Notebook (NotebookLM) の役割**:
   `out/notebook/*.md` や CSV データを投入し、「◯◯高校の全大会の成績は？」といった対話的な自然言語検索・Q&Aを担当。
+  ※環境内に **NotebookLM MCP / nlm CLI** が完備されており、`nlm source add` や `notebooklm-mcp` 経由で、生成された Markdown データが自動的にクラウド上の NotebookLM（「105th All Japan High School Soccer Tournament Tokyo Qualifiers」）へ直接同期・照会されます。
 - **ローカル AI (Claude Code & Antigravity) の役割**:
   Gemini Notebook へのデータ投入前後の「より高度・複雑な解析と開発」を担当。
   - PDF の細い線分描画命令からの勝者・スコア復元
   - 学年交代（3年生引退）を考慮した Elo レーティング補正
   - トーナメント戦とリーグ戦データを複合したブロック優勝確率計算・スカウト HTML 自動生成
   - ※ローカルでの開発・高度解析は **Claude Code** が主導し、Claude Code の休眠中（API制限時）は **Antigravity** が作業と改善を引き継ぎます。
+
 
 ## 使い方
 
