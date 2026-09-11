@@ -100,6 +100,15 @@ def file_meta(stem: str) -> dict:
             "order": 1,
             "url": f"{BASE_URL}/SINJ24/{stem}.pdf",
         }
+    if stem == "2026kanto":  # 2026年度から本大会が3月開催に変わるため「記念大会」として実施（2026/3/14〜4/5）
+        return {
+            "series": "関東",
+            "year": 2026,
+            "stage": "東京都予選",
+            "area": "",
+            "order": 1,
+            "url": f"{BASE_URL}/SINJ25/2026kanto_to.pdf",
+        }
     raise ValueError(stem)
 
 
@@ -152,7 +161,7 @@ def load_corrections() -> dict:
 def apply_corrections(stem: str, matches: list[dict], fixes: dict) -> None:
     for m in matches:
         for fx in fixes.get((stem, m["team1"], m["team2"]), []):
-            if fx["field"] in ("score1", "score2", "pk1", "pk2"):
+            if fx["field"] in ("score1", "score2", "pk1", "pk2", "winner_slot"):  # winner_slot: 赤線が両側で勝者が読めない決勝など
                 m[fx["field"]] = int(fx["value"])
             elif fx["field"] == "notes":
                 m["notes"] = m["notes"] + [fx["value"]]
