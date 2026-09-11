@@ -1,0 +1,1758 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=1024" />
+<meta name="description" content="GoalNoteクラウドは、サッカー・フットサル大会の運営・広報をアシストするサービスです。大会ページの作成から結果まで簡単入力。順位表や戦績表、トーナメント表、得点ランキング、懲罰などを自動で集計し公開。メンバー提出用紙や通告書も出力可能。" />
+<meta name="keywords" content="GoalNote クラウド,GoalNote CLOUD,GoalNote,Goal,Note,CLOUD,ゴールノートクラウド,ゴールノート,サッカー,Soccer,フットサル,記録,大会記録,試合記録,大会結果,試合結果" />
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="NSリーグ２０２６" />
+<meta property="og:image" content="https://www.goalnote.net/common/img/sns_image.gif" />
+<meta property="og:url" content="https://www.goalnote.net/detail.php?tid=18597"/>
+<meta property="og:site_name" content="GoalNote クラウド" />
+<meta property="og:description" content="GoalNote クラウドはサッカー/フットサル大会の結果公開をお手伝いする入力・集計機能を備えたサービスです。" />
+<meta property="og:locale" content="ja_JP" />
+<title>戦績表 : NSリーグ２０２６ : 大会をみる : GoalNoteクラウド</title>
+<link rel="apple-touch-icon" href="common/img/apple-touch-icon.png" />
+<script src="common/js/jquery.min.js"></script>
+<script src="common/js/html5shiv.js"></script>
+<script src="common/js/functions.js"></script>
+<link rel="stylesheet" href="common/css/reset.css" />
+<link rel="stylesheet" href="common/css/style.css" />
+<style>
+.cross-point {
+	background:#ccc ! important;
+}
+.table-record {
+	table-layout:fixed;
+	width:100%;
+}
+.table-record tr:nth-child(2n) td ,
+.table-record tr:nth-child(2n) th {
+	background-color:#eee;
+}
+.table-record td ,
+.table-record th {
+	font-weight:normal;
+	border:1px solid #fff;
+	line-height: 1.2;
+	vertical-align:middle;
+}
+.table-record td {
+	vertical-align:middle;
+}
+.table-record th.row {
+	text-align:center;
+	vertical-align:bottom;
+}
+.table-record .ranking {
+	text-align:center;
+	font-weight: bold;
+}
+.table-record .point {
+	padding:4px 0px;
+	text-align:center;
+}
+.vchar {
+	height:1em;
+	text-align:center;
+	-moz-transform: matrix(0, 1, 1, 0, 0, 0);
+	-webkit-transform: matrix(0, 1, 1, 0, 0, 0);
+	-o-transform: matrix(0, 1, 1, 0, 0, 0);
+	writing-mode: tb-rl;
+}
+</style>
+
+<!--script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45317753-1', 'goalnote.net');
+  ga('send', 'pageview');
+
+  //追加したコード
+  ga('create', 'UA-45317753-2', 'auto', {'name': 'feature phone'});
+  ga('feature phone.send', 'pageview');
+
+</script-->
+
+</head>
+
+<body class="detail">
+
+<header>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3PF25ZG9H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q3PF25ZG9H');
+</script>
+
+<div id="title">
+<div class="title-wrap">
+<h1><a href="index.php"><img src="common/img/logo.gif" alt="GoalNoteクラウド" width="352" height="43"></a></h1>
+<p class="header-dnp-logo"><a href="http://www.dnp.co.jp/" target="_blank"><img src="common/img/logo_dnp.gif" alt="未来のあたりまえを作る。DNP" width="74" height="35"></a></p>
+<ul class="header-social-link">
+		<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.goalnote.net%2Fdetail-schedule.php%3Ftid%3D18597" target="_blank"><img src="common/img/head_ic_fb.gif" alt="Facebook" width="32" height="32"></a></li>
+	<li><a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.goalnote.net%2Fdetail-schedule.php%3Ftid%3D18597&text=NS%E3%83%AA%E3%83%BC%E3%82%B0%EF%BC%92%EF%BC%90%EF%BC%92%EF%BC%96" rel="nofollow" target="_blank"><img src="common/img/head_ic_tw.gif" alt="Twitter" width="32" height="32"></a></li>
+	<li style="height: 32px;"><script type="text/javascript">LineIt.loadButton();</script>
+	<div class="line-it-button" style="display: none;" data-type="share-c" data-lang="ja"></div>
+	<script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer"></script></li>
+	</ul>
+</div>
+</div>
+
+<nav>
+<div class="nav-wrap">
+<ol>
+	<li id="menu0"><a href="/">HOME</a></li>
+	<li id="menu1"><a href="login.php">大会をつくる</a></li>
+	<li id="menu2"><a href="view.php">大会をみる</a></li>
+	<li id="menu3"><a href="about.php">GoalNoteクラウドとは</a></li>
+	<li id="menu4"><a href="regist.php">会員登録</a></li>
+	<li id="menu5"><a href="login.php">ログイン</a></li>
+</ol>
+</div>
+</nav>
+
+<h1><span>大会をみる</span></h1>
+
+</header>
+
+<div id="content">
+
+<div class="page-meta">
+<ul class="topicpath">
+	<li><a href="index.php">TOP</a></li>
+	<li><a href="view.php">大会をみる</a></li>
+	<li><a href="detail.php?tid=18597">NSリーグ２０２６</a></li>
+	<li class="active">戦績表</li>
+</ul>
+<p class="user-name">おはようございます！ゲストさん</p>
+</div>
+
+
+<section class="center">
+		<p style="font-size:18px;font-weight:bold;">NSリーグ２０２６</p>
+	</section>
+
+<ul class="tabmenu">
+	<li ><a href="detail.php?tid=18597">大会概要</a></li>
+	<li ><a href="detail-schedule.php?tid=18597">日程・結果</a></li>
+		<li ><a href="detail-standings.php?tid=18597">順位表</a></li>
+			<li class='active'><a href="detail-standings-record.php?tid=18597">戦績表</a></li>
+			<li><a href="#" class="disabled">得点ランク</a></li>
+		<li ><a href="detail-sitelist.php?tid=18597">会場一覧</a></li>
+	<li ><a href="detail-team.php?tid=18597">参加チーム</a></li>
+		<li><a href="#" class="disabled">懲罰一覧</a></li>
+	</ul>
+
+<article>
+<div class="tab-detail">
+
+<h2>戦績表</h2>
+
+<div class="season-select with-bt-tournament">
+	<p class="right">
+		<a href="detail-standings-record.php?tid=" class="link-button" style="visibility:hidden;">＜＜前の大会</a>
+		<a href="detail-standings-record.php?tid=" class="link-button" style="visibility:hidden;">次の大会＞＞</a>
+	</p>
+	<form name="group" action="" method="post">
+		<select name="search_group" onchange="document.group.submit();">
+			<option>▽グループを選択</option>
+						<option value="A" >グループA</option>
+						<option value="B" >グループB</option>
+						<option value="C" >グループC</option>
+						<option value="D" >グループD</option>
+						<option value="E" >グループE</option>
+						<option value="F" >グループF</option>
+					</select>
+	</form>
+</div>
+
+<div class="standings-record">
+<table class="table-record">
+	<col style="width:40px;">
+	<col style="width:280px;">
+	<tr>
+		<th class="row ranking">順<br>&nbsp;<br>位</th>
+		<th class="row">グループA</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">専</div>
+				<div style="width:1em;height:1em;text-align:center;">修</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">附</div>
+				<div style="width:1em;height:1em;text-align:center;">属</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">A</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">実</div>
+				<div style="width:1em;height:1em;text-align:center;">践</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">園</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">D</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">早</div>
+				<div style="width:1em;height:1em;text-align:center;">稲</div>
+				<div style="width:1em;height:1em;text-align:center;">田</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">院</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">石</div>
+				<div style="width:1em;height:1em;text-align:center;">神</div>
+				<div style="width:1em;height:1em;text-align:center;">井</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">日</div>
+				<div style="width:1em;height:1em;text-align:center;">本</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">第</div>
+				<div style="width:1em;height:1em;text-align:center;">二</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">A</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">豊</div>
+				<div style="width:1em;height:1em;text-align:center;">多</div>
+				<div style="width:1em;height:1em;text-align:center;">摩</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">A</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">日</div>
+				<div style="width:1em;height:1em;text-align:center;">本</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">鶴</div>
+				<div style="width:1em;height:1em;text-align:center;">ヶ</div>
+				<div style="width:1em;height:1em;text-align:center;">丘</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">鷺</div>
+				<div style="width:1em;height:1em;text-align:center;">宮</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">A</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">保</div>
+				<div style="width:1em;height:1em;text-align:center;">谷</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">文</div>
+				<div style="width:1em;height:1em;text-align:center;">化</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">園</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+			</tr>
+	<tr>
+		<td class="ranking">1</td>
+		<th style="text-align:left;">専修大学附属高等学校A</th>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">3○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">2○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">4○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">4○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">1△1<br />
+　</td>
+		<td class="point" style="font-size:100%;">8○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">4○1<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">8</td>
+		<th style="text-align:left;">実践学園高等学校D</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1△1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">1●2<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●4<br />
+　</td>
+		<td class="point" style="font-size:100%;">1●2<br />
+　</td>
+		<td class="point" style="font-size:100%;">4○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">1△1<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">7</td>
+		<th style="text-align:left;">早稲田大学高等学院B</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1△1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1△1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●2<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●2<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●1<br />
+　</td>
+		<td class="point" style="font-size:100%;">6○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">10</td>
+		<th style="text-align:left;">都立石神井高等学校B</th>
+		<td class="point" style="font-size:100%;">　<br />
+1●3</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1△1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1●4<br />
+　</td>
+		<td class="point" style="font-size:100%;">1●3<br />
+　</td>
+		<td class="point" style="font-size:100%;">2●3<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●6<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">1●2<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">3</td>
+		<th style="text-align:left;">日本大学第二高等学校A</th>
+		<td class="point" style="font-size:100%;">　<br />
+1●2</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+4○1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">3○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">2○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">5</td>
+		<th style="text-align:left;">都立豊多摩高等学校A</th>
+		<td class="point" style="font-size:100%;">　<br />
+1●4</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+3○1</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●3<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">2○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">4</td>
+		<th style="text-align:left;">日本大学鶴ヶ丘高等学校B</th>
+		<td class="point" style="font-size:100%;">　<br />
+1●4</td>
+		<td class="point" style="font-size:100%;">　<br />
+4○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+3○2</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●3</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">5○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">2</td>
+		<th style="text-align:left;">都立鷺宮高等学校A</th>
+		<td class="point" style="font-size:100%;">　<br />
+1△1</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○1</td>
+		<td class="point" style="font-size:100%;">　<br />
+1○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+6○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+3○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1●2<br />
+　</td>
+		<td class="point" style="font-size:100%;">3○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">6</td>
+		<th style="text-align:left;">都立保谷高等学校B</th>
+		<td class="point" style="font-size:100%;">　<br />
+1●8</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●4</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●6</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●2</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●5</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">2○1<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">9</td>
+		<th style="text-align:left;">文化学園大学杉並高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+1●4</td>
+		<td class="point" style="font-size:100%;">　<br />
+1△1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●2</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●3</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●2</td>
+		<td class="cross-point">&nbsp;</td>
+	</tr>
+</table>
+</div>
+<p>&raquo; <a href="detail-standings.php?tid=18597">日程・結果ページへ</a></p>
+<div class="standings-record">
+<table class="table-record">
+	<col style="width:40px;">
+	<col style="width:280px;">
+	<tr>
+		<th class="row ranking">順<br>&nbsp;<br>位</th>
+		<th class="row">グループB</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">國</div>
+				<div style="width:1em;height:1em;text-align:center;">學</div>
+				<div style="width:1em;height:1em;text-align:center;">院</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">學</div>
+				<div style="width:1em;height:1em;text-align:center;">久</div>
+				<div style="width:1em;height:1em;text-align:center;">我</div>
+				<div style="width:1em;height:1em;text-align:center;">山</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">E</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">武</div>
+				<div style="width:1em;height:1em;text-align:center;">蔵</div>
+				<div style="width:1em;height:1em;text-align:center;">丘</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">A</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">中</div>
+				<div style="width:1em;height:1em;text-align:center;">央</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">早</div>
+				<div style="width:1em;height:1em;text-align:center;">稲</div>
+				<div style="width:1em;height:1em;text-align:center;">田</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">院</div>
+				<div style="width:1em;height:1em;text-align:center;">C</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">ソ</div>
+				<div style="width:1em;height:1em;text-align:center;">シ</div>
+				<div style="width:1em;height:1em;text-align:center;">オ</div>
+				<div style="width:1em;height:1em;text-align:center;">フ</div>
+				<div style="width:1em;height:1em;text-align:center;">ッ</div>
+				<div style="width:1em;height:1em;text-align:center;">ト</div>
+				<div style="width:1em;height:1em;text-align:center;">ボ</div>
+				<div class="vchar">ー</div>
+				<div style="width:1em;height:1em;text-align:center;">ル</div>
+				<div style="width:1em;height:1em;text-align:center;">ク</div>
+				<div style="width:1em;height:1em;text-align:center;">ラ</div>
+				<div style="width:1em;height:1em;text-align:center;">ブ</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">日</div>
+				<div style="width:1em;height:1em;text-align:center;">本</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">鶴</div>
+				<div style="width:1em;height:1em;text-align:center;">ヶ</div>
+				<div style="width:1em;height:1em;text-align:center;">丘</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">C</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">保</div>
+				<div style="width:1em;height:1em;text-align:center;">谷</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">C</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">東</div>
+				<div style="width:1em;height:1em;text-align:center;">京</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">教</div>
+				<div style="width:1em;height:1em;text-align:center;">育</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">部</div>
+				<div style="width:1em;height:1em;text-align:center;">附</div>
+				<div style="width:1em;height:1em;text-align:center;">属</div>
+				<div style="width:1em;height:1em;text-align:center;">中</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">教</div>
+				<div style="width:1em;height:1em;text-align:center;">育</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+			</tr>
+	<tr>
+		<td class="ranking">2</td>
+		<th style="text-align:left;">國學院大學久我山高等学校E</th>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">2△2<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">6○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">6○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">1</td>
+		<th style="text-align:left;">都立武蔵丘高等学校A</th>
+		<td class="point" style="font-size:100%;">　<br />
+2△2</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">3○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">2○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">1○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">4○1<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">4</td>
+		<th style="text-align:left;">中央大学杉並高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●3</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">11○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">5</td>
+		<th style="text-align:left;">早稲田大学高等学院C</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">1○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">6</td>
+		<th style="text-align:left;">杉並ソシオフットボールクラブB</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●2<br />
+　</td>
+		<td class="point" style="font-size:100%;">3○1<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">3</td>
+		<th style="text-align:left;">日本大学鶴ヶ丘高等学校C</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●2</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">4○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">4○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">7</td>
+		<th style="text-align:left;">都立保谷高等学校C</th>
+		<td class="point" style="font-size:100%;">　<br />
+1●6</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●1</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●4</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">8</td>
+		<th style="text-align:left;">東京大学教育学部附属中等教育学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+0●6</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●4</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●11</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●3</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●4</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+	</tr>
+</table>
+</div>
+<p>&raquo; <a href="detail-standings.php?tid=18597">日程・結果ページへ</a></p>
+<div class="standings-record">
+<table class="table-record">
+	<col style="width:40px;">
+	<col style="width:280px;">
+	<tr>
+		<th class="row ranking">順<br>&nbsp;<br>位</th>
+		<th class="row">グループC</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">フ</div>
+				<div style="width:1em;height:1em;text-align:center;">ッ</div>
+				<div style="width:1em;height:1em;text-align:center;">ト</div>
+				<div style="width:1em;height:1em;text-align:center;">ボ</div>
+				<div class="vchar">ー</div>
+				<div style="width:1em;height:1em;text-align:center;">ル</div>
+				<div style="width:1em;height:1em;text-align:center;">ク</div>
+				<div style="width:1em;height:1em;text-align:center;">ラ</div>
+				<div style="width:1em;height:1em;text-align:center;">ブ</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">実</div>
+				<div style="width:1em;height:1em;text-align:center;">践</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">園</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">E</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">ア</div>
+				<div style="width:1em;height:1em;text-align:center;">ヤ</div>
+				<div style="width:1em;height:1em;text-align:center;">ッ</div>
+				<div style="width:1em;height:1em;text-align:center;">ク</div>
+				<div style="width:1em;height:1em;text-align:center;">ス</div>
+				<div style="width:1em;height:1em;text-align:center;">サ</div>
+				<div style="width:1em;height:1em;text-align:center;">ッ</div>
+				<div style="width:1em;height:1em;text-align:center;">カ</div>
+				<div class="vchar">ー</div>
+				<div style="width:1em;height:1em;text-align:center;">ク</div>
+				<div style="width:1em;height:1em;text-align:center;">ラ</div>
+				<div style="width:1em;height:1em;text-align:center;">ブ</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">佼</div>
+				<div style="width:1em;height:1em;text-align:center;">成</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">園</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">西</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">光</div>
+				<div style="width:1em;height:1em;text-align:center;">丘</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">豊</div>
+				<div style="width:1em;height:1em;text-align:center;">多</div>
+				<div style="width:1em;height:1em;text-align:center;">摩</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">明</div>
+				<div style="width:1em;height:1em;text-align:center;">治</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">付</div>
+				<div style="width:1em;height:1em;text-align:center;">属</div>
+				<div style="width:1em;height:1em;text-align:center;">中</div>
+				<div style="width:1em;height:1em;text-align:center;">野</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+			</tr>
+	<tr>
+		<td class="ranking"></td>
+		<th style="text-align:left;">杉並フットボールクラブ</th>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">6</td>
+		<th style="text-align:left;">実践学園高等学校E</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">1●2<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">4</td>
+		<th style="text-align:left;">杉並アヤックスサッカークラブ</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●1</td>
+	</tr>
+	<tr>
+		<td class="ranking">1</td>
+		<th style="text-align:left;">佼成学園高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+2○1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">4○2<br />
+　</td>
+		<td class="point" style="font-size:100%;">2○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">4○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●1<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">5</td>
+		<th style="text-align:left;">都立西高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+2●4</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+1△1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">3</td>
+		<th style="text-align:left;">都立光丘高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●2</td>
+		<td class="point" style="font-size:100%;">1△1<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">6○1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">7</td>
+		<th style="text-align:left;">都立豊多摩高等学校B</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●4</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1●6</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">0●1<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">2</td>
+		<th style="text-align:left;">明治大学付属中野高等学校B</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">1○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1○0</td>
+		<td class="cross-point">&nbsp;</td>
+	</tr>
+</table>
+</div>
+<p>&raquo; <a href="detail-standings.php?tid=18597">日程・結果ページへ</a></p>
+<div class="standings-record">
+<table class="table-record">
+	<col style="width:40px;">
+	<col style="width:280px;">
+	<tr>
+		<th class="row ranking">順<br>&nbsp;<br>位</th>
+		<th class="row">グループD</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">専</div>
+				<div style="width:1em;height:1em;text-align:center;">修</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">附</div>
+				<div style="width:1em;height:1em;text-align:center;">属</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">東</div>
+				<div style="width:1em;height:1em;text-align:center;">京</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">芸</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">附</div>
+				<div style="width:1em;height:1em;text-align:center;">属</div>
+				<div style="width:1em;height:1em;text-align:center;">国</div>
+				<div style="width:1em;height:1em;text-align:center;">際</div>
+				<div style="width:1em;height:1em;text-align:center;">中</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">教</div>
+				<div style="width:1em;height:1em;text-align:center;">育</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">田</div>
+				<div style="width:1em;height:1em;text-align:center;">無</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">宝</div>
+				<div style="width:1em;height:1em;text-align:center;">仙</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">園</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">英</div>
+				<div style="width:1em;height:1em;text-align:center;">明</div>
+				<div style="width:1em;height:1em;text-align:center;">フ</div>
+				<div style="width:1em;height:1em;text-align:center;">ロ</div>
+				<div style="width:1em;height:1em;text-align:center;">ン</div>
+				<div style="width:1em;height:1em;text-align:center;">テ</div>
+				<div style="width:1em;height:1em;text-align:center;">ィ</div>
+				<div style="width:1em;height:1em;text-align:center;">ア</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+			</tr>
+	<tr>
+		<td class="ranking"></td>
+		<th style="text-align:left;">専修大学附属高等学校B</th>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">4</td>
+		<th style="text-align:left;">東京学芸大学附属国際中等教育学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">1●3<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">5</td>
+		<th style="text-align:left;">都立田無高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1●5<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">1</td>
+		<th style="text-align:left;">都立杉並高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+5○1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1△1<br />
+　</td>
+		<td class="point" style="font-size:100%;">0△0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">3</td>
+		<th style="text-align:left;">宝仙学園高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+1△1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">2</td>
+		<th style="text-align:left;">英明フロンティア高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+3○1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0△0</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+	</tr>
+</table>
+</div>
+<p>&raquo; <a href="detail-standings.php?tid=18597">日程・結果ページへ</a></p>
+<div class="standings-record">
+<table class="table-record">
+	<col style="width:40px;">
+	<col style="width:280px;">
+	<tr>
+		<th class="row ranking">順<br>&nbsp;<br>位</th>
+		<th class="row">グループE</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">日</div>
+				<div style="width:1em;height:1em;text-align:center;">本</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">第</div>
+				<div style="width:1em;height:1em;text-align:center;">二</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">堀</div>
+				<div style="width:1em;height:1em;text-align:center;">越</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">C</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">泉</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">武</div>
+				<div style="width:1em;height:1em;text-align:center;">蔵</div>
+				<div style="width:1em;height:1em;text-align:center;">野</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">富</div>
+				<div style="width:1em;height:1em;text-align:center;">士</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">練</div>
+				<div style="width:1em;height:1em;text-align:center;">馬</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+			</tr>
+	<tr>
+		<td class="ranking">3</td>
+		<th style="text-align:left;">日本大学第二高等学校B</th>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">0△0<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●6<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking"></td>
+		<th style="text-align:left;">堀越高等学校C</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">2</td>
+		<th style="text-align:left;">都立大泉高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+0△0</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">0●4<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">5○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">1</td>
+		<th style="text-align:left;">武蔵野大学高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+6○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+4○0</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking"></td>
+		<th style="text-align:left;">都立富士高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">4</td>
+		<th style="text-align:left;">都立練馬高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●5</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+	</tr>
+</table>
+</div>
+<p>&raquo; <a href="detail-standings.php?tid=18597">日程・結果ページへ</a></p>
+<div class="standings-record">
+<table class="table-record">
+	<col style="width:40px;">
+	<col style="width:280px;">
+	<tr>
+		<th class="row ranking">順<br>&nbsp;<br>位</th>
+		<th class="row">グループF</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">鷺</div>
+				<div style="width:1em;height:1em;text-align:center;">宮</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">武</div>
+				<div style="width:1em;height:1em;text-align:center;">蔵</div>
+				<div style="width:1em;height:1em;text-align:center;">丘</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">B</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">院</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">東</div>
+				<div style="width:1em;height:1em;text-align:center;">京</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">正</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">杉</div>
+				<div style="width:1em;height:1em;text-align:center;">並</div>
+				<div style="width:1em;height:1em;text-align:center;">総</div>
+				<div style="width:1em;height:1em;text-align:center;">合</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">都</div>
+				<div style="width:1em;height:1em;text-align:center;">立</div>
+				<div style="width:1em;height:1em;text-align:center;">井</div>
+				<div style="width:1em;height:1em;text-align:center;">草</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+			</div>
+		</th>
+				<th class="row">
+			<div style="width:1em;margin-left:auto;margin-right:auto;">
+				<div style="width:1em;height:1em;text-align:center;">明</div>
+				<div style="width:1em;height:1em;text-align:center;">治</div>
+				<div style="width:1em;height:1em;text-align:center;">大</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">付</div>
+				<div style="width:1em;height:1em;text-align:center;">属</div>
+				<div style="width:1em;height:1em;text-align:center;">中</div>
+				<div style="width:1em;height:1em;text-align:center;">野</div>
+				<div style="width:1em;height:1em;text-align:center;">高</div>
+				<div style="width:1em;height:1em;text-align:center;">等</div>
+				<div style="width:1em;height:1em;text-align:center;">学</div>
+				<div style="width:1em;height:1em;text-align:center;">校</div>
+				<div style="width:1em;height:1em;text-align:center;">C</div>
+			</div>
+		</th>
+			</tr>
+	<tr>
+		<td class="ranking">1</td>
+		<th style="text-align:left;">都立鷺宮高等学校B</th>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">1△1<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">3○2<br />
+　</td>
+		<td class="point" style="font-size:100%;">7○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">0●1<br />
+　</td>
+		<td class="point" style="font-size:100%;">1○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">4</td>
+		<th style="text-align:left;">都立武蔵丘高等学校B</th>
+		<td class="point" style="font-size:100%;">　<br />
+1△1</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">4△4<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">2●6<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking"></td>
+		<th style="text-align:left;">杉並学院高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">2</td>
+		<th style="text-align:left;">東京立正高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+2●3</td>
+		<td class="point" style="font-size:100%;">　<br />
+4△4</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">14○0<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">2○0<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">6</td>
+		<th style="text-align:left;">都立杉並総合高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+0●7</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●14</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">3</td>
+		<th style="text-align:left;">都立井草高等学校</th>
+		<td class="point" style="font-size:100%;">　<br />
+1○0</td>
+		<td class="point" style="font-size:100%;">　<br />
+6○2</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+	</tr>
+	<tr>
+		<td class="ranking">5</td>
+		<th style="text-align:left;">明治大学付属中野高等学校C</th>
+		<td class="point" style="font-size:100%;">　<br />
+0●1</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+0●2</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="point" style="font-size:100%;">　<br />
+　</td>
+		<td class="cross-point">&nbsp;</td>
+	</tr>
+</table>
+</div>
+<p>&raquo; <a href="detail-standings.php?tid=18597">日程・結果ページへ</a></p>
+
+</div>
+</article>
+
+<div class="leaflet">
+<div class="leaflet-wrap">
+<p class="leaflet-text">当大会の案内チラシは<a href="tournament_pdf.php?tid=18597">こちらから(PDF)</a>。印刷の上、会場での掲示にご利用ください。</p>
+<ul class="leaflet-social-link">
+	<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.goalnote.net%2Fdetail-schedule.php%3Ftid%3D18597" target="_blank"><img src="common/img/head_ic_fb.gif" alt="Facebook" width="32" height="32"></a></li>
+	<li><a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.goalnote.net%2Fdetail-schedule.php%3Ftid%3D18597&text=NS%E3%83%AA%E3%83%BC%E3%82%B0%EF%BC%92%EF%BC%90%EF%BC%92%EF%BC%96" rel="nofollow" target="_blank"><img src="common/img/head_ic_tw.gif" alt="Twitter" width="32" height="32"></a></li>
+	<li style="height: 32px;"><script type="text/javascript">LineIt.loadButton();</script>
+	<div class="line-it-button" style="display: none;" data-type="share-c" data-lang="ja"></div>
+	<script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer"></script></li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<footer>
+<p class="page_top"><a href="#">▲</a></p>
+<ul class="links">
+	<li><a href="terms-of-service.php">利用規約</a></li>
+	<li><a href="privacy-policy.php">個人情報の取り扱いについて</a></li>
+	<li><a href="company-profile.php">運営会社</a></li>
+	<li><a href="law.php">特定商取引法に基づく表記</a></li>
+	<li><a href="faq.php">よくあるご質問</a></li>
+	<li><a href="contact.php">お問い合わせ</a></li>
+</ul>
+
+<p class="copyright" style="text-align:right;">
+	<a href="https://www.dnp-cd.co.jp/" target="_blank"><img src="common/img/logo_footer.jpg" width="250"/></a><br>
+	<small>&copy; 2016 DNP Communication Design Co., Ltd.</small>
+</p>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# 取得した PDF と生成物（再生成できる）
+pdfs/
+out/
+scratch/
+
+# Antigravity handover document
+HANDOVER_AND_PROPOSALS.md
+

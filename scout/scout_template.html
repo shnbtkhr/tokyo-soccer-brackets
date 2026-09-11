@@ -1,0 +1,508 @@
+<meta charset="utf-8">
+<title>武蔵丘 選手権スカウティング</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+  --paper: #F7F8F5;
+  --surface: #FFFFFF;
+  --sunk: #EEF1EC;
+  --ink: #18201C;
+  --ink-2: #3C4742;
+  --muted: #5C6862;
+  --rule: #DCE1DC;
+  --line: #26302B;
+  --win: #D5302A;
+  --us: #0B8458;
+  --us-soft: #E1F1E8;
+  --them: #2F5FB3;
+  --them-soft: #E4ECF8;
+  --bar: #9BA7A0;
+  --focus: #2F5FB3;
+  --display: "Dela Gothic One", "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --body: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --mono: "IBM Plex Mono", "BIZ UDGothic", ui-monospace, "Consolas", monospace;
+  --s-1: 12px; --s0: 14px; --s1: 16px; --s2: 20px; --s3: 26px; --s4: 34px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121614; --surface: #1A201D; --sunk: #202724; --ink: #E7ECE8; --ink-2: #C4CCC7; --muted: #9BA6A0;
+    --rule: #2E3833; --line: #C9D1CC; --win: #FF6A5C; --us: #2FA677; --us-soft: #173327; --them: #5F8BE3; --them-soft: #1B2740; --bar: #5E6A64; --focus: #7DA2F0;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121614; --surface: #1A201D; --sunk: #202724; --ink: #E7ECE8; --ink-2: #C4CCC7; --muted: #9BA6A0;
+  --rule: #2E3833; --line: #C9D1CC; --win: #FF6A5C; --us: #2FA677; --us-soft: #173327; --them: #5F8BE3; --them-soft: #1B2740; --bar: #5E6A64; --focus: #7DA2F0;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: var(--s0); line-height: 1.65; }
+a { color: var(--them); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 28px 28px 64px; display: grid; gap: 24px; }
+header.top { display: grid; gap: 6px; }
+.eyebrow { font-size: var(--s-1); letter-spacing: .08em; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 400; font-size: var(--s4); line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: .02em; }
+h1 .us { color: var(--us); }
+h2 { font-family: var(--display); font-weight: 400; font-size: var(--s2); margin: 0; letter-spacing: .03em; }
+h3 { font-size: var(--s1); margin: 0; }
+.asof { color: var(--muted); font-size: var(--s-1); }
+.num, .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* 次の試合 */
+.next { display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 20px; }
+.next .when { display: grid; gap: 2px; }
+.next .when .d { font-family: var(--mono); font-size: var(--s3); font-weight: 600; line-height: 1.1; }
+.next .when .v { color: var(--muted); font-size: var(--s-1); }
+.next .card { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.next .card .vs { color: var(--muted); }
+.next .card .t { font-family: var(--display); font-size: var(--s2); }
+.next .card .t.us { color: var(--us); }
+.next .card .mno { font-family: var(--mono); color: var(--muted); font-size: var(--s-1); }
+.next .gauge { text-align: right; }
+.next .gauge .p { font-family: var(--mono); font-size: var(--s3); font-weight: 600; color: var(--us); line-height: 1.1; }
+.next .gauge .l { font-size: var(--s-1); color: var(--muted); }
+
+/* レイアウト */
+.grid { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 24px; align-items: start; }
+aside.side { position: sticky; top: 16px; display: grid; gap: 16px; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 18px 20px; display: grid; gap: 14px; }
+.panel.flat { background: transparent; border: 0; padding: 0; }
+.hint { font-size: var(--s-1); color: var(--muted); margin: 0; }
+
+/* トーナメント表 */
+svg.bracket { width: 100%; height: auto; display: block; }
+svg.bracket text { font-family: var(--body); fill: var(--ink); }
+svg.bracket .ln { stroke: var(--line); stroke-width: 1.6; fill: none; stroke-linecap: square; }
+svg.bracket .ln.win { stroke: var(--win); stroke-width: 3; }
+svg.bracket .mlab { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); }
+svg.bracket .mno { font-family: var(--mono); font-size: 10.5px; fill: var(--ink-2); font-weight: 600; }
+svg.bracket .score { font-family: var(--mono); font-size: 11px; fill: var(--win); font-weight: 600; }
+svg.bracket .slot { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+svg.bracket .nm { font-size: 13.5px; font-weight: 700; }
+svg.bracket .sub { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); }
+svg.bracket .row { cursor: pointer; }
+svg.bracket .row rect.hit { fill: transparent; }
+svg.bracket .row:hover rect.hit { fill: var(--sunk); }
+svg.bracket .row.sel rect.hit { fill: var(--them-soft); }
+svg.bracket .row.me rect.hit { fill: var(--us-soft); }
+svg.bracket .row.me .nm { fill: var(--us); }
+svg.bracket .row.out .nm { fill: var(--muted); font-weight: 400; }
+svg.bracket .row:focus { outline: none; }
+svg.bracket .row:focus-visible rect.hit { stroke: var(--focus); stroke-width: 2; }
+svg.bracket .dest { font-family: var(--display); font-size: 14px; fill: var(--ink); }
+.sched { display: grid; gap: 0; font-size: var(--s-1); }
+.sched .r { display: grid; grid-template-columns: 52px 74px 1fr; gap: 8px; padding: 7px 0; border-top: 1px solid var(--rule); align-items: baseline; }
+.sched .r:first-child { border-top: 0; }
+.sched .r .m { font-family: var(--mono); color: var(--muted); }
+.sched .r .dt { font-family: var(--mono); }
+.sched .r.mine .card { font-weight: 700; }
+.sched .r .done { color: var(--win); font-family: var(--mono); }
+
+/* 学校カルテ */
+.team-head { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: end; }
+.team-head .nm { font-family: var(--display); font-size: var(--s4); line-height: 1.1; }
+.team-head .meta { color: var(--muted); font-size: var(--s-1); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: var(--s-1); padding: 2px 10px; border-radius: 999px; border: 1px solid var(--rule); background: var(--sunk); color: var(--ink); white-space: nowrap; }
+.chip.next { background: var(--them); border-color: var(--them); color: var(--surface); }
+.chip.me { background: var(--us); border-color: var(--us); color: var(--surface); }
+.chip.out { color: var(--muted); }
+.lead { margin: 0; max-width: 68ch; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.stats > div { padding: 12px 16px; display: grid; gap: 2px; border-left: 1px solid var(--rule); }
+.stats > div:first-child { border-left: 0; }
+.stats .k { font-size: var(--s-1); color: var(--muted); }
+.stats .v { font-family: var(--mono); font-size: var(--s3); font-weight: 600; line-height: 1.15; }
+.stats .v small { font-size: var(--s-1); font-weight: 400; color: var(--muted); margin-left: 4px; }
+.stats .v.us { color: var(--us); }
+.two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.figure { display: grid; gap: 8px; }
+.figure .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.legend { display: flex; gap: 14px; font-size: var(--s-1); color: var(--ink-2); flex-wrap: wrap; }
+.legend .sw { display: inline-block; width: 16px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+svg#outlook { max-width: 820px; }
+svg.chart text { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
+svg.chart .grid line { stroke: var(--rule); stroke-width: 1; }
+svg.chart .axis-lab { fill: var(--muted); }
+svg.chart .val { fill: var(--ink); font-weight: 600; }
+svg.chart .nmlab { font-family: var(--body); font-size: 12px; fill: var(--ink-2); font-weight: 700; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font-size: var(--s0); }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.tablebox { overflow-x: auto; border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: var(--s-1); }
+th, td { text-align: left; padding: 7px 10px; border-top: 1px solid var(--rule); vertical-align: top; }
+thead th { border-top: 0; background: var(--sunk); color: var(--ink-2); font-weight: 700; white-space: nowrap; position: sticky; top: 0; }
+td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.path { color: var(--ink-2); min-width: 280px; }
+.res { font-family: var(--mono); font-weight: 600; white-space: nowrap; }
+.res.w::before { content: "○ "; }
+.res.l { color: var(--muted); }
+.res.l::before { content: "● "; }
+.res.pkw::before { content: "△ "; }
+.res.pkl { color: var(--muted); }
+.res.pkl::before { content: "▲ "; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.filters button { font: inherit; font-size: var(--s-1); padding: 4px 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.facts { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.facts li { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.facts li:first-child { border-top: 0; padding-top: 0; }
+.facts .lab { color: var(--muted); font-size: var(--s-1); }
+.facts .src { display: block; font-size: var(--s-1); color: var(--muted); overflow-wrap: anywhere; }
+.compare { display: grid; gap: 8px; }
+.compare .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); font-size: var(--s-1); }
+.compare .row.h { border-top: 0; color: var(--muted); padding-top: 0; }
+.compare .row .us { color: var(--us); }
+.compare .row .them { color: var(--them); }
+.empty { color: var(--muted); font-size: var(--s-1); margin: 0; }
+section.block { display: grid; gap: 14px; }
+.league { display: grid; gap: 10px; }
+.league-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.league-head .pos { font-family: var(--mono); font-weight: 600; }
+.league-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+tr.hl td { background: var(--them-soft); font-weight: 700; }
+tr.hl.us td { background: var(--us-soft); }
+.form { display: flex; gap: 4px; flex-wrap: wrap; }
+.form span { font-family: var(--mono); font-size: 11px; width: 22px; height: 22px; display: inline-grid; place-items: center; border-radius: 4px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.form span.w { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.form span.d { background: var(--sunk); }
+.form span.l { color: var(--muted); }
+.notes { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 96ch; }
+.src-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: var(--s-1); }
+@media (max-width: 1080px) { .league-grid { grid-template-columns: 1fr; } }
+.method { margin: 0; padding-left: 1.2em; max-width: 90ch; color: var(--ink-2); display: grid; gap: 6px; }
+.tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--paper); font-size: var(--s-1); padding: 6px 10px; border-radius: 4px; line-height: 1.5; z-index: 10; font-family: var(--body); white-space: nowrap; }
+.tip b { font-family: var(--mono); }
+@media (max-width: 1080px) {
+  .grid { grid-template-columns: 1fr; }
+  aside.side { position: static; }
+  .two { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats > div:nth-child(3) { border-left: 0; }
+  .stats > div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .next { grid-template-columns: 1fr; }
+  .next .gauge { text-align: left; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .panel#team { transition: opacity .15s; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow" id="blockLabel"></div>
+    <h1><span class="us">武蔵丘</span> 選手権スカウティング</h1>
+    <div class="asof" id="asOf"></div>
+  </header>
+
+  <div class="next" id="next" aria-label="次の試合"></div>
+
+  <div class="grid">
+    <aside class="side">
+      <div class="panel">
+        <div class="figure">
+          <div class="cap"><h2>ブロックの山</h2><span class="hint">学校名をクリックでカルテ</span></div>
+          <svg class="bracket" id="bracket" viewBox="0 0 372 392" role="group" aria-label="1次予選【10】ブロックのトーナメント表"></svg>
+          <p class="hint">赤線は勝ち上がり（公式のトーナメント表と同じ）。％はこの山を勝ち抜く見込み。</p>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>日程と会場</h2>
+        <div class="sched" id="sched"></div>
+      </div>
+    </aside>
+
+    <main class="panel" id="team" aria-live="polite"></main>
+  </div>
+
+  <section class="block panel">
+    <div class="cap" style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><h2>勝ち抜きの見通し</h2><span class="hint">6校のうち、この山を勝ち抜いて二次予選【10】へ進む見込み</span></div>
+    <svg class="chart" id="outlook" viewBox="0 0 760 236" role="img" aria-label="山を勝ち抜く見込みの棒グラフ"></svg>
+    <div class="tablebox" id="outlookTable"></div>
+  </section>
+
+  <section class="block panel">
+    <h2>数字の読み方</h2>
+    <ul class="method" id="method"></ul>
+  </section>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = /*__DATA__*/null;
+const T = D.teams, ME = D.me;
+const $ = (s) => document.querySelector(s);
+const SVGNS = "http://www.w3.org/2000/svg";
+function h(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") e.className = v; else if (k === "html") e.innerHTML = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return e;
+}
+function s(tag, attrs = {}, text) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs)) if (v != null) e.setAttribute(k, v);
+  if (text != null) e.textContent = text;
+  return e;
+}
+const pct = (p, d = 0) => p == null ? "―" : (p * 100).toFixed(d) + "%";
+const name = (k) => T[k] ? T[k].display : k;
+const tip = $("#tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.hidden = false; const x = Math.min(ev.clientX + 14, innerWidth - tip.offsetWidth - 8); tip.style.left = x + "px"; tip.style.top = (ev.clientY + 14) + "px"; }
+function hideTip() { tip.hidden = true; }
+
+let sel = null;
+try { sel = localStorage.getItem("scout-sel"); } catch (e) {}
+const nextMatch = D.schedule.find((m) => m.no && (m.a === ME || m.b === ME));
+const nextOpp = nextMatch ? (nextMatch.a === ME ? nextMatch.b : nextMatch.a) : null;
+if (!sel || !T[sel]) sel = nextOpp || ME;
+
+/* ヘッダー */
+$("#blockLabel").textContent = D.blockLabel;
+$("#asOf").textContent = "データ: " + D.asOf;
+
+/* 次の試合 */
+(function renderNext() {
+  const m = nextMatch; if (!m) return;
+  const opp = nextOpp;
+  $("#next").append(
+    h("div", { class: "when" }, h("div", { class: "d" }, `${m.date}(${m.dow}) ${m.time}`), h("div", { class: "v" }, `${m.venue}（会場記号「${m.venueCode}」）`)),
+    h("div", { class: "card" }, h("span", { class: "mno" }, `${m.round}【${m.no}】`), h("span", { class: "t us" }, name(ME)), h("span", { class: "vs" }, "対"), h("span", { class: "t" }, name(opp))),
+    h("div", { class: "gauge" }, h("div", { class: "p" }, pct(T[opp].vsMe)), h("div", { class: "l" }, "武蔵丘が勝つ見込み（強さの点数からの目安）"))
+  );
+})();
+
+/* トーナメント表 */
+function renderBracket() {
+  const svg = $("#bracket"); svg.replaceChildren();
+  const B = D.block, Y = (i) => 30 + i * 46, X0 = 134, X1 = 184, X2 = 250, X3 = 316, X4 = 344;
+  const decided = {}; for (const d of D.decided) { decided[d.a] = d; decided[d.b] = d; }
+  const sch = Object.fromEntries(D.schedule.filter((m) => m.no).map((m) => [m.no, m]));
+  const line = (x1, y1, x2, y2, win) => svg.append(s("line", { x1, y1, x2, y2, class: "ln" + (win ? " win" : "") }));
+  B.forEach((k, i) => {
+    const t = T[k], y = Y(i);
+    const g = s("g", { class: "row" + (k === ME ? " me" : "") + (k === sel ? " sel" : "") + (!t.alive ? " out" : ""), tabindex: "0", role: "button", "aria-label": `${t.display}のカルテを開く` });
+    g.append(s("rect", { class: "hit", x: 0, y: y - 21, width: X0 - 4, height: 42, rx: 4 }));
+    g.append(s("text", { class: "slot", x: 6, y: y - 3 }, String(D.slots[k])));
+    g.append(s("text", { class: "nm", x: 28, y: y - 3 }, t.display));
+    g.append(s("text", { class: "sub", x: 28, y: y + 13 }, t.alive ? `山 ${pct(t.blockWin)}` : "敗退"));
+    g.addEventListener("click", () => select(k));
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(k); } });
+    svg.append(g);
+    const won = decided[k] && decided[k].winner === k;
+    line(X0, y, X1, y, won);
+  });
+  const r1 = [[0, 1, 31], [2, 3, 32], [4, 5, null], [6, 7, null]];
+  const mids = [];
+  r1.forEach(([a, b, no]) => {
+    const ya = Y(a), yb = Y(b), ym = (ya + yb) / 2; mids.push(ym);
+    const d = decided[D.block[a]];
+    const wa = d && d.winner === D.block[a], wb = d && d.winner === D.block[b];
+    line(X1, ya, X1, ym, wa); line(X1, ym, X1, yb, wb); line(X1, ym, X2, ym, wa || wb);
+    if (no) {
+      const m = sch[no];
+      svg.append(s("text", { class: "mno", x: X1 + 6, y: ym - 6 }, `【${no}】`));
+      svg.append(s("text", { class: "mlab", x: X1 + 6, y: ym + 14 }, `${m.date} ${m.time}`));
+    } else if (d) {
+      svg.append(s("text", { class: "score", x: X1 + 6, y: ym - 6 }, d.score));
+      svg.append(s("text", { class: "mlab", x: X1 + 6, y: ym + 14 }, "終了"));
+    }
+  });
+  const r2 = [[0, 1, 149], [2, 3, 150]], mids2 = [];
+  r2.forEach(([a, b, no]) => {
+    const ya = mids[a], yb = mids[b], ym = (ya + yb) / 2; mids2.push(ym);
+    line(X2, ya, X2, yb, false); line(X2, ym, X3, ym, false);
+    const m = sch[no];
+    svg.append(s("text", { class: "mno", x: X2 + 6, y: ym - 6 }, `【${no}】`));
+    svg.append(s("text", { class: "mlab", x: X2 + 6, y: ym + 14 }, `${m.date} ${m.time}`));
+  });
+  const yf = (mids2[0] + mids2[1]) / 2;
+  line(X3, mids2[0], X3, mids2[1], false); line(X3, yf, X4, yf, false);
+  const mf = sch[208];
+  svg.append(s("text", { class: "mno", x: X3 + 6, y: yf - 22 }, "【208】"));
+  svg.append(s("text", { class: "mlab", x: X3 + 6, y: yf - 8 }, `${mf.date}`));
+  svg.append(s("text", { class: "mlab", x: X3 + 6, y: yf + 16 }, mf.time));
+  svg.append(s("text", { class: "dest", x: X4 - 20, y: 16 }, "→【10】"));
+  line(X4, yf, X4, 22, false);
+}
+
+/* 日程 */
+function renderSched() {
+  const box = $("#sched");
+  for (const m of D.schedule) {
+    const a = T[m.a] ? name(m.a) : m.a, b = T[m.b] ? name(m.b) : m.b;
+    const mine = m.a === ME || m.b === ME || (m.no === 149) || (m.no === 208);
+    box.append(h("div", { class: "r" + (m.a === ME || m.b === ME ? " mine" : "") },
+      h("span", { class: "m" }, m.no ? `【${m.no}】` : m.round),
+      m.no ? h("span", { class: "dt" }, `${m.date}(${m.dow}) ${m.time}`) : h("span", { class: "done" }, `${m.score} 終了`),
+      h("span", { class: "card" }, `${a} 対 ${b}`, m.venue ? h("span", { class: "hint" }, `　${m.venue}`) : null, m.timeNote ? h("div", { class: "hint" }, "※" + m.timeNote) : null)));
+  }
+}
+
+/* 強さの点数の推移（2本の折れ線） */
+function eloChart(k) {
+  const W = 520, H = 230, L = 46, R = 96, TOP = 16, BOT = 30;
+  const years = ["2022", "2023", "2024", "2025", "2026"];
+  const series = [{ k: ME, col: "var(--us)" }]; if (k !== ME) series.push({ k, col: "var(--them)" });
+  const vals = series.flatMap((sr) => years.map((y) => T[sr.k].eloHistory[y]).filter((v) => v != null));
+  let lo = Math.floor((Math.min(...vals, 1500) - 40) / 50) * 50, hi = Math.ceil((Math.max(...vals, 1500) + 40) / 50) * 50;
+  const x = (i) => L + i * (W - L - R) / (years.length - 1), y = (v) => TOP + (hi - v) * (H - TOP - BOT) / (hi - lo);
+  const svg = s("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "強さの点数の推移" });
+  const g = s("g", { class: "grid" });
+  for (let v = lo; v <= hi; v += 50) { g.append(s("line", { x1: L, x2: W - R, y1: y(v), y2: y(v) })); svg.append(s("text", { x: L - 8, y: y(v) + 4, "text-anchor": "end", class: "axis-lab" }, v)); }
+  svg.append(g);
+  svg.append(s("line", { x1: L, x2: W - R, y1: y(1500), y2: y(1500), stroke: "var(--muted)", "stroke-dasharray": "3 4", "stroke-width": 1 }));
+  svg.append(s("text", { x: W - R + 6, y: y(1500) + 4 }, "平均1500"));
+  years.forEach((yr, i) => svg.append(s("text", { x: x(i), y: H - 8, "text-anchor": "middle", class: "axis-lab" }, yr + "年度")));
+  const ends = [];
+  for (const sr of series) {
+    const pts = years.map((yr, i) => [x(i), T[sr.k].eloHistory[yr]]).filter((p) => p[1] != null).map(([px, v]) => [px, y(v), v]);
+    svg.append(s("polyline", { points: pts.map((p) => p[0] + "," + p[1]).join(" "), fill: "none", stroke: sr.col, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach((p, i) => svg.append(s("circle", { cx: p[0], cy: p[1], r: i === pts.length - 1 ? 4.5 : 3, fill: sr.col, stroke: "var(--surface)", "stroke-width": 2 })));
+    const last = pts[pts.length - 1]; ends.push({ y: last[1], v: last[2], k: sr.k, col: sr.col });
+  }
+  ends.sort((a, b) => a.y - b.y); if (ends.length === 2 && ends[1].y - ends[0].y < 30) { const m = (ends[0].y + ends[1].y) / 2; ends[0].y = m - 15; ends[1].y = m + 15; }
+  for (const e of ends) { svg.append(s("text", { x: W - R + 10, y: e.y - 2, class: "nmlab" }, name(e.k))); svg.append(s("text", { x: W - R + 10, y: e.y + 12, class: "val" }, e.v)); }
+  const cross = s("line", { y1: TOP, y2: H - BOT, stroke: "var(--muted)", "stroke-width": 1, visibility: "hidden" }); svg.append(cross);
+  const hit = s("rect", { x: L, y: TOP, width: W - L - R, height: H - TOP - BOT, fill: "transparent" });
+  hit.addEventListener("mousemove", (ev) => {
+    const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+    const i = Math.max(0, Math.min(years.length - 1, Math.round((px - L) / ((W - L - R) / (years.length - 1)))));
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+    showTip(ev, `${years[i]}年度末<br>` + series.map((sr) => `${name(sr.k)} <b>${T[sr.k].eloHistory[years[i]] ?? "―"}</b>`).join("<br>"));
+  });
+  hit.addEventListener("mouseleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  svg.append(hit);
+  return svg;
+}
+
+const RES = { "勝": "w", "負": "l", "PK勝": "pkw", "PK負": "pkl" };
+function resCell(g) { return h("span", { class: "res " + RES[g.res] }, g.res + (g.pk ? ` ${g.pk}` : "")); }
+function scoreText(g) { return `${g.gf}-${g.ga}` + (g.et ? "（延長）" : ""); }
+
+/* 学校カルテ */
+function renderTeam() {
+  const k = sel, t = T[k], box = $("#team"); box.replaceChildren();
+  const isMe = k === ME;
+  let status;
+  if (isMe) status = h("span", { class: "chip me" }, "注目チーム");
+  else if (!t.alive) status = h("span", { class: "chip out" }, "1回戦で敗退");
+  else if (k === nextOpp) status = h("span", { class: "chip next" }, "次の相手（1回戦）");
+  else if (["学習院", "板橋有徳"].includes(k)) status = h("span", { class: "chip" }, "2回戦で当たる可能性");
+  else status = h("span", { class: "chip" }, "ブロック決勝で当たる可能性");
+  const league = (t.info.facts || []).find((f) => f.label === "リーグ");
+  box.append(h("div", { class: "team-head" },
+    h("div", {}, h("div", { class: "meta" }, h("span", { class: "mono" }, `${D.slots[k]}番`), status, t.names.length > 1 ? h("span", {}, "表記: " + t.names.join("・")) : null),
+      h("div", { class: "nm", style: isMe ? "color:var(--us)" : null }, t.display)),
+    h("div", { class: "meta" }, league ? league.value.replace(/（.*?）/, "") : "")));
+  if (t.info.summary) box.append(h("p", { class: "lead" }, t.info.summary));
+
+  const S = t.summary;
+  box.append(h("div", { class: "stats" },
+    h("div", {}, h("span", { class: "k" }, "強さの点数"), h("span", { class: "v" }, t.elo, h("small", {}, `${t.eloRank ?? "―"}位 / ${D.nTeamsRated}校`))),
+    isMe ? h("div", {}, h("span", { class: "k" }, "この山を勝ち抜く見込み"), h("span", { class: "v us" }, pct(t.blockWin)))
+      : h("div", {}, h("span", { class: "k" }, "武蔵丘が勝つ見込み"), h("span", { class: "v us" }, pct(t.vsMe))),
+    isMe ? h("div", {}, h("span", { class: "k" }, "5年間の試合数"), h("span", { class: "v" }, S.n, h("small", {}, "試合")))
+      : h("div", {}, h("span", { class: "k" }, "武蔵丘と当たる確率"), h("span", { class: "v" }, t.alive ? pct(t.meetProb) : "―")),
+    h("div", {}, h("span", { class: "k" }, isMe ? "1試合平均 得点 / 失点" : "この山を勝ち抜く見込み"), h("span", { class: "v" }, isMe ? `${S.gfPer} / ${S.gaPer}` : (t.alive ? pct(t.blockWin) : "―")))));
+
+  const two = h("div", { class: "two" });
+  const fig = h("div", { class: "figure" },
+    h("div", { class: "cap" }, h("h3", {}, "強さの点数の推移"), h("div", { class: "legend" },
+      h("span", {}, h("span", { class: "sw", style: "background:var(--us)" }), name(ME)),
+      !isMe ? h("span", {}, h("span", { class: "sw", style: "background:var(--them)" }), t.display) : null)),
+    eloChart(k),
+    h("p", { class: "hint" }, "各年度の終わりの点数。点線は全体の平均。"));
+  const R = t.recent;
+  const num = h("div", { class: "figure" }, h("h3", {}, "2022〜2026年度の数字"),
+    h("dl", { class: "kv" },
+      h("dt", {}, "試合"), h("dd", {}, `${S.n}試合`),
+      h("dt", {}, "勝敗"), h("dd", {}, `${S.w}勝 ${S.pkw}PK勝 ${S.pkl}PK負 ${S.l}敗`),
+      h("dt", {}, "1試合平均"), h("dd", {}, `得点 ${S.gfPer} / 失点 ${S.gaPer}`),
+      h("dt", {}, "無失点 / 無得点"), h("dd", {}, `${S.cleanSheets}試合 / ${S.scoreless}試合`),
+      h("dt", {}, "1点差の試合"), h("dd", {}, `${S.oneGoal}試合`),
+      h("dt", {}, "延長"), h("dd", {}, `${S.et}試合`),
+      h("dt", {}, "直近（2025年度〜）"), h("dd", {}, R.n ? `${R.n}試合 ${R.w}勝 ${R.pkw}PK勝 ${R.pkl}PK負 ${R.l}敗・得点 ${R.gfPer} / 失点 ${R.gaPer}` : "―")));
+  two.append(fig, num); box.append(two);
+
+  if (!isMe) {
+    const cmp = h("div", { class: "figure" }, h("h3", {}, "武蔵丘との比較"));
+    if (t.headToHead.length) cmp.append(h("p", { class: "lead" }, "直接対戦: ", ...t.headToHead.map((g) => `${g.year}年度 ${g.series} ${g.round} 武蔵丘 ${scoreText(g)}（${g.res}）`)));
+    else cmp.append(h("p", { class: "empty" }, "2022年度以降の直接対戦はない。"));
+    if (t.common.length) {
+      const c = h("div", { class: "compare" }, h("div", { class: "row h" }, h("span", {}, "共通の対戦相手"), h("span", {}, "武蔵丘の結果"), h("span", {}, `${t.display}の結果`)));
+      for (const cm of t.common) c.append(h("div", { class: "row" }, h("span", {}, cm.common),
+        h("span", { class: "us" }, cm.me.map((g) => `${g.year} ${scoreText(g)} ${g.res}`).join(" / ")),
+        h("span", { class: "them" }, cm.them.map((g) => `${g.year} ${scoreText(g)} ${g.res}`).join(" / "))));
+      cmp.append(c);
+    } else cmp.append(h("p", { class: "empty" }, "共通の対戦相手もない（支部・地区が違うため）。比較は強さの点数を目安にする。"));
+    box.append(cmp);
+  }
+
+  if ((t.info.facts || []).length) {
+    const ul = h("ul", { class: "facts" });
+    for (const f of t.info.facts) ul.append(h("li", {}, h("span", { class: "lab" }, f.label), h("span", {}, f.value, h("span", { class: "src" }, f.src.startsWith("http") ? h("a", { href: f.src, target: "_blank", rel: "noopener" }, f.src) : f.src))));
+    box.append(h("div", { class: "figure" }, h("h3", {}, "公開情報"), ul));
+  }
+
+  box.append(h("div", { class: "figure" }, h("h3", {}, "大会ごとの成績"),
+    h("div", { class: "tablebox" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "年度"), h("th", {}, "大会・段階"), h("th", {}, "最終到達"), h("th", {}, "勝敗"), h("th", {}, "勝ち上がり（○勝 ●負 △PK勝 ▲PK負）"))),
+      h("tbody", {}, t.stages.map((st) => h("tr", {}, h("td", { class: "n" }, st.year), h("td", {}, `${st.series} ${st.stage}`), h("td", {}, st.reach), h("td", { class: "n" }, st.record), h("td", { class: "path" }, st.path))))))));
+
+  const games = h("div", { class: "figure" });
+  const filt = h("div", { class: "filters", role: "group", "aria-label": "大会で絞り込む" });
+  const tbodyWrap = h("div", { class: "tablebox" });
+  const series = ["すべて", "選手権", "総体", "新人戦", "関東"];
+  let cur = "すべて";
+  const draw = () => {
+    const rows = t.games.filter((g) => cur === "すべて" || g.series === cur).slice().reverse();
+    tbodyWrap.replaceChildren(h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "年度"), h("th", {}, "大会・段階"), h("th", {}, "ラウンド"), h("th", {}, "相手"), h("th", {}, "スコア"), h("th", {}, "結果"), h("th", {}, "出典"))),
+      h("tbody", {}, rows.map((g) => h("tr", {}, h("td", { class: "n" }, g.year), h("td", {}, `${g.series} ${g.stage}`), h("td", {}, g.round), h("td", {}, g.opp), h("td", { class: "n" }, scoreText(g)), h("td", {}, resCell(g)), h("td", {}, h("a", { href: g.src, target: "_blank", rel: "noopener" }, "PDF")))))));
+    filt.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.s === cur ? "true" : "false"));
+  };
+  for (const sr of series) filt.append(h("button", { type: "button", "data-s": sr, onclick: () => { cur = sr; draw(); } }, sr));
+  games.append(h("div", { class: "cap" }, h("h3", {}, "全試合"), filt), tbodyWrap);
+  draw();
+  box.append(games);
+}
+
+function select(k) {
+  sel = k;
+  try { localStorage.setItem("scout-sel", k); } catch (e) {}
+  renderBracket(); renderTeam();
+  if (innerWidth <= 1080) $("#team").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* 見通し（棒グラフ） */
+function renderOutlook() {
+  const svg = $("#outlook");
+  const alive = D.block.filter((k) => T[k].alive).sort((a, b) => T[b].blockWin - T[a].blockWin);
+  const W = 760, L = 150, R = 60, TOP = 10, rowH = 34, AX = TOP + alive.length * rowH + 4;
+  const max = Math.ceil(Math.max(...alive.map((k) => T[k].blockWin)) * 10 + 0.5) / 10;
+  const x = (v) => L + v / max * (W - L - R);
+  for (let v = 0; v <= max + 1e-9; v += 0.1) { svg.append(s("line", { x1: x(v), x2: x(v), y1: TOP, y2: AX, stroke: "var(--rule)" })); svg.append(s("text", { x: x(v), y: AX + 16, "text-anchor": "middle" }, Math.round(v * 100) + "%")); }
+  alive.forEach((k, i) => {
+    const yv = TOP + i * rowH + 6, v = T[k].blockWin, isMe = k === ME;
+    svg.append(s("text", { x: L - 10, y: yv + 15, "text-anchor": "end", class: "nmlab", style: isMe ? "fill:var(--us)" : null }, name(k)));
+    const w = Math.max(2, x(v) - L);
+    const bar = s("path", { d: `M${L},${yv} h${w - 4} a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h${-(w - 4)} z`, fill: isMe ? "var(--us)" : "var(--bar)" });
+    svg.append(bar);
+    svg.append(s("text", { x: x(v) + 8, y: yv + 15, class: "val" }, pct(v, 1)));
+    const hit = s("rect", { x: 0, y: yv - 6, width: W, height: rowH, fill: "transparent" });
+    hit.addEventListener("mousemove", (ev) => showTip(ev, `${name(k)}<br>山を勝ち抜く見込み <b>${pct(v, 1)}</b><br>強さの点数 <b>${T[k].elo}</b>`));
+    hit.addEventListener("mouseleave", hideTip);
+    svg.append(hit);
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${AX + 24}`);
+  $("#outlookTable").append(h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "学校"), h("th", {}, "強さの点数"), h("th", {}, "山を勝ち抜く見込み"), h("th", {}, "武蔵丘が勝つ見込み"), h("th", {}, "武蔵丘と当たる確率"))),
+    h("tbody", {}, D.block.map((k) => h("tr", {}, h("td", {}, name(k)), h("td", { class: "n" }, T[k].elo), h("td", { class: "n" }, T[k].alive ? pct(T[k].blockWin, 1) : "敗退"), h("td", { class: "n" }, k === ME ? "―" : pct(T[k].vsMe, 1)), h("td", { class: "n" }, k === ME || !T[k].alive ? "―" : pct(T[k].meetProb, 1)))))));
+}
+
+$("#method").append(...D.method.map((m) => h("li", {}, m)));
+renderBracket(); renderSched(); renderTeam(); renderOutlook();
+</script>
