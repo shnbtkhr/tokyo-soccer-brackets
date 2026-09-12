@@ -152,7 +152,7 @@ def main() -> int:
         "", "- つながり1本の「目安」= 各試合の得点差（左の学校から見た値。PK戦は0、1試合±5で頭打ち）の合計。プラスなら武蔵丘が上とみる",
         f"- 重み = 新しさ（1年さかのぼるごとに×{DECAY}）× 段数（直接1.0・2段0.5・3段0.25）。「重みつき平均」はこの重みで目安を平均したもの",
         "- サッカーでは「AがBに勝ち、BがCに勝った」から「AはCより強い」とは言えない。弱い手がかりとして扱うこと",
-        "- 作成: connections.py（Claude Code, 2026-09-11）。強さの点数（docs/strength_rating.md）とは別の見方", "",
+        "- 作成: connections.py（Claude Code, 2026-09-11）。強さの点数（notes/strength_rating.md）とは別の見方", "",
     ]
     with (out_dir / f"{stem}.csv").open("w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)

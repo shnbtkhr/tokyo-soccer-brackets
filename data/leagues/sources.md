@@ -1,6 +1,6 @@
 # 東京都 高校サッカー 地区リーグの結果ページ一覧（2024〜2026年度）
 
-ChatGPT の調査結果（docs/district_sources_chatgpt_20260911.md）を、Claude Code のサブエージェントが1件ずつ開いて確かめたもの（2026-09-11）。
+ChatGPT の調査結果（notes/district_sources_chatgpt_20260911.md）を、Claude Code のサブエージェントが1件ずつ開いて確かめたもの（2026-09-11）。
 全件は data/leagues/sources.csv。「Claude確認」の列が確かめた結果。
 
 確かめた結果: 確認済み（ChatGPTの記載どおり） 47、新たに発見 45、未発見 12、ChatGPTの記載と違う 10、確認済み（Geminiの記載どおり） 2、Geminiの記載と違う 1

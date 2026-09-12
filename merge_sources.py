@@ -2,7 +2,7 @@
 
 data/leagues/sources_parts/d1〜d8.csv（地区ごとに URL を開いて確かめた結果）を、
 data/leagues/sources.csv（全件）と data/leagues/sources.md（AI・Notebook 用の要約）にまとめる。
-元の候補は ChatGPT の調査（docs/district_sources_chatgpt_20260911.md）。Gemini の結果が届いたら同じ形で足す。
+元の候補は ChatGPT の調査（notes/district_sources_chatgpt_20260911.md）。Gemini の結果が届いたら同じ形で足す。
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ def main() -> int:
         w.writerows(rows)
     c = Counter(r["Claude確認"] for r in rows)
     md = ["# 東京都 高校サッカー 地区リーグの結果ページ一覧（2024〜2026年度）", "",
-          "ChatGPT の調査結果（docs/district_sources_chatgpt_20260911.md）を、Claude Code のサブエージェントが1件ずつ開いて確かめたもの（2026-09-11）。",
+          "ChatGPT の調査結果（notes/district_sources_chatgpt_20260911.md）を、Claude Code のサブエージェントが1件ずつ開いて確かめたもの（2026-09-11）。",
           "全件は data/leagues/sources.csv。「Claude確認」の列が確かめた結果。", "",
           "確かめた結果: " + "、".join(f"{k or '（空）'} {v}" for k, v in c.most_common()), ""]
     for d in sorted({r["地区"] for r in rows}):
