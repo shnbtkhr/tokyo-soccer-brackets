@@ -719,22 +719,6 @@ function leagueSection(t, isMe) {
 }
 const LRES = { "勝": "w", "分": "d", "負": "l" };
 
-function districtLeagueSection(me) {
-  const districtData = D.districtLeague && D.districtLeague[me];
-  const sec = h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "地区リーグ"), h("p", {}, "2026年度。東京都地区別リーグ")));
-  if (!districtData || !districtData.length) {
-    return sec;
-  }
-  for (const row of districtData) {
-    const head = h("div", { class: "sec-head" },
-      h("div", { class: "chips" }, h("strong", {}, `${row.district} ${row.division}`),
-        h("span", { class: "chip us" }, `${row.rank}`),
-        h("span", { class: "chip num" }, `${row.matches}試合 ${row.wins}勝${row.draws}分${row.losses}敗 勝点${row.points}`)));
-    sec.append(h("div", { class: "stack" }, head));
-  }
-  return sec;
-}
-
 function stagesSection(t) {
   return h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "大会ごとの成績"), h("p", {}, "2022〜2026年度。○ 勝ち　× 負け。PK戦は「PK勝 4-3」のように書いています")),
     h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", { class: "n" }, "年度"), h("th", {}, "大会・段階"), h("th", {}, "最終到達"), h("th", {}, "勝ち上がり"))),
@@ -968,7 +952,7 @@ function renderTeam() {
   } else {
     scout.append(h("p", { class: "small muted" }, D.styleNone));
   }
-  main.append(scout, connectionsSection(t), leagueSection(t, false), districtLeagueSection(t.display === D.brief[D.me].display ? D.me : normalize(t.display)));
+  main.append(scout, connectionsSection(t), leagueSection(t, false));
   main.append(h("section", { class: "sec" }, h("div", { class: "figure" },
     h("div", { class: "cap" }, h("h2", {}, "強さの点数の推移"), h("div", { class: "legend" }, h("span", {}, h("i", { style: "border-color:var(--us)" }), nameOf(D.me)), h("span", {}, h("i", { class: "dash", style: "border-color:var(--them)" }), t.display))),
     eloChart([{ name: nameOf(D.me), hist: D.meHistory, color: "var(--us)" }, { name: t.display, hist: t.eloHistory, color: "var(--them)", dash: true }]),
