@@ -1,17 +1,89 @@
 {
  "昭和第一": {
   "summary": {
-   "n": 51,
-   "direct": 0,
+   "n": 54,
+   "direct": 1,
    "two": 0,
-   "three": 51,
-   "up": 33,
-   "down": 12,
+   "three": 53,
+   "up": 35,
+   "down": 13,
    "even": 6,
-   "weighted": 2.0,
-   "weight": 0.98
+   "weighted": 2.2,
+   "weight": 2.144
   },
   "top": [
+   {
+    "path": [
+     "武蔵丘",
+     "昭和第一"
+    ],
+    "legs": [
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 5,
+      "ga": 2,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     }
+    ],
+    "implied": 3,
+    "w": 1.0,
+    "hops": 1
+   },
+   {
+    "path": [
+     "武蔵丘",
+     "桜町",
+     "駒込",
+     "昭和第一"
+    ],
+    "legs": [
+     {
+      "year": 2025,
+      "series": "総体",
+      "stage": "支部予選 南支部（第5・6地区）",
+      "round": "ブロック決勝",
+      "gf": 0,
+      "ga": 1,
+      "pk": "",
+      "res": "負",
+      "d": -1,
+      "src": "https://tokyosoccer-u18.com/SOTAI25/25sotai_56minami.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "2回戦",
+      "gf": 0,
+      "ga": 4,
+      "pk": "",
+      "res": "負",
+      "d": -4,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2025,
+      "series": "選手権",
+      "stage": "第104回 一次予選",
+      "round": "1回戦",
+      "gf": 2,
+      "ga": 0,
+      "pk": "",
+      "res": "勝",
+      "d": 2,
+      "src": "https://tokyosoccer-u18.com/SEN25/sen25_1j.pdf"
+     }
+    ],
+    "implied": -3,
+    "w": 0.1225,
+    "hops": 3
+   },
    {
     "path": [
      "武蔵丘",
@@ -162,6 +234,55 @@
    {
     "path": [
      "武蔵丘",
+     "保善",
+     "武蔵",
+     "昭和第一"
+    ],
+    "legs": [
+     {
+      "year": 2023,
+      "series": "選手権",
+      "stage": "第102回 一次予選",
+      "round": "2回戦",
+      "gf": 0,
+      "ga": 5,
+      "pk": "",
+      "res": "負",
+      "d": -5,
+      "src": "https://tokyosoccer-u18.com/SEN23/sen23_1j.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 11,
+      "ga": 0,
+      "pk": "",
+      "res": "勝",
+      "d": 5,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2024,
+      "series": "総体",
+      "stage": "一次トーナメント",
+      "round": "1回戦",
+      "gf": 4,
+      "ga": 1,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SOTAI24/sotai24_1jt.pdf"
+     }
+    ],
+    "implied": 3,
+    "w": 0.042,
+    "hops": 3
+   },
+   {
+    "path": [
+     "武蔵丘",
      "日大鶴ヶ丘",
      "鷺宮",
      "昭和第一"
@@ -256,169 +377,71 @@
     "implied": -2,
     "w": 0.042,
     "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "杉並",
-     "淑徳巣鴨",
-     "昭和第一"
-    ],
-    "legs": [
-     {
-      "year": 2023,
-      "series": "新人戦",
-      "stage": "地区大会 第5地区",
-      "round": "2回戦",
-      "gf": 8,
-      "ga": 1,
-      "pk": "",
-      "res": "勝",
-      "d": 5,
-      "src": "https://tokyosoccer-u18.com/SINJ23/sinj23_5.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "選手権",
-      "stage": "第104回 一次予選",
-      "round": "2回戦",
-      "gf": 1,
-      "ga": 3,
-      "pk": "",
-      "res": "負",
-      "d": -2,
-      "src": "https://tokyosoccer-u18.com/SEN25/sen25_1j.pdf"
-     },
-     {
-      "year": 2024,
-      "series": "新人戦",
-      "stage": "地区大会 第2地区",
-      "round": "2回戦",
-      "gf": 4,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 4,
-      "src": "https://tokyosoccer-u18.com/SINJ24/sinj24_2.pdf"
-     }
-    ],
-    "implied": 7,
-    "w": 0.0294,
-    "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "学大国際",
-     "都・小平",
-     "昭和第一"
-    ],
-    "legs": [
-     {
-      "year": 2024,
-      "series": "新人戦",
-      "stage": "地区大会 第5地区",
-      "round": "2回戦",
-      "gf": 3,
-      "ga": 1,
-      "pk": "",
-      "res": "勝",
-      "d": 2,
-      "src": "https://tokyosoccer-u18.com/SINJ24/sinj24_5.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "選手権",
-      "stage": "第104回 一次予選",
-      "round": "1回戦",
-      "gf": 0,
-      "ga": 6,
-      "pk": "",
-      "res": "負",
-      "d": -5,
-      "src": "https://tokyosoccer-u18.com/SEN25/sen25_1j.pdf"
-     },
-     {
-      "year": 2023,
-      "series": "選手権",
-      "stage": "第102回 一次予選",
-      "round": "1回戦",
-      "gf": 0,
-      "ga": 3,
-      "pk": "",
-      "res": "負",
-      "d": -3,
-      "src": "https://tokyosoccer-u18.com/SEN23/sen23_1j.pdf"
-     }
-    ],
-    "implied": -6,
-    "w": 0.0294,
-    "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "星槎国際八王子",
-     "明大明治",
-     "昭和第一"
-    ],
-    "legs": [
-     {
-      "year": 2025,
-      "series": "選手権",
-      "stage": "第104回 一次予選",
-      "round": "2回戦",
-      "gf": 1,
-      "ga": 1,
-      "pk": "2-4",
-      "res": "PK負",
-      "d": 0,
-      "src": "https://tokyosoccer-u18.com/SEN25/sen25_1j.pdf"
-     },
-     {
-      "year": 2024,
-      "series": "新人戦",
-      "stage": "地区大会 第7地区",
-      "round": "準々決勝",
-      "gf": 1,
-      "ga": 4,
-      "pk": "",
-      "res": "負",
-      "d": -3,
-      "src": "https://tokyosoccer-u18.com/SINJ24/sinj24_7.pdf"
-     },
-     {
-      "year": 2023,
-      "series": "選手権",
-      "stage": "第102回 一次予選",
-      "round": "2回戦",
-      "gf": 6,
-      "ga": 1,
-      "pk": "",
-      "res": "勝",
-      "d": 5,
-      "src": "https://tokyosoccer-u18.com/SEN23/sen23_1j.pdf"
-     }
-    ],
-    "implied": 2,
-    "w": 0.0294,
-    "hops": 3
    }
   ]
  },
  "学習院": {
   "summary": {
-   "n": 83,
+   "n": 97,
    "direct": 0,
    "two": 1,
-   "three": 82,
-   "up": 35,
-   "down": 41,
-   "even": 7,
-   "weighted": -1.09,
-   "weight": 2.341
+   "three": 96,
+   "up": 39,
+   "down": 49,
+   "even": 9,
+   "weighted": -1.29,
+   "weight": 3.267
   },
   "top": [
+   {
+    "path": [
+     "武蔵丘",
+     "桜町",
+     "駒込",
+     "学習院"
+    ],
+    "legs": [
+     {
+      "year": 2025,
+      "series": "総体",
+      "stage": "支部予選 南支部（第5・6地区）",
+      "round": "ブロック決勝",
+      "gf": 0,
+      "ga": 1,
+      "pk": "",
+      "res": "負",
+      "d": -1,
+      "src": "https://tokyosoccer-u18.com/SOTAI25/25sotai_56minami.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "2回戦",
+      "gf": 0,
+      "ga": 4,
+      "pk": "",
+      "res": "負",
+      "d": -4,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "総体",
+      "stage": "支部予選 東支部（第1・2地区）",
+      "round": "ブロック決勝",
+      "gf": 1,
+      "ga": 2,
+      "pk": "",
+      "res": "負",
+      "d": -1,
+      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_12higashi.pdf"
+     }
+    ],
+    "implied": -6,
+    "w": 0.175,
+    "hops": 3
+   },
    {
     "path": [
      "武蔵丘",
@@ -465,6 +488,55 @@
      }
     ],
     "implied": -2,
+    "w": 0.175,
+    "hops": 3
+   },
+   {
+    "path": [
+     "武蔵丘",
+     "昭和第一",
+     "駒込",
+     "学習院"
+    ],
+    "legs": [
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 5,
+      "ga": 2,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2025,
+      "series": "選手権",
+      "stage": "第104回 一次予選",
+      "round": "1回戦",
+      "gf": 0,
+      "ga": 2,
+      "pk": "",
+      "res": "負",
+      "d": -2,
+      "src": "https://tokyosoccer-u18.com/SEN25/sen25_1j.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "総体",
+      "stage": "支部予選 東支部（第1・2地区）",
+      "round": "ブロック決勝",
+      "gf": 1,
+      "ga": 2,
+      "pk": "",
+      "res": "負",
+      "d": -1,
+      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_12higashi.pdf"
+     }
+    ],
+    "implied": 0,
     "w": 0.175,
     "hops": 3
    },
@@ -569,6 +641,55 @@
    {
     "path": [
      "武蔵丘",
+     "昭和第一",
+     "文京",
+     "学習院"
+    ],
+    "legs": [
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 5,
+      "ga": 2,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2025,
+      "series": "新人戦",
+      "stage": "地区大会 第2地区",
+      "round": "1回戦",
+      "gf": 1,
+      "ga": 3,
+      "pk": "",
+      "res": "負",
+      "d": -2,
+      "src": "https://tokyosoccer-u18.com/SINJ25/sinj25_2.pdf"
+     },
+     {
+      "year": 2025,
+      "series": "新人戦",
+      "stage": "地区大会 第2地区",
+      "round": "準決勝",
+      "gf": 0,
+      "ga": 3,
+      "pk": "",
+      "res": "負",
+      "d": -3,
+      "src": "https://tokyosoccer-u18.com/SINJ25/sinj25_2.pdf"
+     }
+    ],
+    "implied": -2,
+    "w": 0.1225,
+    "hops": 3
+   },
+   {
+    "path": [
+     "武蔵丘",
      "学大附",
      "学習院"
     ],
@@ -650,169 +771,120 @@
     "implied": -5,
     "w": 0.06,
     "hops": 3
+   }
+  ]
+ },
+ "板橋有徳": {
+  "summary": {
+   "n": 18,
+   "direct": 0,
+   "two": 0,
+   "three": 18,
+   "up": 16,
+   "down": 0,
+   "even": 2,
+   "weighted": 2.53,
+   "weight": 0.639
+  },
+  "top": [
+   {
+    "path": [
+     "武蔵丘",
+     "目黒",
+     "青稜",
+     "板橋有徳"
+    ],
+    "legs": [
+     {
+      "year": 2025,
+      "series": "総体",
+      "stage": "支部予選 南支部（第5・6地区）",
+      "round": "2回戦",
+      "gf": 2,
+      "ga": 0,
+      "pk": "",
+      "res": "勝",
+      "d": 2,
+      "src": "https://tokyosoccer-u18.com/SOTAI25/25sotai_56minami.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 0,
+      "ga": 6,
+      "pk": "",
+      "res": "負",
+      "d": -5,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "総体",
+      "stage": "支部予選 中支部（第3・4地区）",
+      "round": "ブロック決勝",
+      "gf": 3,
+      "ga": 0,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_34naka.pdf"
+     }
+    ],
+    "implied": 0,
+    "w": 0.175,
+    "hops": 3
    },
    {
     "path": [
      "武蔵丘",
-     "城北",
-     "国士舘",
-     "学習院"
+     "学大附",
+     "学習院",
+     "板橋有徳"
     ],
     "legs": [
      {
-      "year": 2024,
+      "year": 2022,
       "series": "選手権",
-      "stage": "第103回 一次予選",
-      "round": "ブロック決勝",
-      "gf": 0,
+      "stage": "第101回 一次予選",
+      "round": "1回戦",
+      "gf": 1,
       "ga": 1,
-      "pk": "",
-      "res": "負",
-      "d": -1,
-      "src": "https://tokyosoccer-u18.com/SEN24/sen24_1j.pdf"
-     },
-     {
-      "year": 2024,
-      "series": "総体",
-      "stage": "一次トーナメント",
-      "round": "ブロック決勝",
-      "gf": 0,
-      "ga": 5,
-      "pk": "",
-      "res": "負",
-      "d": -5,
-      "src": "https://tokyosoccer-u18.com/SOTAI24/sotai24_1jt.pdf"
+      "pk": "4-3",
+      "res": "PK勝",
+      "d": 0,
+      "src": "https://tokyosoccer-u18.com/SEN22/sen22_1j.pdf"
      },
      {
       "year": 2026,
-      "series": "関東",
-      "stage": "東京都予選",
+      "series": "総体",
+      "stage": "一次トーナメント",
       "round": "1回戦",
       "gf": 1,
       "ga": 0,
       "pk": "",
       "res": "勝",
       "d": 1,
-      "src": "https://tokyosoccer-u18.com/SINJ25/2026kanto_to.pdf"
-     }
-    ],
-    "implied": -5,
-    "w": 0.06,
-    "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "駒場",
-     "修徳",
-     "学習院"
-    ],
-    "legs": [
-     {
-      "year": 2024,
-      "series": "総体",
-      "stage": "支部予選 南支部（第5・6地区）",
-      "round": "2回戦",
-      "gf": 0,
-      "ga": 2,
-      "pk": "",
-      "res": "負",
-      "d": -2,
-      "src": "https://tokyosoccer-u18.com/SOTAI24/24sotai_56minami.pdf"
+      "src": "https://tokyosoccer-u18.com/SOTAI26/sotai26_1jt.pdf"
      },
      {
-      "year": 2025,
-      "series": "関東",
-      "stage": "東京都予選",
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
       "round": "1回戦",
-      "gf": 1,
-      "ga": 3,
-      "pk": "",
-      "res": "負",
-      "d": -2,
-      "src": "https://tokyosoccer-u18.com/SINJ24/2025kanto.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "総体",
-      "stage": "二次トーナメント",
-      "round": "1回戦",
-      "gf": 7,
+      "gf": 3,
       "ga": 1,
       "pk": "",
       "res": "勝",
-      "d": 5,
-      "src": "https://tokyosoccer-u18.com/SOTAI25/sotai25_2jt.pdf"
+      "d": 2,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
      }
     ],
-    "implied": 1,
+    "implied": 3,
     "w": 0.06,
     "hops": 3
    },
-   {
-    "path": [
-     "武蔵丘",
-     "保善",
-     "文京",
-     "学習院"
-    ],
-    "legs": [
-     {
-      "year": 2023,
-      "series": "選手権",
-      "stage": "第102回 一次予選",
-      "round": "2回戦",
-      "gf": 0,
-      "ga": 5,
-      "pk": "",
-      "res": "負",
-      "d": -5,
-      "src": "https://tokyosoccer-u18.com/SEN23/sen23_1j.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "選手権",
-      "stage": "第104回 一次予選",
-      "round": "2回戦",
-      "gf": 2,
-      "ga": 1,
-      "pk": "",
-      "res": "勝",
-      "d": 1,
-      "src": "https://tokyosoccer-u18.com/SEN25/sen25_1j.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "新人戦",
-      "stage": "地区大会 第2地区",
-      "round": "準決勝",
-      "gf": 0,
-      "ga": 3,
-      "pk": "",
-      "res": "負",
-      "d": -3,
-      "src": "https://tokyosoccer-u18.com/SINJ25/sinj25_2.pdf"
-     }
-    ],
-    "implied": -7,
-    "w": 0.042,
-    "hops": 3
-   }
-  ]
- },
- "板橋有徳": {
-  "summary": {
-   "n": 16,
-   "direct": 0,
-   "two": 0,
-   "three": 16,
-   "up": 15,
-   "down": 0,
-   "even": 1,
-   "weighted": 3.56,
-   "weight": 0.405
-  },
-  "top": [
    {
     "path": [
      "武蔵丘",
@@ -1106,120 +1178,71 @@
     "implied": 2,
     "w": 0.0294,
     "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "昭和第一学園",
-     "成城",
-     "板橋有徳"
-    ],
-    "legs": [
-     {
-      "year": 2022,
-      "series": "選手権",
-      "stage": "第101回 一次予選",
-      "round": "2回戦",
-      "gf": 1,
-      "ga": 1,
-      "pk": "5-4",
-      "res": "PK勝",
-      "d": 0,
-      "src": "https://tokyosoccer-u18.com/SEN22/sen22_1j.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "選手権",
-      "stage": "第104回 二次予選",
-      "round": "2回戦",
-      "gf": 4,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 4,
-      "src": "https://tokyosoccer-u18.com/SEN25/sen25_2j.pdf"
-     },
-     {
-      "year": 2024,
-      "series": "総体",
-      "stage": "支部予選 中支部（第3・4地区）",
-      "round": "1回戦",
-      "gf": 14,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 5,
-      "src": "https://tokyosoccer-u18.com/SOTAI24/24sotai_34naka.pdf"
-     }
-    ],
-    "implied": 9,
-    "w": 0.0206,
-    "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "城北",
-     "成城",
-     "板橋有徳"
-    ],
-    "legs": [
-     {
-      "year": 2024,
-      "series": "選手権",
-      "stage": "第103回 一次予選",
-      "round": "ブロック決勝",
-      "gf": 0,
-      "ga": 1,
-      "pk": "",
-      "res": "負",
-      "d": -1,
-      "src": "https://tokyosoccer-u18.com/SEN24/sen24_1j.pdf"
-     },
-     {
-      "year": 2023,
-      "series": "新人戦",
-      "stage": "地区大会 第3地区",
-      "round": "3回戦",
-      "gf": 4,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 4,
-      "src": "https://tokyosoccer-u18.com/SINJ23/sinj23_3.pdf"
-     },
-     {
-      "year": 2024,
-      "series": "総体",
-      "stage": "支部予選 中支部（第3・4地区）",
-      "round": "1回戦",
-      "gf": 14,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 5,
-      "src": "https://tokyosoccer-u18.com/SOTAI24/24sotai_34naka.pdf"
-     }
-    ],
-    "implied": 8,
-    "w": 0.0206,
-    "hops": 3
    }
   ]
  },
  "城東": {
   "summary": {
-   "n": 39,
+   "n": 44,
    "direct": 0,
    "two": 1,
-   "three": 38,
-   "up": 21,
-   "down": 15,
+   "three": 43,
+   "up": 24,
+   "down": 17,
    "even": 3,
-   "weighted": -0.19,
-   "weight": 1.195
+   "weighted": 0.22,
+   "weight": 1.68
   },
   "top": [
+   {
+    "path": [
+     "武蔵丘",
+     "昭和第一",
+     "巣鴨",
+     "城東"
+    ],
+    "legs": [
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 5,
+      "ga": 2,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2025,
+      "series": "総体",
+      "stage": "支部予選 東支部（第1・2地区）",
+      "round": "1回戦",
+      "gf": 1,
+      "ga": 1,
+      "pk": "3-4",
+      "res": "PK負",
+      "d": 0,
+      "src": "https://tokyosoccer-u18.com/SOTAI25/25sotai_12higashi.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "総体",
+      "stage": "支部予選 東支部（第1・2地区）",
+      "round": "1回戦",
+      "gf": 2,
+      "ga": 0,
+      "pk": "",
+      "res": "勝",
+      "d": 2,
+      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_12higashi.pdf"
+     }
+    ],
+    "implied": 5,
+    "w": 0.175,
+    "hops": 3
+   },
    {
     "path": [
      "武蔵丘",
@@ -1255,6 +1278,55 @@
     "implied": -1,
     "w": 0.1715,
     "hops": 2
+   },
+   {
+    "path": [
+     "武蔵丘",
+     "昭和第一",
+     "文京",
+     "城東"
+    ],
+    "legs": [
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 5,
+      "ga": 2,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2025,
+      "series": "新人戦",
+      "stage": "地区大会 第2地区",
+      "round": "1回戦",
+      "gf": 1,
+      "ga": 3,
+      "pk": "",
+      "res": "負",
+      "d": -2,
+      "src": "https://tokyosoccer-u18.com/SINJ25/sinj25_2.pdf"
+     },
+     {
+      "year": 2025,
+      "series": "総体",
+      "stage": "支部予選 東支部（第1・2地区）",
+      "round": "2回戦",
+      "gf": 0,
+      "ga": 6,
+      "pk": "",
+      "res": "負",
+      "d": -5,
+      "src": "https://tokyosoccer-u18.com/SOTAI25/25sotai_12higashi.pdf"
+     }
+    ],
+    "implied": -4,
+    "w": 0.1225,
+    "hops": 3
    },
    {
     "path": [
@@ -1303,6 +1375,55 @@
     ],
     "implied": 1,
     "w": 0.1225,
+    "hops": 3
+   },
+   {
+    "path": [
+     "武蔵丘",
+     "昭和第一",
+     "足立",
+     "城東"
+    ],
+    "legs": [
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "1回戦",
+      "gf": 5,
+      "ga": 2,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "総体",
+      "stage": "支部予選 東支部（第1・2地区）",
+      "round": "1回戦",
+      "gf": 1,
+      "ga": 2,
+      "pk": "",
+      "res": "負",
+      "d": -1,
+      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_12higashi.pdf"
+     },
+     {
+      "year": 2022,
+      "series": "選手権",
+      "stage": "第101回 一次予選",
+      "round": "1回戦",
+      "gf": 0,
+      "ga": 0,
+      "pk": "4-5",
+      "res": "PK負",
+      "d": 0,
+      "src": "https://tokyosoccer-u18.com/SEN22/sen22_1j.pdf"
+     }
+    ],
+    "implied": 2,
+    "w": 0.06,
     "hops": 3
    },
    {
@@ -1451,167 +1572,20 @@
     "implied": -9,
     "w": 0.042,
     "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "日大鶴ヶ丘",
-     "南葛飾",
-     "城東"
-    ],
-    "legs": [
-     {
-      "year": 2024,
-      "series": "新人戦",
-      "stage": "地区大会 第5地区",
-      "round": "準々決勝",
-      "gf": 2,
-      "ga": 3,
-      "pk": "",
-      "res": "負",
-      "d": -1,
-      "src": "https://tokyosoccer-u18.com/SINJ24/sinj24_5.pdf"
-     },
-     {
-      "year": 2024,
-      "series": "総体",
-      "stage": "一次トーナメント",
-      "round": "1回戦",
-      "gf": 2,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 2,
-      "src": "https://tokyosoccer-u18.com/SOTAI24/sotai24_1jt.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "新人戦",
-      "stage": "地区大会 第1地区",
-      "round": "3位決定戦",
-      "gf": 2,
-      "ga": 1,
-      "pk": "",
-      "res": "勝",
-      "d": 1,
-      "src": "https://tokyosoccer-u18.com/SINJ25/sinj25_1.pdf"
-     }
-    ],
-    "implied": 2,
-    "w": 0.042,
-    "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "桜町",
-     "都・府中",
-     "城東"
-    ],
-    "legs": [
-     {
-      "year": 2025,
-      "series": "総体",
-      "stage": "支部予選 南支部（第5・6地区）",
-      "round": "ブロック決勝",
-      "gf": 0,
-      "ga": 1,
-      "pk": "",
-      "res": "負",
-      "d": -1,
-      "src": "https://tokyosoccer-u18.com/SOTAI25/25sotai_56minami.pdf"
-     },
-     {
-      "year": 2022,
-      "series": "選手権",
-      "stage": "第101回 一次予選",
-      "round": "2回戦",
-      "gf": 4,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 4,
-      "src": "https://tokyosoccer-u18.com/SEN22/sen22_1j.pdf"
-     },
-     {
-      "year": 2026,
-      "series": "選手権",
-      "stage": "第105回 一次予選",
-      "round": "1回戦",
-      "gf": 0,
-      "ga": 6,
-      "pk": "",
-      "res": "負",
-      "d": -5,
-      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
-     }
-    ],
-    "implied": -2,
-    "w": 0.042,
-    "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "富士",
-     "日大第一",
-     "城東"
-    ],
-    "legs": [
-     {
-      "year": 2026,
-      "series": "総体",
-      "stage": "支部予選 南支部（第5・6地区）",
-      "round": "1回戦",
-      "gf": 5,
-      "ga": 0,
-      "pk": "",
-      "res": "勝",
-      "d": 5,
-      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_56minami.pdf"
-     },
-     {
-      "year": 2024,
-      "series": "選手権",
-      "stage": "第103回 一次予選",
-      "round": "2回戦",
-      "gf": 0,
-      "ga": 2,
-      "pk": "",
-      "res": "負",
-      "d": -2,
-      "src": "https://tokyosoccer-u18.com/SEN24/sen24_1j.pdf"
-     },
-     {
-      "year": 2023,
-      "series": "選手権",
-      "stage": "第102回 一次予選",
-      "round": "1回戦",
-      "gf": 0,
-      "ga": 11,
-      "pk": "",
-      "res": "負",
-      "d": -5,
-      "src": "https://tokyosoccer-u18.com/SEN23/sen23_1j.pdf"
-     }
-    ],
-    "implied": -2,
-    "w": 0.042,
-    "hops": 3
    }
   ]
  },
  "東村山": {
   "summary": {
-   "n": 40,
+   "n": 41,
    "direct": 0,
    "two": 1,
-   "three": 39,
-   "up": 34,
+   "three": 40,
+   "up": 35,
    "down": 3,
    "even": 3,
-   "weighted": 3.03,
-   "weight": 1.109
+   "weighted": 2.93,
+   "weight": 1.169
   },
   "top": [
    {
@@ -1800,6 +1774,55 @@
    {
     "path": [
      "武蔵丘",
+     "明大中野",
+     "中央大学附属",
+     "都・東村山"
+    ],
+    "legs": [
+     {
+      "year": 2022,
+      "series": "新人戦",
+      "stage": "地区大会 第5地区",
+      "round": "3回戦",
+      "gf": 1,
+      "ga": 3,
+      "pk": "",
+      "res": "負",
+      "d": -2,
+      "src": "https://tokyosoccer-u18.com/SINJ22/sinj22_5.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "選手権",
+      "stage": "第105回 一次予選",
+      "round": "2回戦",
+      "gf": 1,
+      "ga": 1,
+      "pk": "3-5",
+      "res": "PK負",
+      "d": 0,
+      "src": "https://tokyosoccer-u18.com/SEN26/sen26_1j.pdf"
+     },
+     {
+      "year": 2026,
+      "series": "総体",
+      "stage": "支部予選 西支部（第7・8地区）",
+      "round": "ブロック決勝",
+      "gf": 3,
+      "ga": 0,
+      "pk": "",
+      "res": "勝",
+      "d": 3,
+      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_78nishi.pdf"
+     }
+    ],
+    "implied": 1,
+    "w": 0.06,
+    "hops": 3
+   },
+   {
+    "path": [
+     "武蔵丘",
      "大泉",
      "都・東大和南",
      "都・東村山"
@@ -1941,55 +1964,6 @@
      }
     ],
     "implied": 6,
-    "w": 0.042,
-    "hops": 3
-   },
-   {
-    "path": [
-     "武蔵丘",
-     "豊多摩",
-     "工学院大附",
-     "都・東村山"
-    ],
-    "legs": [
-     {
-      "year": 2022,
-      "series": "総体",
-      "stage": "支部予選 南支部（第5・6地区）",
-      "round": "2回戦",
-      "gf": 0,
-      "ga": 0,
-      "pk": "5-3",
-      "res": "PK勝",
-      "d": 0,
-      "src": "https://tokyosoccer-u18.com/SOTAI22/22sotai_minami56.pdf"
-     },
-     {
-      "year": 2025,
-      "series": "選手権",
-      "stage": "第104回 一次予選",
-      "round": "2回戦",
-      "gf": 1,
-      "ga": 1,
-      "pk": "5-4",
-      "res": "PK勝",
-      "d": 0,
-      "src": "https://tokyosoccer-u18.com/SEN25/sen25_1j.pdf"
-     },
-     {
-      "year": 2026,
-      "series": "総体",
-      "stage": "支部予選 西支部（第7・8地区）",
-      "round": "1回戦",
-      "gf": 2,
-      "ga": 3,
-      "pk": "",
-      "res": "負",
-      "d": -1,
-      "src": "https://tokyosoccer-u18.com/SOTAI26/26sotai_78nishi.pdf"
-     }
-    ],
-    "implied": -1,
     "w": 0.042,
     "hops": 3
    }

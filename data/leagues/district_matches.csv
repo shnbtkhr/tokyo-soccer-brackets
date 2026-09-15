@@ -538,7 +538,10 @@
 第2地区,DUOリーグ,2026,グループA,第6節,2026-06-14,豊島学院A,日大豊山C,0,1,済,豊島学院,A,日大豊山,C,https://www.goalnote.net/detail-schedule.php?tid=18409
 第2地区,DUOリーグ,2026,グループA,第6節,2026-06-14,郁文館,都立豊島B,3,3,済,郁文館,A,豊島,B,https://www.goalnote.net/detail-schedule.php?tid=18409
 第2地区,DUOリーグ,2026,グループA,第7節,2026-09-01,立教池袋,足立学園,2,0,済,立教池袋,A,足立学園,A,https://www.goalnote.net/detail-schedule.php?tid=18409
+第2地区,DUOリーグ,2026,グループA,第7節,2026-09-22,駒込A,日大豊山C,,,未,駒込,A,日大豊山,C,https://www.goalnote.net/detail-schedule.php?tid=18409
 第2地区,DUOリーグ,2026,グループA,第7節,2026-09-04,淑徳巣鴨A,豊島学院A,10,1,済,淑徳巣鴨,A,豊島学院,A,https://www.goalnote.net/detail-schedule.php?tid=18409
+第2地区,DUOリーグ,2026,グループA,第8節,2026-10-04,日大豊山C,都立豊島B,,,未,日大豊山,C,豊島,B,https://www.goalnote.net/detail-schedule.php?tid=18409
+第2地区,DUOリーグ,2026,グループA,第9節,2026-10-11,豊南A,日大豊山C,,,未,豊南,A,日大豊山,C,https://www.goalnote.net/detail-schedule.php?tid=18409
 第2地区,DUOリーグ,2026,グループB,第1節,2026-05-09,都立足立西,駒込B,2,2,済,足立西,A,駒込,B,https://www.goalnote.net/detail-schedule.php?tid=18409
 第2地区,DUOリーグ,2026,グループB,第1節,2026-06-14,都立足立,巣鴨,4,2,済,足立,A,巣鴨,A,https://www.goalnote.net/detail-schedule.php?tid=18409
 第2地区,DUOリーグ,2026,グループB,第1節,2026-05-10,筑波大附属,京華A,3,1,済,筑波大学附属,A,京華,A,https://www.goalnote.net/detail-schedule.php?tid=18409
@@ -1532,18 +1535,18 @@
 第5地区,NSリーグ,2026,1部,第6節,2026-06-21,都立保谷高等学校B,文化学園大学杉並高等学校,2,1,済,保谷,B,文大杉並,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第7節,2026-09-05,専修大学附属高等学校A,都立石神井高等学校B,3,1,済,専修大附,A,石神井,B,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第7節,2026-09-13,早稲田大学高等学院B,日本大学第二高等学校A,,,未,早大学院,B,日大二,A,https://www.goalnote.net/detail-schedule.php?tid=18597
-第5地区,NSリーグ,2026,1部,第7節,2026-09-13,実践学園高等学校D,都立豊多摩高等学校A,,,未,実践学園,D,豊多摩,A,https://www.goalnote.net/detail-schedule.php?tid=18597
+第5地区,NSリーグ,2026,1部,第7節,2026-09-13,実践学園高等学校D,都立豊多摩高等学校A,3,2,済,実践学園,D,豊多摩,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第7節,,日本大学鶴ヶ丘高等学校B,文化学園大学杉並高等学校,,,未,日大鶴ヶ丘,B,文大杉並,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第7節,2026-09-01,都立鷺宮高等学校A,都立保谷高等学校B,1,2,済,鷺宮,A,保谷,B,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第8節,2026-09-27,専修大学附属高等学校A,早稲田大学高等学院B,,,未,専修大附,A,早大学院,B,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第8節,2026-10-03,実践学園高等学校D,都立石神井高等学校B,,,未,実践学園,D,石神井,B,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第8節,,日本大学第二高等学校A,文化学園大学杉並高等学校,,,未,日大二,A,文大杉並,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第8節,2026-09-27,都立豊多摩高等学校A,都立保谷高等学校B,,,未,豊多摩,A,保谷,B,https://www.goalnote.net/detail-schedule.php?tid=18597
-第5地区,NSリーグ,2026,1部,第8節,,日本大学鶴ヶ丘高等学校B,都立鷺宮高等学校A,,,未,日大鶴ヶ丘,B,鷺宮,A,https://www.goalnote.net/detail-schedule.php?tid=18597
+第5地区,NSリーグ,2026,1部,第8節,2026-09-27,日本大学鶴ヶ丘高等学校B,都立鷺宮高等学校A,,,未,日大鶴ヶ丘,B,鷺宮,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第9節,2026-10-10,専修大学附属高等学校A,実践学園高等学校D,,,未,専修大附,A,実践学園,D,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第9節,,早稲田大学高等学院B,文化学園大学杉並高等学校,,,未,早大学院,B,文大杉並,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第9節,2026-10-11,都立石神井高等学校B,都立保谷高等学校B,,,未,石神井,B,保谷,B,https://www.goalnote.net/detail-schedule.php?tid=18597
-第5地区,NSリーグ,2026,1部,第9節,,日本大学第二高等学校A,都立鷺宮高等学校A,,,未,日大二,A,鷺宮,A,https://www.goalnote.net/detail-schedule.php?tid=18597
+第5地区,NSリーグ,2026,1部,第9節,2026-10-11,日本大学第二高等学校A,都立鷺宮高等学校A,,,未,日大二,A,鷺宮,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,1部,第9節,,都立豊多摩高等学校A,日本大学鶴ヶ丘高等学校B,,,未,豊多摩,A,日大鶴ヶ丘,B,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,2部A,第1節,2026-06-21,國學院大學久我山高等学校E,東京大学教育学部附属中等教育学校,6,0,済,国学院久我山,E,東大附属,A,https://www.goalnote.net/detail-schedule.php?tid=18597
 第5地区,NSリーグ,2026,2部A,第1節,2026-06-21,都立武蔵丘高等学校A,都立保谷高等学校C,1,0,済,武蔵丘,A,保谷,C,https://www.goalnote.net/detail-schedule.php?tid=18597
@@ -1763,6 +1766,7 @@
 第7地区,第7地区ユースリーグ,2026,1部,,2026-06-14,昭和第一学園B,片倉,1,3,済,昭和第一学園,B,片倉,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vQVPxsdzQeHgNi4Bg02sDdW2DYT-H-jTe8Q3NttnomTX3wCBomCCepRUQPb_Szwlq6D9RkOnPZnznB2/pub?gid=80189940&single=true&output=csv
 第7地区,第7地区ユースリーグ,2026,1部,,2026-06-14,Raiz Chofu F.C U-18,調布南A,0,2,済,RaizChofuF.CU-18,A,調布南,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vQVPxsdzQeHgNi4Bg02sDdW2DYT-H-jTe8Q3NttnomTX3wCBomCCepRUQPb_Szwlq6D9RkOnPZnznB2/pub?gid=80189940&single=true&output=csv
 第7地区,第7地区ユースリーグ,2026,1部,,2026-06-14,明大八王子B,大成C,0,8,済,明大八王子,B,大成,C,https://docs.google.com/spreadsheets/d/e/2PACX-1vQVPxsdzQeHgNi4Bg02sDdW2DYT-H-jTe8Q3NttnomTX3wCBomCCepRUQPb_Szwlq6D9RkOnPZnznB2/pub?gid=80189940&single=true&output=csv
+第7地区,第7地区ユースリーグ,2026,1部,,2026-09-12,Raiz Chofu F.C U-18,大成C,1,4,済,RaizChofuF.CU-18,A,大成,C,https://docs.google.com/spreadsheets/d/e/2PACX-1vQVPxsdzQeHgNi4Bg02sDdW2DYT-H-jTe8Q3NttnomTX3wCBomCCepRUQPb_Szwlq6D9RkOnPZnznB2/pub?gid=80189940&single=true&output=csv
 第7地区,第7地区ユースリーグ,2026,2部A,,2026-04-04,桐朋,八王子北,4,1,済,桐朋,A,八王子北,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vQDgq8t4JUX3Bwny3MQXdTAYZz1ya47lHunDLtuGBYg3R_y30tCEiB5YIfLLXnNPXTVL_FTW0FzIOC6/pub?gid=80189940&single=true&output=csv
 第7地区,第7地区ユースリーグ,2026,2部A,,2026-04-05,昭和第一学園C,八王子,0,3,済,昭和第一学園,C,八王子,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vQDgq8t4JUX3Bwny3MQXdTAYZz1ya47lHunDLtuGBYg3R_y30tCEiB5YIfLLXnNPXTVL_FTW0FzIOC6/pub?gid=80189940&single=true&output=csv
 第7地区,第7地区ユースリーグ,2026,2部A,,2026-04-11,松が谷,翔陽,3,0,済,松が谷,A,翔陽,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vQDgq8t4JUX3Bwny3MQXdTAYZz1ya47lHunDLtuGBYg3R_y30tCEiB5YIfLLXnNPXTVL_FTW0FzIOC6/pub?gid=80189940&single=true&output=csv
@@ -1845,6 +1849,7 @@
 第7地区,第7地区ユースリーグ,2026,3部B,,2026-06-13,松が谷B,神代,0,1,済,松が谷,B,神代,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vSz-Rl0rEvqrXiYZjx_kzGuJ4RUw2SNB336r2xVEhaeSiIrUKWdA3VM-XDAJIXoihKh_eDUxW1Hw5Nl/pub?gid=80189940&single=true&output=csv
 第7地区,第7地区ユースリーグ,2026,3部B,,2026-04-12,神代,日野,3,1,済,神代,A,日野,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vSz-Rl0rEvqrXiYZjx_kzGuJ4RUw2SNB336r2xVEhaeSiIrUKWdA3VM-XDAJIXoihKh_eDUxW1Hw5Nl/pub?gid=80189940&single=true&output=csv
 第7地区,第7地区ユースリーグ,2026,3部B,,2026-06-28,アローレ八王子U-18B,明星,1,1,済,アローレ八王子U-18B,A,明星,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vSz-Rl0rEvqrXiYZjx_kzGuJ4RUw2SNB336r2xVEhaeSiIrUKWdA3VM-XDAJIXoihKh_eDUxW1Hw5Nl/pub?gid=80189940&single=true&output=csv
+第7地区,第7地区ユースリーグ,2026,3部B,,2026-09-13,神代,明星,5,3,済,神代,A,明星,A,https://docs.google.com/spreadsheets/d/e/2PACX-1vSz-Rl0rEvqrXiYZjx_kzGuJ4RUw2SNB336r2xVEhaeSiIrUKWdA3VM-XDAJIXoihKh_eDUxW1Hw5Nl/pub?gid=80189940&single=true&output=csv
 第8地区,8地区ユースリーグ,2026,2部A,第1節,2026-04-05,電大高,東海大菅生B,3,0,済,東京電機大学,A,東海大菅生,B,https://dendai-highschool-soccer.1web.jp/results.html
 第8地区,8地区ユースリーグ,2026,2部A,第2節,2026-04-12,電大高,福生A,2,0,済,東京電機大学,A,福生,A,https://dendai-highschool-soccer.1web.jp/results.html
 第8地区,8地区ユースリーグ,2026,2部A,第3節,2026-04-19,電大高,中央国際,8,3,済,東京電機大学,A,中央国際,A,https://dendai-highschool-soccer.1web.jp/results.html
