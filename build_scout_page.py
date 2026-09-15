@@ -174,28 +174,6 @@ def build_data(team: str, block_config: Path) -> dict:
             key=lambda s: (-s["year"], order.get(s["series"], 9), s["stage"])
         )
 
-    # 地区リーグデータの読み込み
-    district_data = {}
-    district_standings_path = ROOT / "data/leagues/district_standings.csv"
-    if district_standings_path.exists():
-        for row in csv.DictReader(district_standings_path.open(encoding="utf-8-sig")):
-            if row["年度"] != "2026":
-                continue
-            school = normalize(row["学校"])
-            if school not in district_data:
-                district_data[school] = []
-            district_data[school].append({
-                "district": row["地区"],
-                "division": row["部"],
-                "rank": row["順位"],
-                "matches": row["試合"],
-                "wins": row["勝"],
-                "draws": row["分"],
-                "losses": row["敗"],
-                "points": row["勝点"],
-            })
-        print(f"DEBUG: Loaded {len(district_data)} schools with district league data")
-
     elo = {k: a.get("teams", {}).get(k, {}).get("elo", 1500) for k in block}
     decided_list = a.get("decided", manual.get("decided", []))
 
@@ -243,7 +221,6 @@ def build_data(team: str, block_config: Path) -> dict:
         "schedule": manual.get("schedule", []),
         "slots": manual.get("slots", {}),
         "decided": manual.get("decided", []),
-        "districtLeague": district_data,
         "teams": {
             k: {
                 **{
