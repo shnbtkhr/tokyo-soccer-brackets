@@ -219,6 +219,7 @@ a.team-card dt { font-size: 11px; color: var(--muted); }
 a.team-card dd { margin: 0; font-family: var(--f-num); font-weight: 600; font-size: var(--t2); line-height: 1.1; }
 a.team-card dd.us { color: var(--us); }
 a.team-card.decided { background: transparent; }
+a.team-card .out-note { padding-top: var(--s2); border-top: 1px solid var(--rule); color: var(--muted); font-size: var(--t-1); font-weight: 700; }
 
 /* トーナメント表（公式の表と同じく、勝ち上がりは赤線） */
 svg.bracket { width: 100%; height: auto; display: block; }
@@ -355,6 +356,9 @@ ol.chains .imp.down { color: var(--link); }
 footer.foot { max-width: var(--page); margin: 0 auto; padding: 0 var(--s4) var(--s6); color: var(--muted); font-size: var(--t-1); }
 
 /* 当たる確率の内訳（入口ページの勝ち上がりの道） */
+.result-banner { display: flex; align-items: baseline; gap: var(--s2); padding: var(--s2) var(--s3); border-radius: var(--r); background: var(--sunk); }
+.result-banner.won { background: var(--us-soft); }
+.result-banner .num { font-size: var(--t1); font-weight: 700; }
 .meet { display: grid; gap: 6px; }
 .meetbar { display: flex; gap: 2px; height: 13px; border-radius: 4px; overflow: hidden; }
 .meetbar span { display: block; min-width: 2px; }
@@ -466,7 +470,7 @@ table.tourn .ex { display: block; font-size: 10.5px; color: var(--link); font-we
 </style>
 <main class="page" id="app"></main>
 <script>
-const D = {"me": "武蔵丘", "blockLabel": "第105回全国高校サッカー選手権 東京大会 1次予選【10】ブロック", "asOf": "高体連 1次予選トーナメント表 2026/9/11版（会場一覧 2026/9/4版）・公開情報は2026/9/11に確認", "schedule": [{"no": 31, "round": "1回戦", "a": "学習院", "b": "板橋有徳", "date": "9/13", "dow": "日", "time": "15:00", "venue": "学習院高等科", "venueCode": "学"}, {"no": 32, "round": "1回戦", "a": "昭和第一", "b": "武蔵丘", "date": "9/13", "dow": "日", "time": "13:00", "venue": "学習院高等科", "venueCode": "学"}, {"no": null, "round": "1回戦", "a": "府中", "b": "城東", "score": "0-6", "winner": "城東", "date": "9/5", "note": "終了"}, {"no": null, "round": "1回戦", "a": "多摩科学技術", "b": "東村山", "score": "1-6", "winner": "東村山", "date": "9/5", "note": "終了"}, {"no": 149, "round": "2回戦", "a": "【31】の勝者", "b": "【32】の勝者", "date": "9/20", "dow": "日", "time": "18:00", "venue": "学習院高等科", "venueCode": "学", "timeNote": "高体連PDFとkoko-soccerの両方で18:00"}, {"no": 150, "round": "2回戦", "a": "城東", "b": "東村山", "date": "9/20", "dow": "日", "time": "16:00", "venue": "学習院高等科", "venueCode": "学"}, {"no": 208, "round": "ブロック決勝", "a": "【149】の勝者", "b": "【150】の勝者", "date": "9/22", "dow": "火", "time": "12:00", "venue": "駒沢第二球技場", "venueCode": "駒"}], "slots": {"学習院": 67, "板橋有徳": 68, "昭和第一": 69, "武蔵丘": 70, "府中": 71, "城東": 72, "多摩科学技術": 73, "東村山": 74}, "decided": [{"a": "府中", "b": "城東", "score": "0-6", "winner": "城東"}, {"a": "多摩科学技術", "b": "東村山", "score": "1-6", "winner": "東村山"}], "block": ["学習院", "板橋有徳", "昭和第一", "武蔵丘", "府中", "城東", "多摩科学技術", "東村山"], "brief": {"学習院": {"display": "学習院", "alive": true, "blockWin": 0.335, "vsMe": 0.377, "meetProb": 0.508, "elo": 1631, "eloRank": 50, "area": {"area": 2, "city": "豊島区", "kind": "私立", "name": "学習院"}, "round": "2回戦", "candidate": true, "leagueLine": "今季 T5 Cブロック 10位/10・0勝2分4敗"}, "板橋有徳": {"display": "都・板橋有徳", "alive": true, "blockWin": 0.022, "vsMe": 0.701, "meetProb": 0.131, "elo": 1396, "eloRank": 256, "area": {"area": 3, "city": "板橋区", "kind": "都立", "name": "板橋有徳"}, "round": "2回戦", "candidate": true, "leagueLine": "今季のリーグ戦は未確認"}, "昭和第一": {"display": "昭和第一", "alive": true, "blockWin": 0.043, "vsMe": 0.639, "meetProb": 1.0, "elo": 1445, "eloRank": 186, "area": {"area": 2, "city": "文京区", "kind": "私立", "name": "昭和第一"}, "round": "1回戦", "candidate": false, "leagueLine": "今季 DUOリーグ2026 グループB 1位/8・4勝0分2敗"}, "武蔵丘": {"display": "都・武蔵丘", "alive": true, "blockWin": 0.145, "vsMe": null, "meetProb": null, "elo": 1544, "eloRank": 104, "area": {"area": 5, "city": "中野区", "kind": "都立", "name": "武蔵丘"}, "round": "", "candidate": false, "leagueLine": "今季 NSリーグ2026 2部 グループB 1位/8・4勝1分0敗"}, "府中": {"display": "都・府中", "alive": false, "blockWin": 0.0, "vsMe": 0.63, "meetProb": 0.0, "elo": 1451, "eloRank": 182, "area": {"area": 7, "city": "府中市", "kind": "都立", "name": "府中"}, "round": "", "candidate": false, "leagueLine": "今季のリーグ戦は未確認"}, "城東": {"display": "都・城東", "alive": true, "blockWin": 0.322, "vsMe": 0.46, "meetProb": 0.181, "elo": 1572, "eloRank": 87, "area": {"area": 1, "city": "江東区", "kind": "都立", "name": "城東"}, "round": "ブロック決勝", "candidate": true, "leagueLine": "今季 T5 Dブロック 4位/10・4勝0分2敗"}, "多摩科学技術": {"display": "都・多摩科学技術", "alive": false, "blockWin": 0.0, "vsMe": 0.749, "meetProb": 0.0, "elo": 1354, "eloRank": 295, "area": {"area": 8, "city": "小金井市", "kind": "都立", "name": "多摩科学技術"}, "round": "", "candidate": false, "leagueLine": "今季のリーグ戦は未確認"}, "東村山": {"display": "都・東村山", "alive": true, "blockWin": 0.134, "vsMe": 0.601, "meetProb": 0.102, "elo": 1473, "eloRank": 163, "area": {"area": 8, "city": "東村山市", "kind": "都立", "name": "東村山"}, "round": "ブロック決勝", "candidate": true, "leagueLine": "今季のリーグ戦は未確認"}}, "nav": [{"label": "", "items": [{"slug": "index", "label": "ブロック全体"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]}, {"label": "1回戦", "items": [{"slug": "showa-daiichi", "label": "昭和第一"}]}, {"label": "2回戦", "items": [{"slug": "gakushuin", "label": "学習院"}, {"slug": "itabashi-yutoku", "label": "板橋有徳"}]}, {"label": "決勝", "items": [{"slug": "joto", "label": "城東"}, {"slug": "higashimurayama", "label": "東村山"}]}, {"label": "2次予選", "items": [{"slug": "seeds", "label": "強豪32校"}]}], "links": {"index": "index.html", "musashigaoka": "musashigaoka.html", "showa-daiichi": "showa-daiichi.html", "gakushuin": "gakushuin.html", "itabashi-yutoku": "itabashi-yutoku.html", "joto": "joto.html", "higashimurayama": "higashimurayama.html", "seeds": "seeds.html"}, "linkTarget": null, "keyToSlug": {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}, "order": ["index", "musashigaoka", "showa-daiichi", "gakushuin", "itabashi-yutoku", "joto", "higashimurayama", "seeds"], "titles": {"index": "ブロック全体", "musashigaoka": "都・武蔵丘（自チーム）", "showa-daiichi": "昭和第一（1回戦）", "gakushuin": "学習院（2回戦）", "itabashi-yutoku": "都・板橋有徳（2回戦）", "joto": "都・城東（ブロック決勝）", "higashimurayama": "都・東村山（ブロック決勝）", "seeds": "2次予選の強豪"}, "nTeamsRated": 306, "styleNone": "今年のチームについての観戦記事は見つからなかった（koko-soccer の記事は前年以前の代のもの）。", "page": "hub", "next": {"no": 32, "round": "1回戦", "a": "昭和第一", "b": "武蔵丘", "date": "9/13", "dow": "日", "time": "13:00", "venue": "学習院高等科", "venueCode": "学", "opp": "昭和第一"}, "road": [{"n": "1", "round": "1回戦", "when": "9/13(日) 13:00", "teams": ["昭和第一"], "bd": {"reach": 1.0, "before": "", "opps": [{"key": "昭和第一", "share": 1.0, "meet": 1.0}]}}, {"n": "2", "round": "2回戦", "when": "9/20(日) 18:00", "teams": ["学習院", "板橋有徳"], "bd": {"reach": 0.639, "before": "1回戦で負ける", "opps": [{"key": "学習院", "share": 0.795, "meet": 0.508}, {"key": "板橋有徳", "share": 0.205, "meet": 0.131}]}}, {"n": "3", "round": "ブロック決勝", "when": "9/22(火) 12:00", "teams": ["城東", "東村山"], "bd": {"reach": 0.283, "before": "2回戦までに負ける", "opps": [{"key": "城東", "share": 0.639, "meet": 0.181}, {"key": "東村山", "share": 0.361, "meet": 0.102}]}}], "formNote": ["過去5年の大会実績（強さの点数）では学習院が本命。ただし今季のT5リーグでは学習院は10チーム中10位で、6試合2得点と点が取れていない。", "城東は今季のT5リーグで10チーム中4位と好調で、首位の駿台学園Bにも5-4で勝っている。実績と今季の調子の両方がそろっているのは城東。", "武蔵丘Aは今季のNSリーグ2部グループBで首位（5試合4勝1分・得点12・失点4）。ただしT5（東京都リーグの5部）と地区リーグでは相手の強さが違うので、数字をそのまま比べることはできない。", "1回戦の相手の昭和第一も、今季の地区リーグ（第2地区のDUOリーグ）ではグループBで首位（6試合4勝2敗・得点13・失点8。2位と勝点で並ぶ）。過去の大会成績から出した「武蔵丘が勝つ見込み64%」は、昭和第一の今の調子を反映していないので、数字ほどの差はないとみておくのが安全。", "DUOリーグとNSリーグはどちらも地区リーグで、グループの格付け（何部にあたるか）はDUOリーグ側の表記では確認できていない。", "強さの点数には今季のリーグ戦は入っていない（入っているのは総体・選手権・新人戦・関東予選だけ）。"], "pyramid": [{"tier": "プレミアリーグ", "desc": "全国の上位24チーム（Jユースと高校）", "teams": []}, {"tier": "プリンスリーグ関東", "desc": "関東地域のリーグ。プレミアの一つ下", "teams": []}, {"tier": "T1", "desc": "東京都の最上位。10チーム×1グループ", "teams": []}, {"tier": "T2", "desc": "10チーム×1グループ", "teams": []}, {"tier": "T3", "desc": "10チーム×2グループ", "teams": []}, {"tier": "T4", "desc": "10チーム×2グループ", "teams": []}, {"tier": "T5", "desc": "10チーム×4ブロック（A〜D）。旧「地区トップリーグ」", "teams": ["学習院（Cブロック）", "城東（Dブロック）"]}, {"tier": "地区リーグ", "desc": "T5の下の各地区のリーグ。1部・2部・3部…と続く", "teams": ["武蔵丘A（NSリーグ2部・第5地区）", "武蔵丘B（NSリーグ3部）", "昭和第一A・B（DUOリーグ・第2地区）", "城東B（リバーサイド1部）", "東村山（第8地区ユースリーグ2部）"]}], "pyramidNote": "T1〜T4とプレミア・プリンスはあなたから聞いた構成。T5が2026年度に4ブロックあることはTリーグ公式サイト、「旧地区トップリーグ」という説明は城東の学校ページによる。NSリーグ・リバーサイドリーグとT5の上下関係は、T5が旧地区トップであることからの推定。", "method": ["強さの点数（Elo）は、2022〜2026年度の東京都の公式戦 4,010試合（総体・選手権・新人戦・関東予選）から計算した。強い相手に勝つほど大きく上がり、得点差が大きいほど大きく動く。PK戦は引き分けとして扱う。", "高校の部活は毎年メンバーが入れ替わるので、年度が変わるたびに点数を平均（1500）へ4分の1戻している。", "「勝つ見込み」は点数差から出した目安。会場（ホームかどうか）、当日のメンバー、けが人、天候は入っていない。", "直接対戦や共通の対戦相手が少ないときも、試合のつながり（A校に勝ったB校に勝った…）をたどって点数が比べられるのが Elo の利点。ただし試合数が少ない学校は点数のぶれが大きい。", "試合結果は東京都高体連サッカー専門部（tokyosoccer-u18.com）のトーナメント表 PDF をプログラムで読み取ったもの。"], "totalMatches": 4040, "elo": {"base": 1500, "k": 32, "carry": 0.75, "band": 50, "example": {"me": "都・武蔵丘", "opp": "昭和第一", "meElo": 1544, "oppElo": 1445, "diff": 99, "p": 0.639, "cases": [{"label": "2-0 勝ち", "delta": 17, "me": 1561, "opp": 1428}, {"label": "1-0 勝ち", "delta": 12, "me": 1556, "opp": 1433}, {"label": "PK戦", "delta": -4, "me": 1540, "opp": 1449}, {"label": "0-1 負け", "delta": -20, "me": 1524, "opp": 1465}, {"label": "0-3 負け", "delta": -36, "me": 1508, "opp": 1481}]}, "opponents": [{"name": "昭和第一", "diff": 99}, {"name": "学習院", "diff": -87}, {"name": "都・板橋有徳", "diff": 148}, {"name": "都・城東", "diff": -28}, {"name": "都・東村山", "diff": 71}], "uses": ["「武蔵丘が勝つ見込み」は、いまの両校の点数を手順2の式に入れたもの。", "「この山を勝ち抜く見込み」は、山の組み合わせに沿って、1試合ずつの見込みを掛け合わせたもの。終わった試合は結果どおりに扱う。", "「当たる確率」＝ 武蔵丘がその試合まで勝ち上がる見込み × 相手がその試合まで勝ち上がる見込み。武蔵丘が途中で負けるとどちらとも当たらないので、同じ回戦の候補2校を足しても100%にはならず、足した値は「武蔵丘がその回戦まで勝ち上がる見込み」になる。100%との差は「武蔵丘がその前に負ける」場合（内訳は「勝ち上がりの道」の帯グラフ）。試合どうしは影響し合わない（独立）とみなして掛け算している。", "「格上・格下」は、試合の時点で点数の差が 50 点を超える相手。"], "caveats": ["32・4分の1・PK戦を引き分けとする扱い・50 点の線引きは、一般的な決め方をもとに置いた値で、過去の試合で当たり具合を確かめていない。", "2022年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。", "試合数の少ない学校や、地区の違う学校どうしの比較は、たどれる試合のつながりが少なく、ぶれやすい。", "今季のリーグ戦は入っていないので、今の調子は反映されない（昭和第一は地区リーグで首位）。ホームかどうかも考えていない。"]}, "slug": "index"};
+const D = {"me": "武蔵丘", "blockLabel": "第105回全国高校サッカー選手権 東京大会 1次予選【10】ブロック", "asOf": "高体連 1次予選トーナメント表 2026/9/14版（会場一覧 2026/9/4版）・リーグ戦は2026/9/15に取得", "schedule": [{"no": 31, "round": "1回戦", "a": "学習院", "b": "板橋有徳", "date": "9/13", "dow": "日", "time": "15:00", "venue": "学習院高等科", "venueCode": "学", "score": "3-1", "winner": "学習院", "note": "終了"}, {"no": 32, "round": "1回戦", "a": "昭和第一", "b": "武蔵丘", "date": "9/13", "dow": "日", "time": "13:00", "venue": "学習院高等科", "venueCode": "学", "score": "2-5", "winner": "武蔵丘", "note": "終了"}, {"no": null, "round": "1回戦", "a": "府中", "b": "城東", "score": "0-6", "winner": "城東", "date": "9/5", "note": "終了"}, {"no": null, "round": "1回戦", "a": "多摩科学技術", "b": "東村山", "score": "1-6", "winner": "東村山", "date": "9/5", "note": "終了"}, {"no": 149, "round": "2回戦", "a": "学習院", "b": "武蔵丘", "date": "9/20", "dow": "日", "time": "18:00", "venue": "学習院高等科", "venueCode": "学", "timeNote": "高体連PDFとkoko-soccerの両方で18:00"}, {"no": 150, "round": "2回戦", "a": "城東", "b": "東村山", "date": "9/20", "dow": "日", "time": "16:00", "venue": "学習院高等科", "venueCode": "学"}, {"no": 208, "round": "ブロック決勝", "a": "【149】の勝者（学習院・武蔵丘）", "b": "【150】の勝者（城東・東村山）", "date": "9/22", "dow": "火", "time": "12:00", "venue": "駒沢第二球技場", "venueCode": "駒"}], "slots": {"学習院": 67, "板橋有徳": 68, "昭和第一": 69, "武蔵丘": 70, "府中": 71, "城東": 72, "多摩科学技術": 73, "東村山": 74}, "decided": [{"a": "府中", "b": "城東", "score": "0-6", "winner": "城東"}, {"a": "多摩科学技術", "b": "東村山", "score": "1-6", "winner": "東村山"}, {"a": "学習院", "b": "板橋有徳", "score": "3-1", "winner": "学習院"}, {"a": "昭和第一", "b": "武蔵丘", "score": "2-5", "winner": "武蔵丘"}], "block": ["学習院", "板橋有徳", "昭和第一", "武蔵丘", "府中", "城東", "多摩科学技術", "東村山"], "brief": {"学習院": {"display": "学習院", "alive": true, "blockWin": 0.464, "vsMe": 0.31, "meetProb": 1.0, "elo": 1744, "eloRank": 65, "area": {"area": 2, "city": "豊島区", "kind": "私立", "name": "学習院"}, "round": "2回戦", "candidate": false, "leagueLine": "今季 Tリーグ T5 Cブロック 10位/10・0勝2分4敗"}, "板橋有徳": {"display": "都・板橋有徳", "alive": false, "blockWin": 0.0, "vsMe": 0.921, "meetProb": 0.0, "elo": 1177, "eloRank": 253, "area": {"area": 3, "city": "板橋区", "kind": "都立", "name": "板橋有徳"}, "round": "2回戦", "candidate": false, "leagueLine": "今季 第3地区ユースリーグ 3部D（第3地区） 6位/6・0勝0分1敗"}, "昭和第一": {"display": "昭和第一", "alive": false, "blockWin": 0.0, "vsMe": 0.815, "meetProb": 1.0, "elo": 1347, "eloRank": 190, "area": {"area": 2, "city": "文京区", "kind": "私立", "name": "昭和第一"}, "round": "1回戦", "candidate": false, "leagueLine": "今季 DUOリーグ グループB（第2地区） 1位/8・4勝0分2敗"}, "武蔵丘": {"display": "都・武蔵丘", "alive": true, "blockWin": 0.152, "vsMe": null, "meetProb": null, "elo": 1605, "eloRank": 104, "area": {"area": 5, "city": "中野区", "kind": "都立", "name": "武蔵丘"}, "round": "", "candidate": false, "leagueLine": "今季 NSリーグ 2部A（第5地区） 1位/8・4勝1分0敗"}, "府中": {"display": "都・府中", "alive": false, "blockWin": 0.0, "vsMe": 0.811, "meetProb": 0.0, "elo": 1352, "eloRank": 187, "area": {"area": 7, "city": "府中市", "kind": "都立", "name": "府中"}, "round": "", "candidate": false, "leagueLine": "今季 第7地区ユースリーグ 3部A（第7地区） 4位/9・3勝0分2敗"}, "城東": {"display": "都・城東", "alive": true, "blockWin": 0.329, "vsMe": 0.423, "meetProb": 0.232, "elo": 1659, "eloRank": 90, "area": {"area": 1, "city": "江東区", "kind": "都立", "name": "城東"}, "round": "ブロック決勝", "candidate": true, "leagueLine": "今季 Tリーグ T5 Dブロック 2位/10・5勝0分2敗"}, "多摩科学技術": {"display": "都・多摩科学技術", "alive": false, "blockWin": 0.0, "vsMe": 0.942, "meetProb": 0.0, "elo": 1121, "eloRank": 271, "area": {"area": 8, "city": "小金井市", "kind": "都立", "name": "多摩科学技術"}, "round": "", "candidate": false, "leagueLine": "今季のリーグ戦は未確認"}, "東村山": {"display": "都・東村山", "alive": true, "blockWin": 0.055, "vsMe": 0.684, "meetProb": 0.078, "elo": 1471, "eloRank": 144, "area": {"area": 8, "city": "東村山市", "kind": "都立", "name": "東村山"}, "round": "ブロック決勝", "candidate": true, "leagueLine": "今季 8地区ユースリーグ 2部A（第8地区） 1勝1分2敗"}}, "nav": [{"label": "", "items": [{"slug": "index", "label": "ブロック全体"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]}, {"label": "1回戦", "items": [{"slug": "showa-daiichi", "label": "昭和第一"}]}, {"label": "2回戦", "items": [{"slug": "gakushuin", "label": "学習院"}, {"slug": "itabashi-yutoku", "label": "板橋有徳"}]}, {"label": "決勝", "items": [{"slug": "joto", "label": "城東"}, {"slug": "higashimurayama", "label": "東村山"}]}, {"label": "2次予選", "items": [{"slug": "seeds", "label": "強豪32校"}]}], "links": {"index": "index.html", "musashigaoka": "musashigaoka.html", "showa-daiichi": "showa-daiichi.html", "gakushuin": "gakushuin.html", "itabashi-yutoku": "itabashi-yutoku.html", "joto": "joto.html", "higashimurayama": "higashimurayama.html", "seeds": "seeds.html"}, "linkTarget": null, "keyToSlug": {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}, "order": ["index", "musashigaoka", "showa-daiichi", "gakushuin", "itabashi-yutoku", "joto", "higashimurayama", "seeds"], "titles": {"index": "ブロック全体", "musashigaoka": "都・武蔵丘（自チーム）", "showa-daiichi": "昭和第一（1回戦）", "gakushuin": "学習院（2回戦）", "itabashi-yutoku": "都・板橋有徳（2回戦）", "joto": "都・城東（ブロック決勝）", "higashimurayama": "都・東村山（ブロック決勝）", "seeds": "2次予選の強豪"}, "nTeamsRated": 307, "styleNone": "今年のチームについての観戦記事は見つからなかった（koko-soccer の記事は前年以前の代のもの）。", "page": "hub", "next": {"no": 149, "round": "2回戦", "a": "学習院", "b": "武蔵丘", "date": "9/20", "dow": "日", "time": "18:00", "venue": "学習院高等科", "venueCode": "学", "timeNote": "高体連PDFとkoko-soccerの両方で18:00", "opp": "学習院"}, "road": [{"n": "1", "round": "1回戦", "when": "9/13(日) 13:00", "teams": ["昭和第一"], "result": {"score": "5-2", "winner": "武蔵丘"}, "bd": {"reach": 1.0, "before": "", "opps": [{"key": "昭和第一", "share": 1.0, "meet": 1.0}]}}, {"n": "2", "round": "2回戦", "when": "9/20(日) 18:00", "teams": ["学習院", "板橋有徳"], "bd": {"reach": 1.0, "before": "1回戦で負ける", "opps": [{"key": "学習院", "share": 1.0, "meet": 1.0}]}}, {"n": "3", "round": "ブロック決勝", "when": "9/22(火) 12:00", "teams": ["城東", "東村山"], "bd": {"reach": 0.31, "before": "2回戦までに負ける", "opps": [{"key": "城東", "share": 0.747, "meet": 0.232}, {"key": "東村山", "share": 0.253, "meet": 0.078}]}}], "formNote": ["1回戦は武蔵丘が昭和第一に5-2で勝った（9/13）。昭和第一は今季の地区リーグ（DUOリーグ グループB）首位だったが、大会では点差がついた。", "2回戦の相手の学習院は、1回戦で板橋有徳に3-1で勝った。強さの点数では学習院が上だが、今季のTリーグ（T5 Cブロック）では10チーム中10位で、点が取れていない。", "武蔵丘Aは今季のNSリーグ2部Aで首位。ただしT5（東京都リーグの5部）と地区リーグでは相手の強さが違うので、数字をそのまま比べることはできない。", "ブロック決勝の候補の城東は、今季のT5 Dブロックで4位。東村山は8地区ユースリーグ2部Aで、分かっている4試合は1勝1分2敗。", "強さの点数には、2026-09-15から今季のリーグ戦（Tリーグ・プリンス関東・地区リーグ）も入っている（重みは大会の半分）。"], "pyramid": [{"tier": "プレミアリーグ", "desc": "全国の上位24チーム（Jユースと高校）", "teams": []}, {"tier": "プリンスリーグ関東", "desc": "関東地域のリーグ。プレミアの一つ下", "teams": []}, {"tier": "T1", "desc": "東京都の最上位。10チーム×1グループ", "teams": []}, {"tier": "T2", "desc": "10チーム×1グループ", "teams": []}, {"tier": "T3", "desc": "10チーム×2グループ", "teams": []}, {"tier": "T4", "desc": "10チーム×2グループ", "teams": []}, {"tier": "T5", "desc": "10チーム×4ブロック（A〜D）。旧「地区トップリーグ」", "teams": ["学習院（Cブロック）", "城東（Dブロック）"]}, {"tier": "地区リーグ", "desc": "T5の下の各地区のリーグ。1部・2部・3部…と続く", "teams": ["武蔵丘A（NSリーグ2部・第5地区）", "武蔵丘B（NSリーグ3部）", "昭和第一A・B（DUOリーグ・第2地区）", "城東B（リバーサイド1部）", "東村山（第8地区ユースリーグ2部）"]}], "pyramidNote": "T1〜T4とプレミア・プリンスはあなたから聞いた構成。T5が2026年度に4ブロックあることはTリーグ公式サイト、「旧地区トップリーグ」という説明は城東の学校ページによる。NSリーグ・リバーサイドリーグとT5の上下関係は、T5が旧地区トップであることからの推定。", "method": ["強さの点数（Elo）は、2022〜2026年度の東京都の公式戦 4,010試合（総体・選手権・新人戦・関東予選）から計算した。強い相手に勝つほど大きく上がり、得点差が大きいほど大きく動く。PK戦は引き分けとして扱う。", "高校の部活は毎年メンバーが入れ替わるので、年度が変わるたびに点数を平均（1500）へ4分の1戻している。", "「勝つ見込み」は点数差から出した目安。会場（ホームかどうか）、当日のメンバー、けが人、天候は入っていない。", "直接対戦や共通の対戦相手が少ないときも、試合のつながり（A校に勝ったB校に勝った…）をたどって点数が比べられるのが Elo の利点。ただし試合数が少ない学校は点数のぶれが大きい。", "試合結果は東京都高体連サッカー専門部（tokyosoccer-u18.com）のトーナメント表 PDF をプログラムで読み取ったもの。"], "totalMatches": 4040, "elo": {"base": 1500, "k": 88, "carry": 1.0, "leagueWeight": 0.5, "band": 50, "example": {"me": "都・武蔵丘", "opp": "学習院", "meElo": 1605, "oppElo": 1744, "diff": -139, "p": 0.31, "cases": [{"label": "2-0 勝ち", "delta": 91, "me": 1696, "opp": 1653}, {"label": "1-0 勝ち", "delta": 61, "me": 1666, "opp": 1683}, {"label": "PK戦", "delta": 17, "me": 1622, "opp": 1727}, {"label": "0-1 負け", "delta": -27, "me": 1578, "opp": 1771}, {"label": "0-3 負け", "delta": -48, "me": 1557, "opp": 1792}]}, "opponents": [{"name": "昭和第一", "diff": 258}, {"name": "学習院", "diff": -139}, {"name": "都・板橋有徳", "diff": 428}, {"name": "都・城東", "diff": -54}, {"name": "都・東村山", "diff": 134}], "uses": ["「武蔵丘が勝つ見込み」は、いまの両校の点数を手順2の式に入れたもの。", "「この山を勝ち抜く見込み」は、山の組み合わせに沿って、1試合ずつの見込みを掛け合わせたもの。終わった試合は結果どおりに扱う。", "「当たる確率」＝ 武蔵丘がその試合まで勝ち上がる見込み × 相手がその試合まで勝ち上がる見込み。武蔵丘が途中で負けるとどちらとも当たらないので、同じ回戦の候補2校を足しても100%にはならず、足した値は「武蔵丘がその回戦まで勝ち上がる見込み」になる。100%との差は「武蔵丘がその前に負ける」場合（内訳は「勝ち上がりの道」の帯グラフ）。試合どうしは影響し合わない（独立）とみなして掛け算している。", "「格上・格下」は、試合の時点で点数の差が 50 点を超える相手。"], "caveats": ["2022〜2026年度の大会の試合を、試合前の点数で当てられたかで設定を選んだ。2025・26年度の大会1,314試合で、見込みの高い側が勝った割合は80.2%（旧方式は76.8%）。", "リーグ戦をそのまま入れると当たり具合は悪くなった。控え（B・C）やクラブは点数が分からないまま始まるため。控えは学校のAから差し引いた点数で始め、試合数の少ないチームとの結果では学校の点数を動かさないようにして、はじめて良くなった。", "地区リーグは地区ごとに取れた量が違う（第8地区は学校の試合記録だけ）。取れた量の多い地区の学校ほど点数がよく動く。", "2022年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。ホームかどうか、延長かどうかは考えていない。"]}, "slug": "index"};
 </script>
 <script>
 /* 武蔵丘スカウト — 全ページ共通の部品と、ページ種別ごとの組み立て。
@@ -589,7 +593,7 @@ function bracketSVG() {
     const wa = d && d.winner === K[a], wb = d && d.winner === K[b];
     const meA = K[a] === D.me, meB = K[b] === D.me;
     line(X1, ya, X1, ym, wa ? "win" : meA ? "path" : ""); line(X1, ym, X1, yb, wb ? "win" : meB ? "path" : ""); line(X1, ym, X2, ym, wa || wb ? "win" : meA || meB ? "path" : "");
-    if (no) {
+    if (no && !d) {
       svg.append(s("text", { class: "mno", x: X1 + 7, y: ym - 7 }, `【${no}】`));
       svg.append(s("text", { class: "mlab", x: X1 + 7, y: ym + 15 }, `${sch[no].date} ${sch[no].time}`));
     } else if (d) {
@@ -622,7 +626,7 @@ function scheduleList() {
     const nm = (k) => (B[k] ? B[k].display : k);
     box.append(h("div", { class: "r" + (m.a === D.me || m.b === D.me ? " mine" : "") },
       h("span", { class: "m" }, m.no ? `【${m.no}】` : m.round),
-      m.no ? h("span", { class: "dt" }, `${m.date}(${m.dow}) ${m.time}`) : h("span", { class: "done" }, `${m.score} 終了`),
+      m.no && !m.winner ? h("span", { class: "dt" }, `${m.date}(${m.dow}) ${m.time}`) : h("span", { class: "done" }, `${m.score} 終了`),
       h("span", {}, `${nm(m.a)} 対 ${nm(m.b)}`, m.venue ? h("span", { class: "where" }, m.venue + (m.timeNote ? `・${m.timeNote}` : "")) : null)));
   }
   return box;
@@ -715,6 +719,22 @@ function leagueSection(t, isMe) {
 }
 const LRES = { "勝": "w", "分": "d", "負": "l" };
 
+function districtLeagueSection(me) {
+  const districtData = D.districtLeague && D.districtLeague[me];
+  const sec = h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "地区リーグ"), h("p", {}, "2026年度。東京都地区別リーグ")));
+  if (!districtData || !districtData.length) {
+    return sec;
+  }
+  for (const row of districtData) {
+    const head = h("div", { class: "sec-head" },
+      h("div", { class: "chips" }, h("strong", {}, `${row.district} ${row.division}`),
+        h("span", { class: "chip us" }, `${row.rank}`),
+        h("span", { class: "chip num" }, `${row.matches}試合 ${row.wins}勝${row.draws}分${row.losses}敗 勝点${row.points}`)));
+    sec.append(h("div", { class: "stack" }, head));
+  }
+  return sec;
+}
+
 function stagesSection(t) {
   return h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "大会ごとの成績"), h("p", {}, "2022〜2026年度。○ 勝ち　× 負け。PK戦は「PK勝 4-3」のように書いています")),
     h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", { class: "n" }, "年度"), h("th", {}, "大会・段階"), h("th", {}, "最終到達"), h("th", {}, "勝ち上がり"))),
@@ -781,14 +801,21 @@ function renderHub() {
   const road = h("div", { class: "road" });
   for (const st of D.road) {
     const col = h("div", { class: "step" }, h("div", { class: "step-h" }, h("span", { class: "n" }, st.n), h("span", { class: "r" }, st.round), h("span", { class: "d" }, st.when)));
-    if (st.bd && st.bd.before) col.append(meetBar(st));
+    if (st.result) {
+      const won = st.result.winner === D.me;
+      col.append(h("div", { class: "result-banner" + (won ? " won" : "") }, h("span", { class: "res " + (won ? "w" : "l") }, h("b", { class: "g", "aria-hidden": "true" }, won ? "○" : "×"), won ? "勝ち" : "負け"),
+        h("b", { class: "num" }, st.result.score), h("span", { class: "small muted" }, "終了")));
+    }
+    const settled = st.bd && st.bd.opps.length === 1 && st.bd.reach >= 0.9995;
+    if (st.bd && st.bd.before && !settled) col.append(meetBar(st));
     for (const k of st.teams) {
       const t = B[k];
       col.append(h("a", { class: "team-card", ...linkAttrs(D.keyToSlug[k]) },
         h("div", { class: "nm" }, h("b", {}, t.display), h("span", { class: "go" }, "分析を見る →")),
         h("div", { class: "sub" }, t.area ? `第${t.area.area}地区・${t.area.city}・${t.area.kind}` : ""),
         t.leagueLine ? h("div", { class: "form" }, t.leagueLine) : null,
-        h("dl", {}, h("div", {}, h("dt", {}, "武蔵丘が勝つ見込み"), h("dd", { class: "us" }, pct(t.vsMe))), h("div", {}, h("dt", {}, "当たる確率"), h("dd", {}, pct(t.meetProb))))));
+        t.alive ? h("dl", {}, h("div", {}, h("dt", {}, "武蔵丘が勝つ見込み"), h("dd", { class: "us" }, pct(t.vsMe))), h("div", {}, h("dt", {}, "当たる確率"), h("dd", {}, pct(t.meetProb))))
+          : h("div", { class: "out-note" }, "1回戦で敗退")));
     }
     road.append(col);
   }
@@ -825,7 +852,7 @@ function meetBar(st) {
     h("ul", { class: "meetlist" },
       bd.opps.map((o, i) => h("li", {}, h("i", { style: `background:${cols[i]}` }), h("span", {}, h("b", {}, `${nameOf(o.key)}と当たる ${pct(o.meet)}`),
         h("small", {}, `＝ ${meWin} ${pct(bd.reach)} × ${oppWin(nameOf(o.key))} ${pct(o.share)}`)))),
-      h("li", {}, h("i", { class: "lose" }), h("span", {}, h("b", {}, `武蔵丘が${bd.before.replace("負ける", "")}負け、どちらとも当たらない ${pct(lose)}`)))));
+      lose > 0.0005 ? h("li", {}, h("i", { class: "lose" }), h("span", {}, h("b", {}, `武蔵丘が${bd.before.replace("負ける", "")}負け、どちらとも当たらない ${pct(lose)}`))) : null));
 }
 
 /* 強さの点数のしくみ（入口ページ） */
@@ -835,14 +862,15 @@ function eloSection() {
   const sec = h("section", { class: "sec", id: "elo" },
     h("div", { class: "sec-head" }, h("h2", {}, "強さの点数のしくみ"), h("p", {}, "Elo（イロ）レーティング")),
     h("p", { class: "prose" }, "チェスなどで使われる Elo レーティングを、高校サッカー向けに少し変えた計算です。全校を同じ物差しで並べ、試合の勝ち負けから少しずつ点数を動かします。",
-      h("b", {}, "Claude Code が設計した暫定の方法で、予想がどれだけ当たるかはまだ検証していません。")));
+      h("b", {}, "設定は、2022〜2026年度の大会の試合を試合前の点数でどれだけ当てられたかで選びました（2025・26年度の大会で、見込みの高い側が勝った割合 80.2%）。"), "それでも過去の試合からの目安です。"));
   const steps = [
-    ["はじまりは全校 " + E.base + " 点", "データの最初（2022年度）の試合から数え始めます。"],
+    ["はじまりは全校 " + E.base + " 点", "データの最初（2022年度）の試合から数え始めます。リーグ戦で初めて出てくる控え（B・C…）は、その学校の点数から B は100点・C は200点…引いた点数で始めます。"],
     ["試合の前に「勝つ見込み」を出す", "見込み ＝ 1 ÷（1 ＋ 10 の（−点数の差 ÷ 400）乗）。差が 0 点なら 50%、100 点なら約 64%、200 点なら約 76%。"],
-    ["試合の後に点数を動かす", `変化 ＝ ${E.k} × 点差の倍率 ×（結果 − 見込み）。結果は勝ち 1、負け 0、PK戦 0.5（引き分け扱い）。勝った側が増えた分だけ、負けた側が減ります。`],
+    ["試合の後に点数を動かす", `変化 ＝ ${E.k} × 試合の重み × 点差の倍率 ×（結果 − 見込み）。重みは大会 1・リーグ戦 ${E.leagueWeight}。結果は勝ち 1、負け 0、PK戦 0.5（引き分け扱い）。勝った側が増えた分だけ、負けた側が減ります。`],
     ["大差の勝ちほど大きく動かす", "点差の倍率は、1点差以内 1倍、2点差 1.5倍、3点差以上は（11 ＋ 点差）÷ 8 倍（3点差 1.75倍、5点差 2倍）。"],
-    ["年度が変わったら平均へ少し戻す", `3年生が抜けて前の年の強さはそのまま続かないので、年度の終わりに ${E.base} 点との差を ${Math.round((1 - E.carry) * 100)}% 縮めます。`],
-    ["数えるのは公式戦だけ", `高体連のトーナメント表にある ${D.totalMatches.toLocaleString()} 試合（総体・選手権・新人戦・関東予選）。1年度の中は 関東予選 → 総体 → 選手権 → 新人戦 の順。今季のリーグ戦は入っていません。`],
+    E.carry >= 1 ? ["年度が変わっても点数は戻さない", "部員は入れ替わっても、学校ごとの強さ（指導や部員の集まり方）は続きます。平均へ戻す計算と比べて、戻さないほうが当たりました。"]
+      : ["年度が変わったら平均へ少し戻す", `年度の終わりに ${E.base} 点との差を ${Math.round((1 - E.carry) * 100)}% 縮めます。`],
+    ["大会とリーグ戦を日付順に数える", `高体連のトーナメント表にある ${D.totalMatches.toLocaleString()} 試合（総体・選手権・新人戦・関東予選）に、Tリーグ・プリンスリーグ関東・地区リーグの試合を足します。控えやクラブは学校とは別のチームとして数え、控えの負けで学校の点数は下がりません。試合数の少ないチームとの試合では、学校の点数を動かしません。`],
   ];
   const ol = h("ol", { class: "steps" }, steps.map(([t, b]) => h("li", {}, h("b", {}, t), h("span", {}, b))));
   const ex = E.example;
@@ -855,7 +883,7 @@ function eloSection() {
     h("p", { class: "small muted" }, "見込みの高い側が勝っても点数はあまり動かず、見込みの低い側が勝つと大きく動きます。PK戦は勝敗にかかわらず引き分けとして計算します。"));
   sec.append(h("div", { class: "split" }, h("div", { class: "stack" }, ol, curveFigure()), h("div", { class: "stack" }, exBox,
     h("div", { class: "card" }, h("h3", {}, "このサイトの数字の出し方"), h("ul", { class: "points" }, E.uses.map((u) => h("li", {}, u)))),
-    h("div", { class: "card" }, h("h3", {}, "まだ確かめていないこと"), h("ul", { class: "points" }, E.caveats.map((u) => h("li", {}, u)))))));
+    h("div", { class: "card" }, h("h3", {}, "確かめたことと弱点"), h("ul", { class: "points" }, E.caveats.map((u) => h("li", {}, u)))))));
   return sec;
 }
 
@@ -940,7 +968,7 @@ function renderTeam() {
   } else {
     scout.append(h("p", { class: "small muted" }, D.styleNone));
   }
-  main.append(scout, connectionsSection(t), leagueSection(t, false));
+  main.append(scout, connectionsSection(t), leagueSection(t, false), districtLeagueSection(t.display === D.brief[D.me].display ? D.me : normalize(t.display)));
   main.append(h("section", { class: "sec" }, h("div", { class: "figure" },
     h("div", { class: "cap" }, h("h2", {}, "強さの点数の推移"), h("div", { class: "legend" }, h("span", {}, h("i", { style: "border-color:var(--us)" }), nameOf(D.me)), h("span", {}, h("i", { class: "dash", style: "border-color:var(--them)" }), t.display))),
     eloChart([{ name: nameOf(D.me), hist: D.meHistory, color: "var(--us)" }, { name: t.display, hist: t.eloHistory, color: "var(--them)", dash: true }]),
