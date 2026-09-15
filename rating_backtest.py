@@ -32,6 +32,31 @@ def score(preds: list, min_games: int = 0) -> dict:
     return {"n": len(ps), "logloss": round(ll, 4), "brier": round(br, 4), "acc": round(acc, 3), "nDec": len(dec)}
 
 
+BINS = [(0, .05), (.05, .1), (.1, .2), (.2, .35), (.35, .5)]
+
+
+def calibration(preds: list) -> list:
+    """見込みの低い側から見て、見込みの帯ごとに「見込みの平均」と「実際に勝った割合」（PK・引き分けは半分）を並べる。"""
+    ps = [(1 - p, 1 - s) if p > 0.5 else (p, s) for p, s, *_ in preds]
+    out = []
+    for lo, hi in BINS:
+        sub = [(p, s) for p, s in ps if lo <= p < hi]
+        if sub:
+            out.append({"band": f"{lo:.0%}〜{hi:.0%}", "n": len(sub), "pred": sum(p for p, _ in sub) / len(sub), "actual": sum(s for _, s in sub) / len(sub)})
+    return out
+
+
+def calib_rows(old: list, new: list) -> list:
+    rows = []
+    for lo, hi in BINS:
+        band = f"{lo:.0%}〜{hi:.0%}"
+        o = next((c for c in old if c["band"] == band), None)
+        n = next((c for c in new if c["band"] == band), None)
+        cell = lambda c: (str(c["n"]), f"{c['pred']:.1%} → {c['actual']:.1%}") if c else ("―", "―")  # noqa: E731
+        rows.append(f"| {band} | {' | '.join(cell(o))} | {' | '.join(cell(n))} |")
+    return rows
+
+
 def main() -> int:
     rows = list(csv.DictReader((ROOT / "out/matches.csv").open(encoding="utf-8-sig")))
     for r in rows:
@@ -55,6 +80,8 @@ def main() -> int:
         for label, yrs in (("2025-26", (2025, 2026)), ("2024", (2024,))):
             o = rating.run([dict(r) for r in rows], cfg, eval_years=yrs)
             res[label] = score(o["preds"])
+            if label == "2025-26":
+                res["calib"] = calibration(o["preds"])
             res[label + "_5"] = score(o["preds"], 5)
         results.append(res)
         print(f"{cfg.name:52s} 25-26 ll={res['2025-26']['logloss']} acc={res['2025-26']['acc']} | 2024 ll={res['2024']['logloss']}")
@@ -78,6 +105,12 @@ def write_md(results: list) -> None:
           f"- 今の方式: 対数損失 {b['logloss']}・ブライア {b['brier']}・的中率 {b['acc']:.1%}（2025・26年度 {b['n']} 試合）",
           f"- 一番良かった設定: **{best['cfg'].name}** → 対数損失 {best['2025-26']['logloss']}・ブライア {best['2025-26']['brier']}・的中率 {best['2025-26']['acc']:.1%}",
           f"- 2024年度の大会: 今の方式 {base['2024']['logloss']} → この設定 {best['2024']['logloss']}", "",
+          "## 見込みと実際（2025・26年度の大会。見込みの低い側から見た値）", "",
+          "対数損失だけでは「見込みが極端すぎないか」は分からないので、見込みの帯ごとに実際に勝った割合を比べた。",
+          "旧方式は見込みを控えめに出しすぎていた（29%と言った試合で実際は7%）。今の方式は見込みと実際がよく合う。", "",
+          "| 見込みの帯 | 旧方式: 試合数 | 旧方式: 見込み → 実際 | 今の方式: 試合数 | 今の方式: 見込み → 実際 |", "|---|---|---|---|---|",
+          *calib_rows(base["calib"], best["calib"]),
+          "",
           "## わかったこと", "",
           "1. **リーグ戦をそのまま入れると、大会の当たり具合は悪くなった**（地区リーグは特に）。地区リーグには強い学校の控え（B・C）やクラブが多く、"
           "最初はみな1500点から始まる。実は強い控えに負け続けた学校は点数を大きく下げ（例: 芝 −147）、弱いリーグで勝ち続けた学校は上がりすぎた。"
