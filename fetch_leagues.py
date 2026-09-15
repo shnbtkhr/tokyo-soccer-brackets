@@ -5,7 +5,10 @@
 - リバーサイドユースリーグ 1部（東京東部の地域リーグ）: https://riverside-league.com/
 
 取得したページは raw/web/ に保存し、--refresh を付けたときだけ取り直す（アクセスは1.5秒以上あける）。
-出力: out/scout/leagues_2026.json
+出力: out/scout/leagues_2026_legacy.json（4校ぶんの旧版）・out/scout/member_areas.json（加盟校一覧）
+
+2026-09-15 から、サイトの「今季のリーグ戦」は build_leagues.py が Tリーグ・プリンス関東・地区リーグのまとめデータから作る
+（out/scout/leagues_2026.json）。このファイルはそれを上書きしないよう、旧版を別名で書く。
 """
 
 from __future__ import annotations
@@ -185,7 +188,7 @@ def main() -> int:
         data.setdefault(k, []).extend(v)
     for k, v in goalnote(args.refresh).items():
         data.setdefault(k, []).extend(v)
-    out = ROOT / "out/scout/leagues_2026.json"
+    out = ROOT / "out/scout/leagues_2026_legacy.json"
     out.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     areas = member_areas(args.refresh)
     (ROOT / "out/scout/member_areas.json").write_text(json.dumps(areas, ensure_ascii=False, indent=1), encoding="utf-8")

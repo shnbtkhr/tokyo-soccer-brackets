@@ -212,6 +212,7 @@ a.team-card dt { font-size: 11px; color: var(--muted); }
 a.team-card dd { margin: 0; font-family: var(--f-num); font-weight: 600; font-size: var(--t2); line-height: 1.1; }
 a.team-card dd.us { color: var(--us); }
 a.team-card.decided { background: transparent; }
+a.team-card .out-note { padding-top: var(--s2); border-top: 1px solid var(--rule); color: var(--muted); font-size: var(--t-1); font-weight: 700; }
 
 /* トーナメント表（公式の表と同じく、勝ち上がりは赤線） */
 svg.bracket { width: 100%; height: auto; display: block; }
@@ -348,6 +349,9 @@ ol.chains .imp.down { color: var(--link); }
 footer.foot { max-width: var(--page); margin: 0 auto; padding: 0 var(--s4) var(--s6); color: var(--muted); font-size: var(--t-1); }
 
 /* 当たる確率の内訳（入口ページの勝ち上がりの道） */
+.result-banner { display: flex; align-items: baseline; gap: var(--s2); padding: var(--s2) var(--s3); border-radius: var(--r); background: var(--sunk); }
+.result-banner.won { background: var(--us-soft); }
+.result-banner .num { font-size: var(--t1); font-weight: 700; }
 .meet { display: grid; gap: 6px; }
 .meetbar { display: flex; gap: 2px; height: 13px; border-radius: 4px; overflow: hidden; }
 .meetbar span { display: block; min-width: 2px; }

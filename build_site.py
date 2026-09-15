@@ -21,7 +21,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from analyze_team import BASE, CARRY, K, win_prob
+from analyze_team import BASE, CARRY, K, LEAGUE_WEIGHT, win_prob
 from build_scout_page import build_data
 
 ROOT = Path(__file__).parent
@@ -118,7 +118,7 @@ def elo_explainer(T: dict, me: str, r1: str, opps: list) -> dict:
         return {"label": label, "delta": d, "me": me_e + d, "opp": op_e - d}
 
     return {
-        "base": int(BASE), "k": int(K), "carry": CARRY, "band": 50,
+        "base": int(BASE), "k": int(K), "carry": CARRY, "leagueWeight": LEAGUE_WEIGHT, "band": 50,
         "example": {"me": T[me]["display"], "opp": T[r1]["display"], "meElo": me_e, "oppElo": op_e, "diff": me_e - op_e, "p": round(p, 3),
                     "cases": [case("2-0 勝ち", 1, 2, 0), case("1-0 勝ち", 1, 1, 0), case("PK戦", 0.5, 1, 1), case("0-1 負け", 0, 0, 1), case("0-3 負け", 0, 0, 3)]},
         "opponents": [{"name": T[k]["display"], "diff": me_e - T[k]["elo"]} for k in opps],
@@ -131,10 +131,10 @@ def elo_explainer(T: dict, me: str, r1: str, opps: list) -> dict:
             "「格上・格下」は、試合の時点で点数の差が 50 点を超える相手。",
         ],
         "caveats": [
-            "32・4分の1・PK戦を引き分けとする扱い・50 点の線引きは、一般的な決め方をもとに置いた値で、過去の試合で当たり具合を確かめていない。",
-            "2022年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。",
-            "試合数の少ない学校や、地区の違う学校どうしの比較は、たどれる試合のつながりが少なく、ぶれやすい。",
-            "今季のリーグ戦は入っていないので、今の調子は反映されない（昭和第一は地区リーグで首位）。ホームかどうかも考えていない。",
+            "2022〜2026年度の大会の試合を、試合前の点数で当てられたかで設定を選んだ。2025・26年度の大会1,314試合で、見込みの高い側が勝った割合は80.2%（旧方式は76.8%）。",
+            "リーグ戦をそのまま入れると当たり具合は悪くなった。控え（B・C）やクラブは点数が分からないまま始まるため。控えは学校のAから差し引いた点数で始め、試合数の少ないチームとの結果では学校の点数を動かさないようにして、はじめて良くなった。",
+            "地区リーグは地区ごとに取れた量が違う（第8地区は学校の試合記録だけ）。取れた量の多い地区の学校ほど点数がよく動く。",
+            "2022年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。ホームかどうか、延長かどうかは考えていない。",
         ],
     }
 
@@ -191,10 +191,16 @@ def build(links: str) -> Path:
     r1 = block[i_me ^ 1]
     r2 = [block[i] for i in ((0, 1) if i_me in (2, 3) else (2, 3))]
     fin = [k for k in (block[4:] if i_me < 4 else block[:4]) if T[k]["alive"]]
-    rounds = {r1: ("1回戦", False), **{k: ("2回戦", True) for k in r2}, **{k: ("ブロック決勝", True) for k in fin}}
-    mine_no = next(m["no"] for m in data["schedule"] if m.get("no") and me in (m["a"], m["b"]))
+    r2_alive = [k for k in r2 if T[k]["alive"]]
+    # 勝ち残りが1校になったら「候補」ではなく確定の相手
+    rounds = {r1: ("1回戦", False), **{k: ("2回戦", len(r2_alive) > 1) for k in r2}, **{k: ("ブロック決勝", len(fin) > 1) for k in fin}}
+    r1_no = next(m["no"] for m in data["schedule"] if m.get("no") and me in (m["a"], m["b"]) and m["round"] == "1回戦")
+    # 次の試合 = 武蔵丘の試合で、まだ勝者の決まっていないもの
+    mine_no = next((m["no"] for m in data["schedule"] if m.get("no") and me in (m["a"], m["b"]) and not m.get("winner")), None)
     road = [
-        {"n": "1", "round": "1回戦", "when": f"{sched[mine_no]['date']}({sched[mine_no]['dow']}) {sched[mine_no]['time']}", "teams": [r1]},
+        {"n": "1", "round": "1回戦", "when": f"{sched[r1_no]['date']}({sched[r1_no]['dow']}) {sched[r1_no]['time']}", "teams": [r1],
+         "result": sched[r1_no].get("score") and {"score": sched[r1_no]["score"] if sched[r1_no]["a"] == me else "-".join(reversed(sched[r1_no]["score"].split("-"))),
+                                                  "winner": sched[r1_no]["winner"]}},
         {"n": "2", "round": "2回戦", "when": f"{sched[149]['date']}({sched[149]['dow']}) {sched[149]['time']}", "teams": r2},
         {"n": "3", "round": "ブロック決勝", "when": f"{sched[208]['date']}({sched[208]['dow']}) {sched[208]['time']}", "teams": fin},
     ]
@@ -250,10 +256,11 @@ def build(links: str) -> Path:
         path.write_text(html, encoding="utf-8")
         print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size // 1024} KB)")
 
-    nm = sched[mine_no]
-    write("index", {"page": "hub", "next": {**nm, "opp": r1}, "road": road, "formNote": data["formNote"], "pyramid": data["pyramid"],
+    nm = sched[mine_no] if mine_no else None
+    nxt_opp = (nm["a"] if nm["b"] == me else nm["b"]) if nm else None
+    write("index", {"page": "hub", "next": {**nm, "opp": nxt_opp} if nm else None, "road": road, "formNote": data["formNote"], "pyramid": data["pyramid"],
                     "pyramidNote": data["pyramidNote"], "method": data["method"], "totalMatches": total,
-                    "elo": elo_explainer(T, me, r1, opps)})
+                    "elo": elo_explainer(T, me, nxt_opp or r1, opps)})
     me_t = {**T[me], "key": me}
     ins, bands, note = self_insights(me_t, block, {T[k]["display"]: T[k]["elo"] for k in opps})
     lead = (f"第{T[me]['area']['area']}地区（{T[me]['area']['city']}）の{T[me]['area']['kind']}高校。過去5年の公式戦{T[me]['summary']['n']}試合と今季のNSリーグから、"

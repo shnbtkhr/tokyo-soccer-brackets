@@ -118,7 +118,7 @@ function bracketSVG() {
     const wa = d && d.winner === K[a], wb = d && d.winner === K[b];
     const meA = K[a] === D.me, meB = K[b] === D.me;
     line(X1, ya, X1, ym, wa ? "win" : meA ? "path" : ""); line(X1, ym, X1, yb, wb ? "win" : meB ? "path" : ""); line(X1, ym, X2, ym, wa || wb ? "win" : meA || meB ? "path" : "");
-    if (no) {
+    if (no && !d) {
       svg.append(s("text", { class: "mno", x: X1 + 7, y: ym - 7 }, `【${no}】`));
       svg.append(s("text", { class: "mlab", x: X1 + 7, y: ym + 15 }, `${sch[no].date} ${sch[no].time}`));
     } else if (d) {
@@ -151,7 +151,7 @@ function scheduleList() {
     const nm = (k) => (B[k] ? B[k].display : k);
     box.append(h("div", { class: "r" + (m.a === D.me || m.b === D.me ? " mine" : "") },
       h("span", { class: "m" }, m.no ? `【${m.no}】` : m.round),
-      m.no ? h("span", { class: "dt" }, `${m.date}(${m.dow}) ${m.time}`) : h("span", { class: "done" }, `${m.score} 終了`),
+      m.no && !m.winner ? h("span", { class: "dt" }, `${m.date}(${m.dow}) ${m.time}`) : h("span", { class: "done" }, `${m.score} 終了`),
       h("span", {}, `${nm(m.a)} 対 ${nm(m.b)}`, m.venue ? h("span", { class: "where" }, m.venue + (m.timeNote ? `・${m.timeNote}` : "")) : null)));
   }
   return box;
@@ -244,6 +244,22 @@ function leagueSection(t, isMe) {
 }
 const LRES = { "勝": "w", "分": "d", "負": "l" };
 
+function districtLeagueSection(me) {
+  const districtData = D.districtLeague && D.districtLeague[me];
+  const sec = h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "地区リーグ"), h("p", {}, "2026年度。東京都地区別リーグ")));
+  if (!districtData || !districtData.length) {
+    return sec;
+  }
+  for (const row of districtData) {
+    const head = h("div", { class: "sec-head" },
+      h("div", { class: "chips" }, h("strong", {}, `${row.district} ${row.division}`),
+        h("span", { class: "chip us" }, `${row.rank}`),
+        h("span", { class: "chip num" }, `${row.matches}試合 ${row.wins}勝${row.draws}分${row.losses}敗 勝点${row.points}`)));
+    sec.append(h("div", { class: "stack" }, head));
+  }
+  return sec;
+}
+
 function stagesSection(t) {
   return h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "大会ごとの成績"), h("p", {}, "2022〜2026年度。○ 勝ち　× 負け。PK戦は「PK勝 4-3」のように書いています")),
     h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", { class: "n" }, "年度"), h("th", {}, "大会・段階"), h("th", {}, "最終到達"), h("th", {}, "勝ち上がり"))),
@@ -310,14 +326,21 @@ function renderHub() {
   const road = h("div", { class: "road" });
   for (const st of D.road) {
     const col = h("div", { class: "step" }, h("div", { class: "step-h" }, h("span", { class: "n" }, st.n), h("span", { class: "r" }, st.round), h("span", { class: "d" }, st.when)));
-    if (st.bd && st.bd.before) col.append(meetBar(st));
+    if (st.result) {
+      const won = st.result.winner === D.me;
+      col.append(h("div", { class: "result-banner" + (won ? " won" : "") }, h("span", { class: "res " + (won ? "w" : "l") }, h("b", { class: "g", "aria-hidden": "true" }, won ? "○" : "×"), won ? "勝ち" : "負け"),
+        h("b", { class: "num" }, st.result.score), h("span", { class: "small muted" }, "終了")));
+    }
+    const settled = st.bd && st.bd.opps.length === 1 && st.bd.reach >= 0.9995;
+    if (st.bd && st.bd.before && !settled) col.append(meetBar(st));
     for (const k of st.teams) {
       const t = B[k];
       col.append(h("a", { class: "team-card", ...linkAttrs(D.keyToSlug[k]) },
         h("div", { class: "nm" }, h("b", {}, t.display), h("span", { class: "go" }, "分析を見る →")),
         h("div", { class: "sub" }, t.area ? `第${t.area.area}地区・${t.area.city}・${t.area.kind}` : ""),
         t.leagueLine ? h("div", { class: "form" }, t.leagueLine) : null,
-        h("dl", {}, h("div", {}, h("dt", {}, "武蔵丘が勝つ見込み"), h("dd", { class: "us" }, pct(t.vsMe))), h("div", {}, h("dt", {}, "当たる確率"), h("dd", {}, pct(t.meetProb))))));
+        t.alive ? h("dl", {}, h("div", {}, h("dt", {}, "武蔵丘が勝つ見込み"), h("dd", { class: "us" }, pct(t.vsMe))), h("div", {}, h("dt", {}, "当たる確率"), h("dd", {}, pct(t.meetProb))))
+          : h("div", { class: "out-note" }, "1回戦で敗退")));
     }
     road.append(col);
   }
@@ -354,7 +377,7 @@ function meetBar(st) {
     h("ul", { class: "meetlist" },
       bd.opps.map((o, i) => h("li", {}, h("i", { style: `background:${cols[i]}` }), h("span", {}, h("b", {}, `${nameOf(o.key)}と当たる ${pct(o.meet)}`),
         h("small", {}, `＝ ${meWin} ${pct(bd.reach)} × ${oppWin(nameOf(o.key))} ${pct(o.share)}`)))),
-      h("li", {}, h("i", { class: "lose" }), h("span", {}, h("b", {}, `武蔵丘が${bd.before.replace("負ける", "")}負け、どちらとも当たらない ${pct(lose)}`)))));
+      lose > 0.0005 ? h("li", {}, h("i", { class: "lose" }), h("span", {}, h("b", {}, `武蔵丘が${bd.before.replace("負ける", "")}負け、どちらとも当たらない ${pct(lose)}`))) : null));
 }
 
 /* 強さの点数のしくみ（入口ページ） */
@@ -364,14 +387,15 @@ function eloSection() {
   const sec = h("section", { class: "sec", id: "elo" },
     h("div", { class: "sec-head" }, h("h2", {}, "強さの点数のしくみ"), h("p", {}, "Elo（イロ）レーティング")),
     h("p", { class: "prose" }, "チェスなどで使われる Elo レーティングを、高校サッカー向けに少し変えた計算です。全校を同じ物差しで並べ、試合の勝ち負けから少しずつ点数を動かします。",
-      h("b", {}, "Claude Code が設計した暫定の方法で、予想がどれだけ当たるかはまだ検証していません。")));
+      h("b", {}, "設定は、2022〜2026年度の大会の試合を試合前の点数でどれだけ当てられたかで選びました（2025・26年度の大会で、見込みの高い側が勝った割合 80.2%）。"), "それでも過去の試合からの目安です。"));
   const steps = [
-    ["はじまりは全校 " + E.base + " 点", "データの最初（2022年度）の試合から数え始めます。"],
+    ["はじまりは全校 " + E.base + " 点", "データの最初（2022年度）の試合から数え始めます。リーグ戦で初めて出てくる控え（B・C…）は、その学校の点数から B は100点・C は200点…引いた点数で始めます。"],
     ["試合の前に「勝つ見込み」を出す", "見込み ＝ 1 ÷（1 ＋ 10 の（−点数の差 ÷ 400）乗）。差が 0 点なら 50%、100 点なら約 64%、200 点なら約 76%。"],
-    ["試合の後に点数を動かす", `変化 ＝ ${E.k} × 点差の倍率 ×（結果 − 見込み）。結果は勝ち 1、負け 0、PK戦 0.5（引き分け扱い）。勝った側が増えた分だけ、負けた側が減ります。`],
+    ["試合の後に点数を動かす", `変化 ＝ ${E.k} × 試合の重み × 点差の倍率 ×（結果 − 見込み）。重みは大会 1・リーグ戦 ${E.leagueWeight}。結果は勝ち 1、負け 0、PK戦 0.5（引き分け扱い）。勝った側が増えた分だけ、負けた側が減ります。`],
     ["大差の勝ちほど大きく動かす", "点差の倍率は、1点差以内 1倍、2点差 1.5倍、3点差以上は（11 ＋ 点差）÷ 8 倍（3点差 1.75倍、5点差 2倍）。"],
-    ["年度が変わったら平均へ少し戻す", `3年生が抜けて前の年の強さはそのまま続かないので、年度の終わりに ${E.base} 点との差を ${Math.round((1 - E.carry) * 100)}% 縮めます。`],
-    ["数えるのは公式戦だけ", `高体連のトーナメント表にある ${D.totalMatches.toLocaleString()} 試合（総体・選手権・新人戦・関東予選）。1年度の中は 関東予選 → 総体 → 選手権 → 新人戦 の順。今季のリーグ戦は入っていません。`],
+    E.carry >= 1 ? ["年度が変わっても点数は戻さない", "部員は入れ替わっても、学校ごとの強さ（指導や部員の集まり方）は続きます。平均へ戻す計算と比べて、戻さないほうが当たりました。"]
+      : ["年度が変わったら平均へ少し戻す", `年度の終わりに ${E.base} 点との差を ${Math.round((1 - E.carry) * 100)}% 縮めます。`],
+    ["大会とリーグ戦を日付順に数える", `高体連のトーナメント表にある ${D.totalMatches.toLocaleString()} 試合（総体・選手権・新人戦・関東予選）に、Tリーグ・プリンスリーグ関東・地区リーグの試合を足します。控えやクラブは学校とは別のチームとして数え、控えの負けで学校の点数は下がりません。試合数の少ないチームとの試合では、学校の点数を動かしません。`],
   ];
   const ol = h("ol", { class: "steps" }, steps.map(([t, b]) => h("li", {}, h("b", {}, t), h("span", {}, b))));
   const ex = E.example;
@@ -384,7 +408,7 @@ function eloSection() {
     h("p", { class: "small muted" }, "見込みの高い側が勝っても点数はあまり動かず、見込みの低い側が勝つと大きく動きます。PK戦は勝敗にかかわらず引き分けとして計算します。"));
   sec.append(h("div", { class: "split" }, h("div", { class: "stack" }, ol, curveFigure()), h("div", { class: "stack" }, exBox,
     h("div", { class: "card" }, h("h3", {}, "このサイトの数字の出し方"), h("ul", { class: "points" }, E.uses.map((u) => h("li", {}, u)))),
-    h("div", { class: "card" }, h("h3", {}, "まだ確かめていないこと"), h("ul", { class: "points" }, E.caveats.map((u) => h("li", {}, u)))))));
+    h("div", { class: "card" }, h("h3", {}, "確かめたことと弱点"), h("ul", { class: "points" }, E.caveats.map((u) => h("li", {}, u)))))));
   return sec;
 }
 
@@ -469,7 +493,7 @@ function renderTeam() {
   } else {
     scout.append(h("p", { class: "small muted" }, D.styleNone));
   }
-  main.append(scout, connectionsSection(t), leagueSection(t, false));
+  main.append(scout, connectionsSection(t), leagueSection(t, false), districtLeagueSection(t.display === D.brief[D.me].display ? D.me : normalize(t.display)));
   main.append(h("section", { class: "sec" }, h("div", { class: "figure" },
     h("div", { class: "cap" }, h("h2", {}, "強さの点数の推移"), h("div", { class: "legend" }, h("span", {}, h("i", { style: "border-color:var(--us)" }), nameOf(D.me)), h("span", {}, h("i", { class: "dash", style: "border-color:var(--them)" }), t.display))),
     eloChart([{ name: nameOf(D.me), hist: D.meHistory, color: "var(--us)" }, { name: t.display, hist: t.eloHistory, color: "var(--them)", dash: true }]),

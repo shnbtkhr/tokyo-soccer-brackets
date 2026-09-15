@@ -174,6 +174,28 @@ def build_data(team: str, block_config: Path) -> dict:
             key=lambda s: (-s["year"], order.get(s["series"], 9), s["stage"])
         )
 
+    # 地区リーグデータの読み込み
+    district_data = {}
+    district_standings_path = ROOT / "data/leagues/district_standings.csv"
+    if district_standings_path.exists():
+        for row in csv.DictReader(district_standings_path.open(encoding="utf-8-sig")):
+            if row["年度"] != "2026":
+                continue
+            school = normalize(row["学校"])
+            if school not in district_data:
+                district_data[school] = []
+            district_data[school].append({
+                "district": row["地区"],
+                "division": row["部"],
+                "rank": row["順位"],
+                "matches": row["試合"],
+                "wins": row["勝"],
+                "draws": row["分"],
+                "losses": row["敗"],
+                "points": row["勝点"],
+            })
+        print(f"DEBUG: Loaded {len(district_data)} schools with district league data")
+
     elo = {k: a.get("teams", {}).get(k, {}).get("elo", 1500) for k in block}
     decided_list = a.get("decided", manual.get("decided", []))
 
@@ -187,13 +209,8 @@ def build_data(team: str, block_config: Path) -> dict:
         return win_prob(elo[x], elo[y])
 
     b = block
-    r1 = {
-        b[0]: p(b[0], b[1]),
-        b[1]: p(b[1], b[0]),
-        b[2]: p(b[2], b[3]),
-        b[3]: p(b[3], b[2]),
-    }
-    for i in (4, 6):
+    r1 = {}
+    for i in (0, 2, 4, 6):  # 1回戦を勝つ見込み。終わった試合は結果どおり
         x, y = b[i], b[i + 1]
         r1[x], r1[y] = (1.0 if alive[x] else 0.0), (1.0 if alive[y] else 0.0)
         if alive[x] and alive[y]:
@@ -226,6 +243,7 @@ def build_data(team: str, block_config: Path) -> dict:
         "schedule": manual.get("schedule", []),
         "slots": manual.get("slots", {}),
         "decided": manual.get("decided", []),
+        "districtLeague": district_data,
         "teams": {
             k: {
                 **{
