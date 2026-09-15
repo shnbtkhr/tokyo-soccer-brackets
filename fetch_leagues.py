@@ -125,7 +125,9 @@ def member_areas(refresh: bool) -> dict:
             m = re.fullmatch(r"[（(](都|私|国|区)[）)](.+)", line)
             if m:
                 kind = {"都": "都立", "私": "私立", "国": "国立", "区": "区立"}[m[1]]
-                out[normalize(m[2])] = {"area": n, "city": city, "kind": kind, "name": m[2]}
+                # 設置者を付けてから名前をそろえる（都立武蔵と私立武蔵のように、同じ名前の別の学校が上書きし合わないように）
+                key = normalize(("都立" if kind == "都立" else "") + m[2])
+                out[key] = {"area": n, "city": city, "kind": kind, "name": m[2]}
             elif re.search(r"(区|市|町|村|島)$", line) and len(line) <= 8:
                 city = line
     # 加盟校一覧のページに載っていない学校（ページ側の抜け）。狛江市の欄には若葉総合しか無いが、狛江は選手権・総体・関東予選に出ている

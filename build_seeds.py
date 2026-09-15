@@ -128,7 +128,7 @@ def tleague_list(tl_st: list[dict], schools: set, seeds: set, block_of: dict) ->
         elif k in block_of:
             st, lab = "first", f"1次【{block_of[k]}】"
         else:
-            st, lab = "unknown", "不明"
+            st, lab = "unknown", "1次予選に名前なし"
         groups[(r["リーグ"], r["ブロック"])].append({"rank": int(r["順位"]), "team": r["チーム"], "key": k, "status": st, "label": lab})
     return [{"league": lg, "block": b, "rows": sorted(v, key=lambda x: x["rank"])} for (lg, b), v in sorted(groups.items())]
 
