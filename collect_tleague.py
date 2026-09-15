@@ -30,7 +30,7 @@ OUT = ROOT / "data/leagues"
 BASE = "https://www.tleague-u18.com"
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 SEASONS = (2025, 2026)
-SQUAD = re.compile(r"^(.*?)[\s・]?([A-EＡ-Ｅ])$")
+SQUAD = re.compile(r"^(.*?)[\s・]?([A-JＡ-Ｊ])$")  # 地区リーグには F〜I まで控えがある（東海大高輪台F・紅葉川Ｉ）
 
 
 def fetch(url: str, path: Path, refresh: bool) -> str:
@@ -47,8 +47,9 @@ def squad_of(name: str) -> tuple[str, str]:
     if re.search(r"(FC|SC|F\.C)$", n, re.I):  # 「大森FC」の C は控えの印ではない
         return n, "A"
     m = SQUAD.match(n)
-    if m and len(m[1]) >= 2 and not re.search(r"(U-?1[5-8]|FC|F\.C)$", m[1], re.I):
-        return m[1].strip(), m[2].translate(str.maketrans("ＡＢＣＤＥ", "ABCDE"))
+    # 校名が1文字の学校（芝・東）もあるので、残りが1文字でも印とみる。ただし英字だけの名前（クラブ）は分けない
+    if m and m[1].strip() and not re.fullmatch(r"[\x00-\x7f]+", m[1]) and not re.search(r"(U-?1[5-8]|FC|F\.C)$", m[1], re.I):
+        return m[1].strip(), m[2].translate(str.maketrans("ＡＢＣＤＥＦＧＨＩＪ", "ABCDEFGHIJ"))
     return n, "A"
 
 
