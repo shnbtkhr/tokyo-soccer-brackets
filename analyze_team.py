@@ -3,11 +3,11 @@
 入力: out/matches.csv（build_outputs.py の出力）
 出力: out/scout/<チーム>_<大会>.json（ページに埋め込むデータ）
 
-強さの点数は Elo レーティング。全試合を時系列に並べて更新する。
-- 1年度の中の順序: 関東予選(4月) → 総体 支部予選 → 一次 → 二次 → 選手権 一次 → 二次 → 新人戦
-- 得点差が大きいほど大きく動く（サッカー向け Elo でよく使う補正）
-- PK 決着は引き分け（0.5）として扱う
-- 年度が変わるたびに平均（1500）へ 1/4 戻す。部員は毎年入れ替わり、前年の強さはそのままは続かないため
+強さの点数は Elo レーティング。計算の本体は rating.py（設定は rating.ADOPTED。過去の大会の試合を当てる力で選んだ）。
+- 大会（総体・選手権・新人戦・関東予選）に、リーグ戦（Tリーグ・プリンス関東・地区リーグ）を重み0.5で足し、日付順に1本の時系列で計算する
+- 控え（B・C…）とクラブは学校とは別のチームとして持つ。控えの負けで学校の点数は下がらない
+- 得点差が大きいほど大きく動かす（サッカー向け Elo でよく使う補正）。PK 決着は引き分け（0.5）
+- 年度が変わっても点数を平均へ戻さない（戻さないほうが当たった。notes/rating_backtest.md）
 """
 
 from __future__ import annotations
@@ -23,7 +23,9 @@ from pathlib import Path
 from build_outputs import normalize
 
 ROOT = Path(__file__).parent
-BASE, K, CARRY = 1500.0, 32.0, 0.75
+import rating
+
+BASE, K, CARRY, LEAGUE_WEIGHT = rating.BASE, rating.ADOPTED.k, rating.ADOPTED.carry, rating.ADOPTED.league_weight
 STAGE_ORDER = [("関東", ""), ("総体", "支部予選"), ("総体", "一次"), ("総体", "二次"), ("選手権", "一次"), ("選手権", "二次"), ("新人戦", "")]
 ROUND_ORDER = {"3位決定戦": 90, "決勝": 80, "ブロック決勝": 70, "準決勝": 60, "準々決勝": 50}
 
@@ -83,40 +85,17 @@ def result_for(r: dict, key: str) -> dict:
     }
 
 
-def compute_elo(rows: list[dict]) -> tuple[dict, dict]:
-    """全試合で Elo を更新する。現在値と、チームごとの推移（年度末の値）を返す。"""
-    elo: dict[str, float] = defaultdict(lambda: BASE)
-    hist: dict[str, dict] = defaultdict(dict)
-    n_games: dict[str, int] = defaultdict(int)
-    year = None
-    for r in rows:
-        if r["年度"] != year:
-            if year is not None:
-                for k in list(elo):
-                    hist[k][year] = round(elo[k])
-                    elo[k] = BASE + (elo[k] - BASE) * CARRY
-            year = r["年度"]
-        if not played(r) or not r["kA"] or not r["kB"]:
-            continue
-        a, b = r["kA"], r["kB"]
-        # 試合の時点の点数を残す（格上・格下に対する成績を見るため）
-        r["_eloA"], r["_eloB"] = round(elo[a]), round(elo[b])
-        ga, gb = int(r["得点A"]), int(r["得点B"])
-        if r["PK_A"] != "" and r["PK_B"] != "":
-            sa = 0.5
-        else:
-            sa = 1.0 if ga > gb else 0.0 if ga < gb else 0.5
-        exp = 1 / (1 + 10 ** ((elo[b] - elo[a]) / 400))
-        margin = abs(ga - gb)
-        mult = 1.0 if margin <= 1 else 1.5 if margin == 2 else (11 + margin) / 8
-        d = K * mult * (sa - exp)
-        elo[a] += d
-        elo[b] -= d
-        n_games[a] += 1
-        n_games[b] += 1
-    for k in list(elo):
-        hist[k][year] = round(elo[k])
-    return dict(elo), {k: dict(v) for k, v in hist.items()}, dict(n_games)
+def compute_elo(rows: list[dict]) -> tuple[dict, dict, dict]:
+    """点数を計算する（rating.run に任せる）。現在値・年度末の推移・試合数を、大会に出る学校のぶんだけ返す。
+
+    大会の各行には試合の時点の点数（_eloA・_eloB）を書き込む（格上・格下に対する成績を見るため）。
+    """
+    out = rating.run(rows, rating.ADOPTED)
+    schools = out["schools"]
+    elo = {k: v for k, v in out["elo"].items() if k in schools}
+    hist = {k: v for k, v in out["hist"].items() if k in schools}
+    n_games = {k: v for k, v in out["n_games"].items() if k in schools}
+    return elo, hist, n_games
 
 
 def win_prob(ea: float, eb: float) -> float:
