@@ -50,7 +50,7 @@ function renderSidenav() {
   side.append(h("a", { class: "sn-brand", ...linkAttrs("index") }, h("i", { class: "dot", "aria-hidden": "true" }), h("span", {}, h("b", {}, "武蔵丘スカウト"), h("small", {}, "選手権 2026 東京都予選"))));
   const item = (it) => {
     const k = slugKey[it.slug], br = k && B[k];
-    const meta = it.slug === "seeds" ? "32" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
+    const meta = it.slug === "seeds" ? "32" : br && k !== D.me && br.alive === false ? "敗退" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
     return h("li", {}, h("a", { ...linkAttrs(it.slug), class: "sn-link" + (it.cls === "me" ? " me" : ""), "aria-current": it.slug === D.slug ? "page" : null, title: meta && it.slug !== "seeds" ? `武蔵丘が勝つ見込み ${meta}` : null },
       h("span", { class: "sn-t" }, it.label), meta ? h("span", { class: "sn-m num" }, meta) : null));
   };
@@ -298,13 +298,33 @@ function renderHub() {
   root.append(h("div", { class: "masthead" },
     h("div", { class: "eyebrow" }, D.blockLabel),
     h("h1", {}, h("span", { class: "us" }, nameOf(D.me)), " の勝ち上がりを読む"),
-    h("p", { class: "lead" }, `1次予選【10】ブロックの相手5校を、過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦から分析しています。学校名を選ぶと、その学校の分析ページが開きます。`)));
+    h("p", { class: "lead" }, (() => {
+      const alive = D.block.filter((k) => B[k].alive);
+      const mine = B[D.me].outcome;
+      return (mine ? `1回戦は${mine.opp.replace("都・", "")}に ${mine.score} で${mine.won ? "勝ちました" : "負けました"}。` : "")
+        + `残るは${alive.length}校です。過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦から、相手ごとに分析しています。学校名を選ぶと、その学校のページが開きます。`;
+    })())));
+
+  // ここまでの結果（決着した試合）
+  if (D.decided && D.decided.length) {
+    root.append(h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "ここまでの結果"), h("p", {}, "1回戦（9/5・9/13）")),
+      h("ul", { class: "done-list" }, D.decided.map((d) => {
+        const mine = d.a === D.me || d.b === D.me;
+        const w = d.winner;
+        const nm2 = (k) => (B[k] ? B[k].display.replace("都・", "") : k);
+        return h("li", { class: mine ? "mine" : null },
+          h("span", { class: "t" + (w === d.a ? " win" : "") }, nm2(d.a)),
+          h("b", { class: "num sc" }, d.score),
+          h("span", { class: "t" + (w === d.b ? " win" : "") }, nm2(d.b)),
+          h("span", { class: "small muted" }, `${nm2(w)}が2回戦へ`));
+      }))));
+  }
 
   if (nm) {
     root.append(h("section", { class: "nextmatch", "aria-label": "次の試合" },
       h("div", { class: "when" }, h("div", { class: "d" }, `${nm.date}(${nm.dow}) ${nm.time}`), h("div", { class: "v" }, `${nm.round}【${nm.no}】・${nm.venue}`)),
       h("div", { class: "vs" }, h("span", { class: "t us" }, nameOf(D.me)), h("span", { class: "x" }, "vs"), h("a", { class: "t", ...linkAttrs(D.keyToSlug[nm.opp]) }, nameOf(nm.opp))),
-      h("div", { class: "odds" }, h("div", { class: "p" }, pct(B[nm.opp].vsMe)), h("div", { class: "l" }, "武蔵丘が勝つ見込み。過去5年の大会成績からの目安で、今季の調子は入っていません"))));
+      h("div", { class: "odds" }, h("div", { class: "p" }, pct(B[nm.opp].vsMe)), h("div", { class: "l" }, "武蔵丘が勝つ見込み。過去5年の大会と今季のリーグ戦からの目安です"))));
   }
 
   const road = h("div", { class: "road" });
@@ -319,7 +339,7 @@ function renderHub() {
     if (st.bd && st.bd.before && !settled) col.append(meetBar(st));
     for (const k of st.teams) {
       const t = B[k];
-      col.append(h("a", { class: "team-card", ...linkAttrs(D.keyToSlug[k]) },
+      col.append(h("a", { class: "team-card" + (t.alive ? "" : " out"), ...linkAttrs(D.keyToSlug[k]) },
         h("div", { class: "nm" }, h("b", {}, t.display), h("span", { class: "go" }, "分析を見る →")),
         h("div", { class: "sub" }, t.area ? `第${t.area.area}地区・${t.area.city}・${t.area.kind}` : ""),
         t.leagueLine ? h("div", { class: "form" }, t.leagueLine) : null,
@@ -328,7 +348,7 @@ function renderHub() {
     }
     road.append(col);
   }
-  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, "勝ち上がりの道"), h("p", {}, "当たる順に、相手ごとの分析ページへ")), road,
+  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, "勝ち上がりの道"), h("p", {}, "1回戦は終了。灰色は敗退した学校")), road,
     h("p", { class: "small muted prose" }, "「当たる確率」は、武蔵丘と相手の両方がその試合まで勝ち上がる見込みです。武蔵丘がその前に負けるとどちらとも当たらないため、候補2校を足すと「武蔵丘がその回戦まで進む見込み」になり、100%にはなりません。帯グラフの斜線がその差（武蔵丘がその前に負ける場合）です。")));
 
   const left = h("div", { class: "stack" },
@@ -443,9 +463,19 @@ function outlookSection() {
     hit.addEventListener("mouseleave", hideTip);
     svg.append(hit);
   });
-  return h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "この山を勝ち抜く見込み"), h("p", {}, "残る6校。強さの点数から計算")), svg,
+  return h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "この山を勝ち抜く見込み"), h("p", {}, `残り${alive.length}校。強さの点数から計算`)), svg,
     h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "学校"), h("th", { class: "n" }, "強さの点数"), h("th", { class: "n" }, "山を勝ち抜く"), h("th", { class: "n" }, "武蔵丘が勝つ"), h("th", { class: "n" }, "当たる確率"))),
-      h("tbody", {}, D.block.map((k) => h("tr", { class: k === D.me ? "hl us" : null }, h("td", {}, D.keyToSlug[k] ? h("a", linkAttrs(D.keyToSlug[k]), nameOf(k)) : nameOf(k)), h("td", { class: "n" }, B[k].elo), h("td", { class: "n" }, B[k].alive ? pct(B[k].blockWin, 1) : "敗退"), h("td", { class: "n" }, k === D.me ? "―" : pct(B[k].vsMe, 1)), h("td", { class: "n" }, k === D.me || !B[k].alive ? "―" : pct(B[k].meetProb, 1))))))));
+      h("tbody", {}, D.block.map((k) => {
+        const played = (D.decided || []).find((d) => (d.a === k && d.b === D.me) || (d.b === k && d.a === D.me));
+        const mo = B[D.me].outcome;
+        const vsMe = k === D.me ? "―" : played ? `${mo.won ? "勝ち" : "負け"} ${mo.score}` : B[k].alive ? pct(B[k].vsMe, 1) : "―";
+        return h("tr", { class: k === D.me ? "hl us" : null },
+          h("td", {}, D.keyToSlug[k] ? h("a", linkAttrs(D.keyToSlug[k]), nameOf(k)) : nameOf(k)),
+          h("td", { class: "n" }, B[k].elo),
+          h("td", { class: "n" }, B[k].alive ? pct(B[k].blockWin, 1) : "敗退"),
+          h("td", { class: "n" }, vsMe),
+          h("td", { class: "n" }, k === D.me || !B[k].alive ? "―" : pct(B[k].meetProb, 1)));
+      })))));
 }
 
 /* ---------- 相手校のページ ---------- */
@@ -454,16 +484,24 @@ function renderTeam() {
   const lg = (t.leagues || [])[0];
   const row = lg && lg.table.find((r) => r.team === lg.teamName);
   root.append(h("div", { class: "masthead" },
-    h("div", { class: "crumb" }, h("a", linkAttrs("index"), "ブロック全体"), h("span", { "aria-hidden": "true" }, "›"), h("span", {}, `${br.round}の相手${br.candidate ? "（候補）" : ""}`)),
-    h("div", { class: "chips" }, h("span", { class: "chip them" }, `${br.round}${br.candidate ? "で当たる可能性" : "の相手"}`),
+    h("div", { class: "crumb" }, h("a", linkAttrs("index"), "ブロック全体"), h("span", { "aria-hidden": "true" }, "›"),
+      h("span", {}, br.round)),
+    h("div", { class: "chips" },
+      h("span", { class: "chip " + (br.alive ? "them" : "out") }, br.alive ? `${br.round}${br.candidate ? "で当たる可能性" : "の相手"}` : `${br.round}で敗退`),
       br.area ? h("span", { class: "chip" }, `第${br.area.area}地区・${br.area.city}・${br.area.kind}`) : null,
       lg ? h("span", { class: "chip" }, lg.league) : null),
     h("h1", {}, t.display),
+    br.outcome ? h("p", { class: "lead" }, `1回戦は${br.outcome.opp.replace("都・", "")}に ${br.outcome.score} で${br.outcome.won ? "勝ち" : "負け"}。`,
+      br.alive ? "" : "この山からは敗退しました。以下は対戦前に作った分析と、5年間の記録です。") : null,
     t.info.summary ? h("p", { class: "lead" }, t.info.summary) : null));
 
   root.append(h("div", { class: "kpis" },
-    h("div", { class: "kpi" }, h("span", { class: "k" }, "武蔵丘が勝つ見込み"), h("span", { class: "v us" }, pct(br.vsMe)), h("span", { class: "note" }, "過去5年の大会成績から")),
-    h("div", { class: "kpi" }, h("span", { class: "k" }, "武蔵丘と当たる確率"), h("span", { class: "v" }, pct(br.meetProb)), h("span", { class: "note" }, br.candidate ? `${br.round}。武蔵丘と${t.display}の両方が勝ち上がる見込み（武蔵丘が途中で負ける場合を含むので、候補2校を足しても100%にならない）。` : br.round, br.candidate ? h("a", { ...linkAttrs("index"), href: hrefOf("index") + "#road" }, " 内訳") : null)),
+    br.alive
+      ? h("div", { class: "kpi" }, h("span", { class: "k" }, "武蔵丘が勝つ見込み"), h("span", { class: "v us" }, pct(br.vsMe)), h("span", { class: "note" }, "過去5年の大会成績と今季のリーグ戦から"))
+      : h("div", { class: "kpi" }, h("span", { class: "k" }, `${br.round}の結果`), h("span", { class: "v" }, br.outcome ? br.outcome.score : "―"), h("span", { class: "note" }, br.outcome ? `${br.outcome.opp.replace("都・", "")}に${br.outcome.won ? "勝ち" : "負け"}・敗退` : "")),
+    br.alive
+      ? h("div", { class: "kpi" }, h("span", { class: "k" }, "武蔵丘と当たる確率"), h("span", { class: "v" }, pct(br.meetProb)), h("span", { class: "note" }, br.candidate ? `${br.round}。武蔵丘と${t.display}の両方が勝ち上がる見込み（武蔵丘が途中で負ける場合を含むので、候補2校を足しても100%にならない）。` : br.round, br.candidate ? h("a", { ...linkAttrs("index"), href: hrefOf("index") + "#road" }, " 内訳") : null))
+      : h("div", { class: "kpi" }, h("span", { class: "k" }, "対戦前の見込み"), h("span", { class: "v muted" }, pct(br.vsMe)), h("span", { class: "note" }, "武蔵丘が勝つ見込みとして出していた値（結果と見比べる用）")),
     h("div", { class: "kpi" }, h("span", { class: "k" }, "強さの点数"), h("span", { class: "v" }, t.elo, h("small", {}, `${t.eloRank}位`)), h("span", { class: "note" }, `${D.nTeamsRated}校中。武蔵丘は ${B[D.me].elo}。`, eloLink())),
     h("div", { class: "kpi" }, h("span", { class: "k" }, "今季のリーグ"), h("span", { class: "v them" }, row ? `${row.rank}位` : "―", row ? h("small", {}, `/${lg.table.length}`) : null), h("span", { class: "note" }, lg ? lg.league : "結果ページ未確認"))));
 
@@ -473,7 +511,7 @@ function renderTeam() {
   if (t.style) {
     scout.append(h("h3", {}, "戦い方（観戦記事から）"), h("ul", { class: "points" }, t.style.points.map((p) => h("li", {}, p))),
       t.style.caveat ? h("p", { class: "small muted" }, t.style.caveat) : null,
-      h("p", { class: "small" }, t.style.sources.map((sr, i) => [i ? "　" : "", h("a", { href: sr.url, target: "_blank", rel: "noopener" }, sr.label)])));
+      h("p", { class: "small" }, ...t.style.sources.flatMap((sr, i) => [i ? "　" : "", h("a", { href: sr.url, target: "_blank", rel: "noopener" }, sr.label)])));
   } else {
     scout.append(h("p", { class: "small muted" }, D.styleNone));
   }

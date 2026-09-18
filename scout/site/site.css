@@ -213,6 +213,9 @@ a.team-card dd { margin: 0; font-family: var(--f-num); font-weight: 600; font-si
 a.team-card dd.us { color: var(--us); }
 a.team-card.decided { background: transparent; }
 a.team-card .out-note { padding-top: var(--s2); border-top: 1px solid var(--rule); color: var(--muted); font-size: var(--t-1); font-weight: 700; }
+a.team-card.out { background: var(--sunk); }
+a.team-card.out .nm b, a.team-card.out .form { color: var(--muted); }
+a.team-card.out .nm .go { color: var(--muted); }
 
 /* トーナメント表（公式の表と同じく、勝ち上がりは赤線） */
 svg.bracket { width: 100%; height: auto; display: block; }
@@ -347,6 +350,16 @@ ol.chains .imp.down { color: var(--link); }
 .pager a b { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pager a.next { flex-direction: row-reverse; margin-left: auto; }
 footer.foot { max-width: var(--page); margin: 0 auto; padding: 0 var(--s4) var(--s6); color: var(--muted); font-size: var(--t-1); }
+
+/* ここまでの結果 */
+ul.done-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+ul.done-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; gap: var(--s3); align-items: baseline; padding: var(--s3) var(--s4); border-top: 1px solid var(--rule); }
+ul.done-list li:first-child { border-top: 0; }
+ul.done-list li.mine { background: var(--us-soft); }
+ul.done-list .t { color: var(--muted); }
+ul.done-list .t.win { color: var(--ink); font-weight: 700; }
+ul.done-list .sc { font-size: var(--t1); }
+@media (max-width: 560px) { ul.done-list li { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); } ul.done-list li .small { grid-column: 1 / -1; } }
 
 /* 当たる確率の内訳（入口ページの勝ち上がりの道） */
 .result-banner { display: flex; align-items: baseline; gap: var(--s2); padding: var(--s2) var(--s3); border-radius: var(--r); background: var(--sunk); }

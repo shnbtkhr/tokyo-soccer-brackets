@@ -204,9 +204,17 @@ def build(links: str) -> Path:
         {"n": "2", "round": "2回戦", "when": f"{sched[149]['date']}({sched[149]['dow']}) {sched[149]['time']}", "teams": r2},
         {"n": "3", "round": "ブロック決勝", "when": f"{sched[208]['date']}({sched[208]['dow']}) {sched[208]['time']}", "teams": fin},
     ]
+    nxt_sched = sched[mine_no] if mine_no else None
+    nxt_opp_key = (nxt_sched["a"] if nxt_sched["b"] == me else nxt_sched["b"]) if nxt_sched else None
     bd = meet_breakdown(T, block, me)
     for st in road:
         st["bd"] = bd[st["round"]]
+    # 終わった試合の結果（その学校から見たスコアと相手）
+    outcome = {}
+    for d in data["decided"]:
+        for side, opp in ((d["a"], d["b"]), (d["b"], d["a"])):
+            sc = d["score"] if side == d["a"] else "-".join(reversed(d["score"].split("-")))
+            outcome[side] = {"won": d["winner"] == side, "score": sc, "opp": T[opp]["display"] if opp in T else opp}
     brief = {}
     for k in block:
         t = T[k]
@@ -214,13 +222,18 @@ def build(links: str) -> Path:
         brief[k] = {
             "display": t["display"], "alive": t["alive"], "blockWin": t["blockWin"], "vsMe": t["vsMe"], "meetProb": t["meetProb"],
             "elo": t.get("elo"), "eloRank": t.get("eloRank"), "area": t.get("area"), "round": rnd[0], "candidate": rnd[1],
-            "leagueLine": league_line(t),
+            "leagueLine": league_line(t), "outcome": outcome.get(k),
         }
     opps = [r1, *r2, *fin]  # 当たる順
     order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds"]
     for k in opps:
         TITLE[SLUG[k]] = f"{T[k]['display'].replace('都・', '')} スカウティング"
-    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{rounds[k][0]}）" for k in opps}, "seeds": "2次予選の強豪"}
+    def state(k: str) -> str:
+        if not T[k]["alive"]:
+            return f"{rounds[k][0]}・敗退"
+        return f"{rounds[k][0]}" + ("の候補" if rounds[k][1] else "・次の相手" if k == nxt_opp_key else "")
+
+    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選の強豪"}
 
     if links == "artifact":
         urls = json.loads((ROOT / "scout/site_urls.json").read_text(encoding="utf-8"))
@@ -233,9 +246,9 @@ def build(links: str) -> Path:
 
     nav = [
         {"label": "", "items": [{"slug": "index", "label": "ブロック全体"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]},
-        {"label": "1回戦", "items": [{"slug": SLUG[r1], "label": T[r1]["display"].replace("都・", "")}]},
-        {"label": "2回戦", "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", "")} for k in r2]},
-        {"label": "決勝", "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", "")} for k in fin]},
+        {"label": "1回戦 終了", "items": [{"slug": SLUG[r1], "label": T[r1]["display"].replace("都・", ""), "out": not T[r1]["alive"]}]},
+        {"label": "2回戦" + ("" if len(r2_alive) > 1 else " 9/20"), "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", ""), "out": not T[k]["alive"]} for k in r2]},
+        {"label": "決勝 9/22", "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", ""), "out": not T[k]["alive"]} for k in fin]},
         {"label": "2次予選", "items": [{"slug": "seeds", "label": "強豪32校"}]},
     ]
     common = {
@@ -263,8 +276,11 @@ def build(links: str) -> Path:
                     "elo": elo_explainer(T, me, nxt_opp or r1, opps)})
     me_t = {**T[me], "key": me}
     ins, bands, note = self_insights(me_t, block, {T[k]["display"]: T[k]["elo"] for k in opps})
-    lead = (f"第{T[me]['area']['area']}地区（{T[me]['area']['city']}）の{T[me]['area']['kind']}高校。過去5年の公式戦{T[me]['summary']['n']}試合と今季のNSリーグから、"
-            "強みと課題を整理しました。相手ごとの分析と見比べて使ってください。")
+    mo = brief[me].get("outcome")
+    lead = (f"第{T[me]['area']['area']}地区（{T[me]['area']['city']}）の{T[me]['area']['kind']}高校。"
+            + (f"1次予選1回戦は{mo['opp'].replace('都・', '')}に{mo['score']}で{'勝ち' if mo['won'] else '負け'}ました。" if mo else "")
+            + (f"次は{nxt_sched['date']}({nxt_sched['dow']}) {nxt_sched['time']}の{T[nxt_opp_key]['display'].replace('都・', '')}戦です。" if nxt_sched and nxt_opp_key else "")
+            + f"過去5年の公式戦{T[me]['summary']['n']}試合と今季のNSリーグから、強みと課題を整理しました。")
     write("musashigaoka", {"page": "self", "self": me_t, "insights": ins, "bands": bands, "bandNote": note, "selfLead": lead, "road": road})
     conn_path = ROOT / f"data/connections/{me}_2026.json"
     conns = json.loads(conn_path.read_text(encoding="utf-8")) if conn_path.exists() else {}
