@@ -356,6 +356,7 @@ ul.done-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px;
 ul.done-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; gap: var(--s3); align-items: baseline; padding: var(--s3) var(--s4); border-top: 1px solid var(--rule); }
 ul.done-list li:first-child { border-top: 0; }
 ul.done-list li.mine { background: var(--us-soft); }
+ul.done-list li.rlab { display: block; padding: var(--s2) var(--s4); background: var(--sunk); color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .1em; }
 ul.done-list .t { color: var(--muted); }
 ul.done-list .t.win { color: var(--ink); font-weight: 700; }
 ul.done-list .sc { font-size: var(--t1); }

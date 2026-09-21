@@ -19,6 +19,7 @@ function s(tag, attrs = {}, text) {
 }
 const pct = (p, d = 0) => (p == null ? "―" : (p * 100).toFixed(d) + "%");
 const B = D.brief;
+const NEXT_ROUND = { "1回戦": "2回戦へ", "2回戦": "ブロック決勝へ", "ブロック決勝": "2次予選へ" };
 const nameOf = (k) => (B[k] ? B[k].display : k);
 const hrefOf = (slug) => D.links[slug];
 const linkAttrs = (slug) => ({ href: hrefOf(slug), target: D.linkTarget || null, rel: D.linkTarget ? "noopener" : null });
@@ -107,7 +108,7 @@ function bracketSVG() {
     g.append(s("rect", { class: "hit", x: 0, y: y - 21, width: X0 - 6, height: 42, rx: 6 }));
     g.append(s("text", { class: "slot", x: 8, y: y + 4 }, String(D.slots[k])));
     g.append(s("text", { class: "nm", x: 32, y: y - 2 }, t.display));
-    g.append(s("text", { class: "pct", x: 32, y: y + 14 }, t.alive ? `山を勝ち抜く ${pct(t.blockWin)}` : "1回戦で敗退"));
+    g.append(s("text", { class: "pct", x: 32, y: y + 14 }, t.alive ? `山を勝ち抜く ${pct(t.blockWin)}` : `${t.outcome ? t.outcome.round : ""}で敗退`));
     svg.append(g);
     line(X0, y, X1, y, decided[k] && decided[k].winner === k ? "win" : k === D.me ? "path" : "");
   });
@@ -301,23 +302,29 @@ function renderHub() {
     h("p", { class: "lead" }, (() => {
       const alive = D.block.filter((k) => B[k].alive);
       const mine = B[D.me].outcome;
-      return (mine ? `1回戦は${mine.opp.replace("都・", "")}に ${mine.score} で${mine.won ? "勝ちました" : "負けました"}。` : "")
+      return (mine ? `${mine.round}は${mine.opp.replace("都・", "")}に ${mine.score} で${mine.won ? "勝ちました" : "負けました"}。` : "")
         + `残るは${alive.length}校です。過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦から、相手ごとに分析しています。学校名を選ぶと、その学校のページが開きます。`;
     })())));
 
-  // ここまでの結果（決着した試合）
+  // ここまでの結果（決着した試合）。回戦ごとに区切る
   if (D.decided && D.decided.length) {
-    root.append(h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "ここまでの結果"), h("p", {}, "1回戦（9/5・9/13）")),
-      h("ul", { class: "done-list" }, D.decided.map((d) => {
-        const mine = d.a === D.me || d.b === D.me;
+    const nm2 = (k) => (B[k] ? B[k].display.replace("都・", "") : k);
+    const rounds = [...new Set(D.decided.map((d) => d.round || "1回戦"))];
+    const rows = [];
+    for (const r of rounds) {
+      if (rounds.length > 1) rows.push(h("li", { class: "rlab" }, r));
+      for (const d of D.decided.filter((x) => (x.round || "1回戦") === r)) {
         const w = d.winner;
-        const nm2 = (k) => (B[k] ? B[k].display.replace("都・", "") : k);
-        return h("li", { class: mine ? "mine" : null },
+        rows.push(h("li", { class: d.a === D.me || d.b === D.me ? "mine" : null },
           h("span", { class: "t" + (w === d.a ? " win" : "") }, nm2(d.a)),
           h("b", { class: "num sc" }, d.score),
           h("span", { class: "t" + (w === d.b ? " win" : "") }, nm2(d.b)),
-          h("span", { class: "small muted" }, `${nm2(w)}が2回戦へ`));
-      }))));
+          h("span", { class: "small muted" }, `${nm2(w)}が${NEXT_ROUND[r] || "次へ"}`)));
+      }
+    }
+    root.append(h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, "ここまでの結果"), h("p", {}, rounds.join("・"))),
+      h("ul", { class: "done-list" }, rows)));
   }
 
   if (nm) {
@@ -344,11 +351,11 @@ function renderHub() {
         h("div", { class: "sub" }, t.area ? `第${t.area.area}地区・${t.area.city}・${t.area.kind}` : ""),
         t.leagueLine ? h("div", { class: "form" }, t.leagueLine) : null,
         t.alive ? h("dl", {}, h("div", {}, h("dt", {}, "武蔵丘が勝つ見込み"), h("dd", { class: "us" }, pct(t.vsMe))), h("div", {}, h("dt", {}, "当たる確率"), h("dd", {}, pct(t.meetProb))))
-          : h("div", { class: "out-note" }, "1回戦で敗退")));
+          : h("div", { class: "out-note" }, `${t.outcome ? t.outcome.round : ""}で敗退`)));
     }
     road.append(col);
   }
-  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, "勝ち上がりの道"), h("p", {}, "1回戦は終了。灰色は敗退した学校")), road,
+  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, "勝ち上がりの道"), h("p", {}, `${D.doneNote}。灰色は敗退した学校`)), road,
     h("p", { class: "small muted prose" }, "「当たる確率」は、武蔵丘と相手の両方がその試合まで勝ち上がる見込みです。武蔵丘がその前に負けるとどちらとも当たらないため、候補2校を足すと「武蔵丘がその回戦まで進む見込み」になり、100%にはなりません。帯グラフの斜線がその差（武蔵丘がその前に負ける場合）です。")));
 
   const left = h("div", { class: "stack" },
@@ -467,8 +474,8 @@ function outlookSection() {
     h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "学校"), h("th", { class: "n" }, "強さの点数"), h("th", { class: "n" }, "山を勝ち抜く"), h("th", { class: "n" }, "武蔵丘が勝つ"), h("th", { class: "n" }, "当たる確率"))),
       h("tbody", {}, D.block.map((k) => {
         const played = (D.decided || []).find((d) => (d.a === k && d.b === D.me) || (d.b === k && d.a === D.me));
-        const mo = B[D.me].outcome;
-        const vsMe = k === D.me ? "―" : played ? `${mo.won ? "勝ち" : "負け"} ${mo.score}` : B[k].alive ? pct(B[k].vsMe, 1) : "―";
+        const sc = played && (played.a === D.me ? played.score : played.score.split("-").reverse().join("-"));
+        const vsMe = k === D.me ? "―" : played ? `${played.winner === D.me ? "勝ち" : "負け"} ${sc}` : B[k].alive ? pct(B[k].vsMe, 1) : "―";
         return h("tr", { class: k === D.me ? "hl us" : null },
           h("td", {}, D.keyToSlug[k] ? h("a", linkAttrs(D.keyToSlug[k]), nameOf(k)) : nameOf(k)),
           h("td", { class: "n" }, B[k].elo),
@@ -491,7 +498,7 @@ function renderTeam() {
       br.area ? h("span", { class: "chip" }, `第${br.area.area}地区・${br.area.city}・${br.area.kind}`) : null,
       lg ? h("span", { class: "chip" }, lg.league) : null),
     h("h1", {}, t.display),
-    br.outcome ? h("p", { class: "lead" }, `1回戦は${br.outcome.opp.replace("都・", "")}に ${br.outcome.score} で${br.outcome.won ? "勝ち" : "負け"}。`,
+    br.outcome ? h("p", { class: "lead" }, `${br.outcome.round}は${br.outcome.opp.replace("都・", "")}に ${br.outcome.score} で${br.outcome.won ? "勝ち" : "負け"}。`,
       br.alive ? "" : "この山からは敗退しました。以下は対戦前に作った分析と、5年間の記録です。") : null,
     t.info.summary ? h("p", { class: "lead" }, t.info.summary) : null));
 
