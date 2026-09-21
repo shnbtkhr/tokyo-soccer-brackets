@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from analyze_team import BASE, CARRY, K, LEAGUE_WEIGHT, win_prob
@@ -139,45 +139,53 @@ def elo_explainer(T: dict, me: str, r1: str, opps: list) -> dict:
     }
 
 
-def meet_breakdown(T: dict, block: list, me: str) -> dict:
+def meet_breakdown(T: dict, block: list, me: str, decided: list) -> dict:
     """回戦ごとに、100% を「相手Aと当たる／相手Bと当たる／武蔵丘がその前に負ける」に分ける。
 
-    どの試合も強さの点数の見込みどおりに決まり、試合どうしは影響しない（独立）とみなして掛け算する。
+    まだ終わっていない試合だけ強さの点数の見込みで計算し、終わった試合は結果どおりに畳む。
     「当たる確率」= 武蔵丘がその回戦まで勝ち上がる見込み × 相手がその回戦まで勝ち上がる見込み。
     同じ回戦の候補を足すと「武蔵丘がその回戦まで勝ち上がる見込み」になり、100% との差は武蔵丘がその前に負ける場合。
     """
     e = {k: T[k]["elo"] for k in block}
-    alive = {k: T[k]["alive"] for k in block}
+    won = {frozenset((d["a"], d["b"])): d["winner"] for d in decided}
 
-    def p(a: str, b: str) -> float:
-        return win_prob(e[a], e[b])
-
-    def r1(k: str) -> float:  # k が1回戦を勝つ見込み（終わった試合は結果どおり）
-        o = block[block.index(k) ^ 1]
-        return 0.0 if not alive[k] else 1.0 if not alive[o] else p(k, o)
+    def dist(seq: list) -> dict:
+        """seq の小さな山を勝ち上がる確率の分布。終わった試合は 1.0 / 0.0 に畳む。"""
+        if len(seq) == 1:
+            return {seq[0]: 1.0}
+        half = len(seq) // 2
+        left, right = dist(seq[:half]), dist(seq[half:])
+        out: dict = defaultdict(float)
+        for a, pa in left.items():
+            for b, pb in right.items():
+                w = won.get(frozenset((a, b)))
+                if w:
+                    out[w] += pa * pb
+                else:
+                    p = win_prob(e[a], e[b])
+                    out[a] += pa * pb * p
+                    out[b] += pa * pb * (1 - p)
+        return dict(out)
 
     i = block.index(me)
-    h0 = (i // 4) * 4
-    pair2 = [block[h0 + ((i - h0) // 2 ^ 1) * 2 + x] for x in (0, 1)]
-    other = [block[j] for j in range(8) if j // 4 != i // 4]
-    p1 = r1(me)
-    my_r2 = p1 * sum(r1(o) * p(me, o) for o in pair2)
-
-    def reach3(o: str) -> float:  # o がブロック決勝まで来る見込み
-        j = block.index(o)
-        mates = [block[x] for x in range((j // 2 ^ 1) * 2, (j // 2 ^ 1) * 2 + 2)]
-        return r1(o) * sum(r1(x) * p(o, x) for x in mates)
+    pair = block[(i // 2) * 2:(i // 2) * 2 + 2]          # 武蔵丘の1回戦のペア
+    pair2 = block[((i // 2) ^ 1) * 2:((i // 2) ^ 1) * 2 + 2]  # 2回戦で当たりうる2校
+    half = block[(i // 4) * 4:(i // 4) * 4 + 4]          # 武蔵丘の側の4校
+    other = block[((i // 4) ^ 1) * 4:((i // 4) ^ 1) * 4 + 4]  # 反対側の4校
+    d2, d3, dp2, dp3 = dist(pair), dist(half), dist(pair2), dist(other)
 
     def step(reach: float, opps: list, shares: dict, before: str) -> dict:
         return {"reach": round(reach, 3), "before": before,
-                "opps": [{"key": o, "share": round(shares[o], 3), "meet": round(reach * shares[o], 3)} for o in opps if shares[o] > 0]}
+                "opps": [{"key": o, "share": round(shares.get(o, 0.0), 3), "meet": round(reach * shares.get(o, 0.0), 3)}
+                         for o in opps if shares.get(o, 0.0) > 0]}
 
     r1o = block[i ^ 1]
     return {
         "1回戦": step(1.0, [r1o], {r1o: 1.0}, ""),
-        "2回戦": step(p1, pair2, {o: r1(o) for o in pair2}, "1回戦で負ける"),
-        "ブロック決勝": step(my_r2, other, {o: reach3(o) for o in other}, "2回戦までに負ける"),
-        "detail": {"p1": round(p1, 3), "p2": {o: round(p(me, o), 3) for o in pair2}, "r1": {o: round(r1(o), 3) for o in pair2 + other}},
+        "2回戦": step(d2.get(me, 0.0), pair2, dp2, "1回戦で負ける"),
+        "ブロック決勝": step(d3.get(me, 0.0), other, dp3, "2回戦までに負ける"),
+        "detail": {"p1": round(d2.get(me, 0.0), 3), "p2": {o: round(win_prob(e[me], e[o]), 3) for o in pair2},
+                   "r1": {o: round(dp2.get(o, dp3.get(o, 0.0)), 3) for o in pair2 + other}},
     }
 
 
@@ -190,39 +198,55 @@ def build(links: str) -> Path:
     i_me = block.index(me)
     r1 = block[i_me ^ 1]
     r2 = [block[i] for i in ((0, 1) if i_me in (2, 3) else (2, 3))]
-    fin = [k for k in (block[4:] if i_me < 4 else block[:4]) if T[k]["alive"]]
+    # 反対の山でブロック決勝に来うる2校＝向こうの2回戦【150】に出た2校。
+    # alive で絞ると、負けた側のページが消えてリンク切れになる（2026-09-21）
+    other = block[4:] if i_me < 4 else block[:4]
+    fin = [k for k in other if k in (sched[150]["a"], sched[150]["b"])]
     r2_alive = [k for k in r2 if T[k]["alive"]]
+    fin_alive = [k for k in fin if T[k]["alive"]]
     # 勝ち残りが1校になったら「候補」ではなく確定の相手
-    rounds = {r1: ("1回戦", False), **{k: ("2回戦", len(r2_alive) > 1) for k in r2}, **{k: ("ブロック決勝", len(fin) > 1) for k in fin}}
+    rounds = {r1: ("1回戦", False), **{k: ("2回戦", len(r2_alive) > 1) for k in r2}, **{k: ("ブロック決勝", len(fin_alive) > 1) for k in fin}}
     r1_no = next(m["no"] for m in data["schedule"] if m.get("no") and me in (m["a"], m["b"]) and m["round"] == "1回戦")
     # 次の試合 = 武蔵丘の試合で、まだ勝者の決まっていないもの
     mine_no = next((m["no"] for m in data["schedule"] if m.get("no") and me in (m["a"], m["b"]) and not m.get("winner")), None)
-    road = [
-        {"n": "1", "round": "1回戦", "when": f"{sched[r1_no]['date']}({sched[r1_no]['dow']}) {sched[r1_no]['time']}", "teams": [r1],
-         "result": sched[r1_no].get("score") and {"score": sched[r1_no]["score"] if sched[r1_no]["a"] == me else "-".join(reversed(sched[r1_no]["score"].split("-"))),
-                                                  "winner": sched[r1_no]["winner"]}},
-        {"n": "2", "round": "2回戦", "when": f"{sched[149]['date']}({sched[149]['dow']}) {sched[149]['time']}", "teams": r2},
-        {"n": "3", "round": "ブロック決勝", "when": f"{sched[208]['date']}({sched[208]['dow']}) {sched[208]['time']}", "teams": fin},
-    ]
+
+    def mine_score(m: dict) -> str:
+        return m["score"] if m["a"] == me else "-".join(reversed(m["score"].split("-")))
+
+    def leg(n: str, label: str, no: int, teams: list) -> dict:
+        m = sched[no]
+        st = {"n": n, "round": label, "when": f"{m['date']}({m['dow']}) {m['time']}", "teams": teams}
+        if m.get("score") and me in (m["a"], m["b"]):
+            st["result"] = {"score": mine_score(m), "winner": m["winner"]}
+        return st
+
+    road = [leg("1", "1回戦", r1_no, [r1]), leg("2", "2回戦", 149, r2), leg("3", "ブロック決勝", 208, fin)]
     nxt_sched = sched[mine_no] if mine_no else None
     nxt_opp_key = (nxt_sched["a"] if nxt_sched["b"] == me else nxt_sched["b"]) if nxt_sched else None
-    bd = meet_breakdown(T, block, me)
+    bd = meet_breakdown(T, block, me, data["decided"])
     for st in road:
         st["bd"] = bd[st["round"]]
-    # 終わった試合の結果（その学校から見たスコアと相手）
-    outcome = {}
+    # 「当たる確率」は meet_breakdown を正本にする。build_scout_page 側の計算は
+    # 1回戦しか畳まないため、2回戦以降が終わると 0% を返す（2026-09-21）
+    meet_now = {o["key"]: o["meet"] for r in ("1回戦", "2回戦", "ブロック決勝") for o in bd[r]["opps"]}
+    # 終わった試合の結果（その学校から見たスコアと相手）。outcome は最後の試合＝いまの状態
+    outcomes: dict[str, list] = {}
     for d in data["decided"]:
         for side, opp in ((d["a"], d["b"]), (d["b"], d["a"])):
             sc = d["score"] if side == d["a"] else "-".join(reversed(d["score"].split("-")))
-            outcome[side] = {"won": d["winner"] == side, "score": sc, "opp": T[opp]["display"] if opp in T else opp}
+            outcomes.setdefault(side, []).append(
+                {"won": d["winner"] == side, "score": sc, "opp": T[opp]["display"] if opp in T else opp, "round": d.get("round", "1回戦")}
+            )
+    outcome = {k: v[-1] for k, v in outcomes.items()}
     brief = {}
     for k in block:
         t = T[k]
         rnd = rounds.get(k, ("", False))
         brief[k] = {
-            "display": t["display"], "alive": t["alive"], "blockWin": t["blockWin"], "vsMe": t["vsMe"], "meetProb": t["meetProb"],
+            "display": t["display"], "alive": t["alive"], "blockWin": t["blockWin"], "vsMe": t["vsMe"],
+            "meetProb": None if k == me else meet_now.get(k, 0.0),
             "elo": t.get("elo"), "eloRank": t.get("eloRank"), "area": t.get("area"), "round": rnd[0], "candidate": rnd[1],
-            "leagueLine": league_line(t), "outcome": outcome.get(k),
+            "leagueLine": league_line(t), "outcome": outcome.get(k), "outcomes": outcomes.get(k, []),
         }
     opps = [r1, *r2, *fin]  # 当たる順
     order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds"]
@@ -244,11 +268,18 @@ def build(links: str) -> Path:
         target, out_dir = None, ROOT / "out/site"
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    def nav_label(base: str, no: int) -> str:
+        m = sched[no]
+        return f"{base} 終了" if m.get("winner") else f"{base} {m['date']}"
+
+    def nav_items(keys: list) -> list:
+        return [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", ""), "out": not T[k]["alive"]} for k in keys]
+
     nav = [
         {"label": "", "items": [{"slug": "index", "label": "ブロック全体"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]},
-        {"label": "1回戦 終了", "items": [{"slug": SLUG[r1], "label": T[r1]["display"].replace("都・", ""), "out": not T[r1]["alive"]}]},
-        {"label": "2回戦" + ("" if len(r2_alive) > 1 else " 9/20"), "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", ""), "out": not T[k]["alive"]} for k in r2]},
-        {"label": "決勝 9/22", "items": [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", ""), "out": not T[k]["alive"]} for k in fin]},
+        {"label": nav_label("1回戦", r1_no), "items": nav_items([r1])},
+        {"label": nav_label("2回戦", 149), "items": nav_items(r2)},
+        {"label": nav_label("決勝", 208), "items": nav_items(fin)},
         {"label": "2次予選", "items": [{"slug": "seeds", "label": "強豪32校"}]},
     ]
     common = {
@@ -256,6 +287,7 @@ def build(links: str) -> Path:
         "decided": data["decided"], "block": block, "brief": brief, "nav": nav, "links": hrefs, "linkTarget": target,
         "keyToSlug": {k: SLUG[k] for k in [me, *opps]}, "order": order, "titles": titles,
         "nTeamsRated": data["nTeamsRated"], "styleNone": data["styleNone"],
+        "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
     js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")
@@ -276,9 +308,11 @@ def build(links: str) -> Path:
                     "elo": elo_explainer(T, me, nxt_opp or r1, opps)})
     me_t = {**T[me], "key": me}
     ins, bands, note = self_insights(me_t, block, {T[k]["display"]: T[k]["elo"] for k in opps})
-    mo = brief[me].get("outcome")
+    mine = brief[me].get("outcomes") or []
+    done = "、".join(f"{o['round']}で{o['opp'].replace('都・', '')}に{o['score']}" for o in mine)
+    all_won = mine and all(o["won"] for o in mine)
     lead = (f"第{T[me]['area']['area']}地区（{T[me]['area']['city']}）の{T[me]['area']['kind']}高校。"
-            + (f"1次予選1回戦は{mo['opp'].replace('都・', '')}に{mo['score']}で{'勝ち' if mo['won'] else '負け'}ました。" if mo else "")
+            + (f"1次予選は{done}{'と勝ち上がりました' if all_won else 'という結果です'}。" if done else "")
             + (f"次は{nxt_sched['date']}({nxt_sched['dow']}) {nxt_sched['time']}の{T[nxt_opp_key]['display'].replace('都・', '')}戦です。" if nxt_sched and nxt_opp_key else "")
             + f"過去5年の公式戦{T[me]['summary']['n']}試合と今季のNSリーグから、強みと課題を整理しました。")
     write("musashigaoka", {"page": "self", "self": me_t, "insights": ins, "bands": bands, "bandNote": note, "selfLead": lead, "road": road})

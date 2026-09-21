@@ -225,11 +225,28 @@ def main() -> int:
         if r["大会"] == "選手権" and r["年度"] == 2026 and r["勝者"]:
             decided[frozenset((r["kA"], r["kB"]))] = normalize(r["勝者"])
 
-    def match(x, y):
-        w = decided.get(frozenset((x, y)))
-        return {"winner": w} if w else [x, y]
+    # 1回戦だけでなく、2回戦・ブロック決勝も結果が出ていれば確定として畳む。
+    # 畳まないと敗退した学校に勝ち上がり確率が残る（2026-09-21 に2回戦で判明）
+    def settled(node):
+        if isinstance(node, str):
+            return node
+        if isinstance(node, dict):
+            return node["winner"]
+        return None
 
-    bracket = [[match(b[0], b[1]), match(b[2], b[3])], [match(b[4], b[5]), match(b[6], b[7])]]
+    def build(seq):
+        if len(seq) == 1:
+            return seq[0]
+        half = len(seq) // 2
+        left, right = build(seq[:half]), build(seq[half:])
+        x, y = settled(left), settled(right)
+        if x and y:
+            w = decided.get(frozenset((x, y)))
+            if w:
+                return {"winner": w}
+        return [left, right]
+
+    bracket = build(b)
     probs = block_probabilities(bracket, elo)
 
     ratings_top = [{"key": k, "elo": round(v), "games": n_games.get(k, 0)} for k, v in ranked if n_games.get(k, 0) >= 5][:60]
