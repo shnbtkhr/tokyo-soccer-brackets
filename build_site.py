@@ -131,7 +131,7 @@ def elo_explainer(T: dict, me: str, r1: str, opps: list) -> dict:
             "「格上・格下」は、試合の時点で点数の差が 50 点を超える相手。",
         ],
         "caveats": [
-            "2022〜2026年度の大会の試合を、試合前の点数で当てられたかで設定を選んだ。2025・26年度の大会1,314試合で、見込みの高い側が勝った割合は79.7%（旧方式は76.9%）。",
+            "2022〜2026年度の大会の試合を、試合前の点数で当てられたかで設定を選んだ。2025・26年度の大会1,314試合で、見込みの高い側が勝った割合は80.3%（旧方式は76.9%）。",
             "リーグ戦をそのまま入れると当たり具合は悪くなった。控え（B・C）やクラブは点数が分からないまま始まるため。控えは学校のAから差し引いた点数で始め、試合数の少ないチームとの結果では学校の点数を動かさないようにして、はじめて良くなった。",
             "地区リーグは地区ごとに取れた量が違う（第8地区は学校の試合記録だけ）。取れた量の多い地区の学校ほど点数がよく動く。",
             "2022年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。ホームかどうか、延長かどうかは考えていない。",
@@ -191,6 +191,7 @@ def meet_breakdown(T: dict, block: list, me: str, decided: list) -> dict:
 
 def build(links: str) -> Path:
     data = build_data("武蔵丘", ROOT / "scout/sen2026_block10.json")
+    FINAL = json.loads((ROOT / "scout/final_2026.json").read_text(encoding="utf-8"))
     me = data["me"]
     T = data["teams"]
     block = data["block"]
@@ -248,7 +249,12 @@ def build(links: str) -> Path:
             "elo": t.get("elo"), "eloRank": t.get("eloRank"), "area": t.get("area"), "round": rnd[0], "candidate": rnd[1],
             "leagueLine": league_line(t), "outcome": outcome.get(k), "outcomes": outcomes.get(k, []),
         }
-    opps = [r1, *r2, *fin]  # 当たる順
+    # 武蔵丘が実際に戦った相手と、次の相手だけを扱う。当たらなかった学校は載せない
+    played = {d["a"] if d["b"] == me else d["b"] for d in data["decided"] if me in (d["a"], d["b"])}
+    opps = [k for k in (r1, *r2, *fin) if k in played or k == nxt_opp_key]  # 当たった順→次の相手
+    # 当たらなかった学校のカードは出さない。ページを作らないのでリンクが切れる
+    for st in road:
+        st["teams"] = [k for k in st["teams"] if k in opps]
     order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds"]
     for k in opps:
         TITLE[SLUG[k]] = f"{T[k]['display'].replace('都・', '')} スカウティング"
@@ -275,11 +281,12 @@ def build(links: str) -> Path:
     def nav_items(keys: list) -> list:
         return [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", ""), "out": not T[k]["alive"]} for k in keys]
 
+    keep = [k for k in opps]
     nav = [
-        {"label": "", "items": [{"slug": "index", "label": "ブロック全体"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]},
-        {"label": nav_label("1回戦", r1_no), "items": nav_items([r1])},
-        {"label": nav_label("2回戦", 149), "items": nav_items(r2)},
-        {"label": nav_label("決勝", 208), "items": nav_items(fin)},
+        {"label": "", "items": [{"slug": "index", "label": "ブロック決勝"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]},
+        {"label": nav_label("決勝", 208), "items": nav_items([k for k in fin if k in keep])},
+        {"label": nav_label("2回戦", 149), "items": nav_items([k for k in r2 if k in keep])},
+        {"label": nav_label("1回戦", r1_no), "items": nav_items([k for k in (r1,) if k in keep])},
         {"label": "2次予選", "items": [{"slug": "seeds", "label": "強豪32校"}]},
     ]
     common = {
@@ -288,6 +295,7 @@ def build(links: str) -> Path:
         "keyToSlug": {k: SLUG[k] for k in [me, *opps]}, "order": order, "titles": titles,
         "nTeamsRated": data["nTeamsRated"], "styleNone": data["styleNone"],
         "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
+        "final": FINAL, "nextOpp": nxt_opp_key,
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
     js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")

@@ -298,13 +298,28 @@ function renderHub() {
   const nm = D.next;
   root.append(h("div", { class: "masthead" },
     h("div", { class: "eyebrow" }, D.blockLabel),
-    h("h1", {}, h("span", { class: "us" }, nameOf(D.me)), " の勝ち上がりを読む"),
+    h("h1", {}, h("span", { class: "us" }, nameOf(D.me)), D.nextOpp && D.final ? " の勝ち筋を描く" : " の勝ち上がりを読む"),
     h("p", { class: "lead" }, (() => {
       const alive = D.block.filter((k) => B[k].alive);
       const mine = B[D.me].outcome;
+      const nx = D.nextOpp && B[D.nextOpp];
+      if (nx && D.final) {
+        return `${mine.round}は${mine.opp.replace("都・", "")}に ${mine.score} で勝ち、残るは${alive.length}校。`
+          + `次に勝てば2次予選です。過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦、それに観戦記事から、`
+          + `${nx.display.replace("都・", "")}をできる限り調べて、勝ち筋をまとめました。`;
+      }
       return (mine ? `${mine.round}は${mine.opp.replace("都・", "")}に ${mine.score} で${mine.won ? "勝ちました" : "負けました"}。` : "")
         + `残るは${alive.length}校です。過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦から、相手ごとに分析しています。学校名を選ぶと、その学校のページが開きます。`;
     })())));
+
+  if (nm) {
+    root.append(h("section", { class: "nextmatch", "aria-label": "次の試合" },
+      h("div", { class: "when" }, h("div", { class: "d" }, `${nm.date}(${nm.dow}) ${nm.time}`), h("div", { class: "v" }, `${nm.round}【${nm.no}】・${nm.venue}`)),
+      h("div", { class: "vs" }, h("span", { class: "t us" }, nameOf(D.me)), h("span", { class: "x" }, "vs"), h("a", { class: "t", ...linkAttrs(D.keyToSlug[nm.opp]) }, nameOf(nm.opp))),
+      h("div", { class: "odds" }, h("div", { class: "p" }, pct(B[nm.opp].vsMe)), h("div", { class: "l" }, "武蔵丘が勝つ見込み。過去5年の大会と今季のリーグ戦からの目安です"))));
+  }
+
+  if (D.nextOpp) root.append(...planSections({ verdict: true, conditions: true, edge: true, keys: true, risks: true }));
 
   // ここまでの結果（決着した試合）。回戦ごとに区切る
   if (D.decided && D.decided.length) {
@@ -327,12 +342,6 @@ function renderHub() {
       h("ul", { class: "done-list" }, rows)));
   }
 
-  if (nm) {
-    root.append(h("section", { class: "nextmatch", "aria-label": "次の試合" },
-      h("div", { class: "when" }, h("div", { class: "d" }, `${nm.date}(${nm.dow}) ${nm.time}`), h("div", { class: "v" }, `${nm.round}【${nm.no}】・${nm.venue}`)),
-      h("div", { class: "vs" }, h("span", { class: "t us" }, nameOf(D.me)), h("span", { class: "x" }, "vs"), h("a", { class: "t", ...linkAttrs(D.keyToSlug[nm.opp]) }, nameOf(nm.opp))),
-      h("div", { class: "odds" }, h("div", { class: "p" }, pct(B[nm.opp].vsMe)), h("div", { class: "l" }, "武蔵丘が勝つ見込み。過去5年の大会と今季のリーグ戦からの目安です"))));
-  }
 
   const road = h("div", { class: "road" });
   for (const st of D.road) {
@@ -521,6 +530,12 @@ function renderTeam() {
       h("p", { class: "small" }, ...t.style.sources.flatMap((sr, i) => [i ? "　" : "", h("a", { href: sr.url, target: "_blank", rel: "noopener" }, sr.label)])));
   } else {
     scout.append(h("p", { class: "small muted" }, D.styleNone));
+  }
+  if (k === D.nextOpp) {
+    main.append(...planSections({ myths: true, style: true, clock: true, keys: true, risks: true }));
+  } else {
+    const rv = reviewSection(k);
+    if (rv) main.append(rv);
   }
   main.append(scout, connectionsSection(t), leagueSection(t, false));
   main.append(h("section", { class: "sec" }, h("div", { class: "figure" },
@@ -824,3 +839,89 @@ if (D.page === "hub") renderHub(); else if (D.page === "team") renderTeam(); els
 $("#app").prepend(pager());  // 前後のページはページの上に置く（下まで読まないと次へ進めない、という指摘を受けて）
 fillToc();
 document.body.append(h("footer", { class: "foot" }, `データ: ${D.asOf}。強さの点数と見込みは過去の公式戦から計算した目安です。`));
+
+/* ---------- ブロック決勝の分析（城東戦） ---------- */
+function planSections(opts) {
+  const F = D.final, out = [];
+  if (!F) return out;
+  const src = (u, label) => (u ? h("a", { href: u, target: "_blank", rel: "noopener", class: "srclink" }, label || "出典") : null);
+
+  if (opts.verdict) {
+    out.push(h("section", { class: "sec verdict" },
+      h("div", { class: "sec-head" }, h("h2", {}, "結論から"), h("p", {}, "ブロック決勝 9/22(火) 12:00")),
+      h("p", { class: "vline" }, F.verdict.line),
+      h("p", { class: "prose" }, F.verdict.body)));
+  }
+
+  if (opts.myths) {
+    out.push(h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, "城東の数字を解剖する"), h("p", {}, "印象と実態のずれ")),
+      h("div", { class: "myths" }, F.myths.map((m) => h("div", { class: "myth" },
+        h("div", { class: "mh" }, h("span", { class: "tag warn" }, "よく言われる"), h("b", {}, m.claim)),
+        h("div", { class: "mr" }, h("span", { class: "num big" }, m.num), h("b", {}, m.reality)),
+        h("p", { class: "small" }, m.body))))));
+  }
+
+  if (opts.style && F.style) {
+    out.push(h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, F.style.title), h("p", {}, "観戦記事に残っている記述から")),
+      h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, ""), h("th", {}, "要点"), h("th", {}, "根拠"))),
+        h("tbody", {}, F.style.points.map((p) => h("tr", {},
+          h("td", {}, h("b", {}, p.k)),
+          h("td", {}, p.v, h("span", { class: "yr" }, p.year)),
+          h("td", { class: "q" }, p.q, " ", src(p.src))))))),
+      h("p", { class: "small muted prose" }, F.style.caveat)));
+  }
+
+  if (opts.clock && F.clock) {
+    out.push(h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, F.clock.title), h("p", {}, "いつ点が入るか")),
+      h("p", { class: "prose" }, F.clock.lead),
+      h("ul", { class: "clock" }, F.clock.rows.map((r) => h("li", {},
+        h("b", { class: "num" }, r.when), h("span", {}, r.what), h("span", { class: "small muted" }, r.note)))),
+      h("p", { class: "prose hi" }, F.clock.conclusion),
+      h("p", { class: "small" }, src(F.clock.src, "得点時間の出典: 城東サッカー部 公式サイト"))));
+  }
+
+  if (opts.keys) {
+    out.push(h("section", { class: "sec", id: "plan" },
+      h("div", { class: "sec-head" }, h("h2", {}, "武蔵丘の勝ち筋"), h("p", {}, `${F.keys.length}つ`)),
+      h("ol", { class: "plan" }, F.keys.map((k) => h("li", {},
+        h("span", { class: "no num" }, k.n),
+        h("div", {}, h("b", {}, k.title), h("p", { class: "small" }, k.body),
+          h("ul", { class: "ev" }, k.ev.map((e) => h("li", {}, e)))))))));
+  }
+
+  if (opts.risks) {
+    out.push(h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, "警戒すること"), h("p", {}, "都合のいい話だけではない")),
+      h("div", { class: "risks" }, F.risks.map((r) => h("div", { class: "risk" }, h("b", {}, r.title), h("p", { class: "small" }, r.body))))));
+  }
+
+  if (opts.conditions && F.conditions) {
+    out.push(h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, "試合の条件"), h("p", {}, F.conditions.headline)),
+      h("div", { class: "tbl" }, h("table", {}, h("tbody", {}, F.conditions.items.map((it) => h("tr", {},
+        h("td", {}, h("b", {}, it.k)), h("td", {}, it.v, h("span", { class: "small muted blk" }, it.note, " ", src(it.src))))))))
+      , h("p", { class: "small muted prose" }, F.conditions.caution)));
+  }
+
+  if (opts.edge && F.ourEdge) {
+    out.push(h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, "武蔵丘が握っているもの"), h("p", {}, "同じ物差しで並べる")),
+      h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, ""), h("th", { class: "n" }, "武蔵丘"), h("th", { class: "n" }, "城東"), h("th", {}, ""))),
+        h("tbody", {}, F.ourEdge.map((e) => h("tr", {}, h("td", {}, h("b", {}, e.k)), h("td", { class: "n us" }, e.us), h("td", { class: "n" }, e.them), h("td", { class: "small muted" }, e.note))))))));
+  }
+  return out;
+}
+
+/* ---------- 終わった試合の総評 ---------- */
+function reviewSection(key) {
+  const r = D.final && D.final.reviews && D.final.reviews[key];
+  if (!r) return null;
+  return h("section", { class: "sec review" },
+    h("div", { class: "sec-head" }, h("h2", {}, "総評"), h("p", {}, r.when)),
+    h("p", { class: "vline" }, r.title),
+    h("p", { class: "prose" }, r.body),
+    h("ul", { class: "points" }, r.points.map((p) => h("li", {}, p))));
+}
