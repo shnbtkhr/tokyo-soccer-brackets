@@ -661,7 +661,10 @@ def parse_scores(m: Match) -> dict:
         if KICKOFF.search(txt):
             res["kickoff"] = txt
             continue
-        if MARK.match(txt) or ADVANCE_CODE.match(txt):
+        # 単独の「P」「K」は記号ではなく「1 P 7」の分かち書きの一部。ここで記号として
+        # 抜くと、下の PK 処理に届かず PK 戦のスコアが本スコアとして読まれる
+        # （2026 総体 南支部の縦組みで11試合が誤読。marks はどこからも参照していない）
+        if (MARK.match(txt) or ADVANCE_CODE.match(txt)) and txt not in ("P", "K"):
             res["marks"].append(txt)
             continue
         mm = PK_WRAP.match(txt)
