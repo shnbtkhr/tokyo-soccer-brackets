@@ -330,7 +330,13 @@ def build(links: str) -> Path:
         t["autoPoints"] = team_points(t, me_t, T[me]["games"], brief[k])
         write(SLUG[k], {"page": "team", "team": t, "meHistory": T[me]["eloHistory"]})
     second = json.loads((ROOT / "out/scout/second_2026.json").read_text(encoding="utf-8"))
-    write("seeds", {"page": "second", "second": second})
+    # トーナメント表の画像は、手元では assets/、公開ページでは GitHub Pages の URL を指す
+    if links == "artifact":
+        asset_base = "https://shnbtkhr.github.io/tokyo-soccer-brackets/assets/"
+    else:
+        asset_base = "assets/"
+    assets = {"png": asset_base + "sen26_2j_pred.png", "pdf": asset_base + "sen26_2j_pred.pdf"}
+    write("seeds", {"page": "second", "second": second, "assets": assets})
     return out_dir
 
 

@@ -77,13 +77,14 @@ def main() -> int:
             final_dist[a] += pa * pb * p
             final_dist[b] += pa * pb * (1 - p)
 
+    names = ["Aブロック 上", "Aブロック 下", "Bブロック 上", "Bブロック 下"]
     rank = sorted({t for b in blocks for t in b}, key=lambda t: -elo.get(t, BASE))
     teams = []
     for i, t in enumerate(rank, 1):
         bi = next(k for k, b in enumerate(blocks) if t in b)
         teams.append({
             "rank": i, "key": t, "elo": round(elo.get(t, BASE)), "games": n_games.get(t, 0),
-            "block": bi + 1,
+            "block": bi + 1, "blockName": names[bi],
             "blockWin": round(block_win[bi].get(t, 0.0), 4),
             "semiWin": round(semi_dist[bi // 2].get(t, 0.0), 4),
             "title": round(final_dist.get(t, 0.0), 4),
@@ -92,14 +93,15 @@ def main() -> int:
     for bi, b in enumerate(blocks):
         for i in range(0, len(b) - 1, 2):
             a, c = b[i], b[i + 1]
-            pairs.append({"block": bi + 1, "a": a, "b": c,
+            pairs.append({"block": bi + 1, "blockName": names[bi], "a": a, "b": c,
                           "aElo": round(elo.get(a, BASE)), "bElo": round(elo.get(c, BASE)),
                           "p": round(win_prob(elo.get(a, BASE), elo.get(c, BASE)), 3)})
         if len(b) % 2:
-            pairs.append({"block": bi + 1, "a": b[-1], "b": None, "aElo": round(elo.get(b[-1], BASE)), "bElo": None, "p": 1.0})
+            pairs.append({"block": bi + 1, "blockName": names[bi], "a": b[-1], "b": None, "aElo": round(elo.get(b[-1], BASE)), "bElo": None, "p": 1.0})
 
     out = {"blocks": [[{"key": t, "elo": round(elo.get(t, BASE))} for t in b] for b in blocks],
-           "teams": teams, "firstRound": pairs, "nTeams": len(rank)}
+           "teams": teams, "firstRound": pairs, "nTeams": len(rank), "blockNames": names,
+           "predWinners": [max(bw, key=bw.get) for bw in block_win]}
     path = ROOT / "out/scout/second_2026.json"
     path.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {path}  {len(rank)}校")

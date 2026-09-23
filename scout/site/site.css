@@ -553,3 +553,8 @@ ul.draw li.mine { background: var(--them-soft); }
 ul.draw .t { color: var(--muted); }
 ul.draw .t.win { color: var(--ink); font-weight: 700; }
 ul.draw b { text-align: center; color: var(--link); font-weight: 600; }
+
+/* トーナメント表の画像 */
+figure.bracket-img { margin: 0; display: grid; gap: var(--s2); }
+figure.bracket-img img { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--rule); border-radius: var(--r); }
+figure.bracket-img a { display: block; }

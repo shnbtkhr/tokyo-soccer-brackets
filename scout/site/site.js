@@ -1045,13 +1045,26 @@ function renderSecond() {
     ...top.map((t, i) => h("div", { class: "kpi" },
       h("span", { class: "k" }, `優勝確率 ${i + 1}位`),
       h("span", { class: "v" + (i ? "" : " us") }, pct(t.title, 1)),
-      h("span", { class: "note" }, `${nm(t.key)}（点数 ${t.elo}・第${t.block}ブロック）`))),
+      h("span", { class: "note" }, `${nm(t.key)}（点数 ${t.elo}・${t.blockName}）`))),
     (() => { const j = S.teams.find((x) => x.key === "城東"); if (!j) return null;
       return h("div", { class: "kpi" }, h("span", { class: "k" }, "武蔵丘を倒した城東"),
         h("span", { class: "v them" }, `${j.rank}位`, h("small", {}, `/${S.nTeams}`)),
-        h("span", { class: "note" }, `点数 ${j.elo}・第${j.block}ブロック。山を勝ち抜く見込みは ${pct(j.blockWin, 2)}で、同じ山に実践学園と帝京がいる`)); })()));
+        h("span", { class: "note" }, `点数 ${j.elo}・${j.blockName}。山を勝ち抜く見込みは ${pct(j.blockWin, 2)}で、同じ山に実践学園と帝京がいる`)); })()));
 
   const main = h("div", { class: "stack lg" });
+
+  // 公式トーナメント表 ＋ 勝ち上がり予想の赤線
+  main.append(h("section", { class: "sec", id: "bracket" },
+    h("div", { class: "sec-head" }, h("h2", {}, "トーナメント表と勝ち上がり予想"), h("p", {}, "高体連の組み合わせ表に、予想の勝ち上がりを赤で重ねた")),
+    h("p", { class: "prose" }, "赤い線は「強さの点数で見込みの高いほうが勝つ」とたどった経路です。"
+      + `この読みでいくと、4つの山を抜けるのは ${S.predWinners.map(nm).join("・")} になります。`),
+    h("figure", { class: "bracket-img" },
+      h("a", { href: D.assets.pdf, target: "_blank", rel: "noopener" },
+        h("img", { src: D.assets.png, alt: "第105回選手権 東京大会 2次予選のトーナメント表。予想の勝ち上がりを赤線で重ねたもの", loading: "lazy" })),
+      h("figcaption", { class: "small muted" }, "画像を押すと、赤線を入れたPDFが開きます（元は高体連 2026/9/23 版）。",
+        h("a", { href: "https://tokyosoccer-u18.com/SEN26/sen26_2j.pdf", target: "_blank", rel: "noopener" }, " 公式PDF"))),
+    h("p", { class: "small muted prose" }, "11/15 のブロック決勝の横線だけは、PDFの線をうまく読み取れず赤を引けていません。"
+      + "そこまでの勝ち上がりは赤でたどれます。")));
 
   // 出場校ランキング
   const max = S.teams[0].title;
@@ -1059,12 +1072,12 @@ function renderSecond() {
     h("div", { class: "sec-head" }, h("h2", {}, "出場校ランキング"), h("p", {}, `${S.nTeams}校を強さの点数の順に`)),
     h("div", { class: "tbl" }, h("table", { class: "rank" },
       h("thead", {}, h("tr", {}, h("th", { class: "n" }, "#"), h("th", {}, "学校"), h("th", { class: "n" }, "点数"),
-        h("th", { class: "n" }, "山"), h("th", {}, "山を勝ち抜く"), h("th", { class: "n" }, "優勝"))),
+        h("th", {}, "山"), h("th", {}, "山を勝ち抜く"), h("th", { class: "n" }, "優勝"))),
       h("tbody", {}, S.teams.map((t) => h("tr", { class: t.key === "城東" ? "hl" : null },
         h("td", { class: "n" }, t.rank),
         h("td", { class: "nm" }, nm(t.key), t.key === "城東" ? h("span", { class: "tag" }, "武蔵丘を破った") : null),
         h("td", { class: "n" }, t.elo),
-        h("td", { class: "n" }, t.block),
+        h("td", { class: "small" }, t.blockName || t.block),
         h("td", {}, h("div", { class: "totcell" }, h("span", { class: "num" }, pct(t.blockWin, 1)),
           h("div", { class: "meter them" }, h("i", { style: `width:${Math.min(100, t.blockWin * 100)}%` })))),
         h("td", { class: "n" }, t.title >= 0.001 ? pct(t.title, 1) : "―")))))),
@@ -1077,7 +1090,7 @@ function renderSecond() {
   main.append(h("section", { class: "sec", id: "draw" },
     h("div", { class: "sec-head" }, h("h2", {}, "1回戦の組み合わせ"), h("p", {}, "4つの山・左の数字はその校が勝つ見込み")),
     h("div", { class: "blocks" }, Object.keys(byBlock).map((b) => h("div", { class: "blk" },
-      h("h3", {}, `第${b}ブロック`),
+      h("h3", {}, byBlock[b][0].blockName || `第${b}ブロック`),
       h("ul", { class: "draw" }, byBlock[b].map((p) => h("li", { class: p.a === "城東" || p.b === "城東" ? "mine" : null },
         p.b
           ? [h("span", { class: "t" + (p.p >= 0.5 ? " win" : "") }, nm(p.a)), h("b", { class: "num" }, pct(p.p)),
@@ -1088,11 +1101,14 @@ function renderSecond() {
   const blkTop = {};
   for (const t of S.teams) if (!blkTop[t.block] || t.blockWin > blkTop[t.block].blockWin) blkTop[t.block] = t;
   side.append(h("div", { class: "card" }, h("h2", {}, "山ごとの本命"),
-    h("dl", { class: "kv" }, Object.keys(blkTop).flatMap((b) => [h("dt", {}, `第${b}ブロック`), h("dd", {}, `${nm(blkTop[b].key)} ${pct(blkTop[b].blockWin, 1)}`)]))));
+    h("dl", { class: "kv" }, Object.keys(blkTop).flatMap((b) => [h("dt", {}, blkTop[b].blockName || `第${b}ブロック`), h("dd", {}, `${nm(blkTop[b].key)} ${pct(blkTop[b].blockWin, 1)}`)]))));
   side.append(h("div", { class: "card" }, h("h2", {}, "この数字の読み方"),
     h("ul", { class: "points" },
       h("li", {}, "強さの点数は、過去5年の公式戦4,040試合と今季のリーグ戦から計算したもの。2次予選に出る67校は、1次予選を戦った学校より試合数が多く、点数の精度も高い"),
       h("li", {}, "優勝確率を足すと100%になります。山の組み合わせを1試合ずつ掛け合わせているためです"),
-      h("li", {}, "会場・日程・けが人・当日のメンバーは入っていません。あくまで過去の結果からの目安です"))));
+      h("li", {}, "会場・日程・けが人・当日のメンバーは入っていません。あくまで過去の結果からの目安です"),
+      h("li", {}, h("b", {}, "狛江はなぜ1次予選にいないのか"), "。1次予選を免除された33校の1つです。ただし免除の条件として割り出せた2つ"
+        + "（その年の総体二次トーナメントに出た／TリーグのT1・T2に所属）のどちらにも当てはまりません。狛江は今季T3で、総体は一次トーナメントのブロック決勝で創価に0-1。"
+        + "毎年1〜7校いる「条件では説明のつかない免除校」の1つで、高体連は免除の決まりを公開していません。強さの点数は1926で全体34位と高く、実力で選ばれた可能性はあります"))));
   root.append(h("div", { class: "split" }, main, side));
 }
