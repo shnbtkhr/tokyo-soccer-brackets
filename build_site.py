@@ -26,7 +26,7 @@ from build_scout_page import build_data
 
 ROOT = Path(__file__).parent
 SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
-TITLE = {"index": "武蔵丘 選手権スカウティング", "musashigaoka": "武蔵丘 自己分析", "seeds": "2次予選の強豪校"}
+TITLE = {"index": "武蔵丘 選手権スカウティング", "musashigaoka": "武蔵丘 自己分析", "seeds": "2次予選 都大会トーナメント"}
 
 
 def band_of(g: dict) -> str:
@@ -264,7 +264,7 @@ def build(links: str) -> Path:
             return f"{rounds[k][0]}・敗退"
         return f"{rounds[k][0]}" + ("の候補" if rounds[k][1] else "・次の相手" if k == nxt_opp_key else "")
 
-    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選の強豪"}
+    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選 都大会"}
 
     if links == "artifact":
         urls = json.loads((ROOT / "scout/site_urls.json").read_text(encoding="utf-8"))
@@ -288,7 +288,7 @@ def build(links: str) -> Path:
         {"label": nav_label("決勝", 208), "items": nav_items([k for k in fin if k in keep])},
         {"label": nav_label("2回戦", 149), "items": nav_items([k for k in r2 if k in keep])},
         {"label": nav_label("1回戦", r1_no), "items": nav_items([k for k in (r1,) if k in keep])},
-        {"label": "2次予選", "items": [{"slug": "seeds", "label": "強豪32校"}]},
+        {"label": "2次予選 10/3〜", "items": [{"slug": "seeds", "label": "都大会67校"}]},
     ]
     common = {
         "me": me, "blockLabel": data["blockLabel"], "asOf": data["asOf"], "schedule": data["schedule"], "slots": data["slots"],
@@ -329,8 +329,8 @@ def build(links: str) -> Path:
         t = {**T[k], "key": k}
         t["autoPoints"] = team_points(t, me_t, T[me]["games"], brief[k])
         write(SLUG[k], {"page": "team", "team": t, "meHistory": T[me]["eloHistory"]})
-    seeds = json.loads((ROOT / "out/scout/seeds_2026.json").read_text(encoding="utf-8"))
-    write("seeds", {"page": "seeds", "seeds": seeds})
+    second = json.loads((ROOT / "out/scout/second_2026.json").read_text(encoding="utf-8"))
+    write("seeds", {"page": "second", "second": second})
     return out_dir
 
 

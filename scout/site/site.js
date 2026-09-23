@@ -51,7 +51,7 @@ function renderSidenav() {
   side.append(h("a", { class: "sn-brand", ...linkAttrs("index") }, h("i", { class: "dot", "aria-hidden": "true" }), h("span", {}, h("b", {}, "武蔵丘スカウト"), h("small", {}, "選手権 2026 東京都予選"))));
   const item = (it) => {
     const k = slugKey[it.slug], br = k && B[k];
-    const meta = it.slug === "seeds" ? "32" : br && k !== D.me && br.alive === false ? "敗退" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
+    const meta = it.slug === "seeds" ? "67" : br && k !== D.me && br.alive === false ? "敗退" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
     return h("li", {}, h("a", { ...linkAttrs(it.slug), class: "sn-link" + (it.cls === "me" ? " me" : ""), "aria-current": it.slug === D.slug ? "page" : null, title: meta && it.slug !== "seeds" ? `武蔵丘が勝つ見込み ${meta}` : null },
       h("span", { class: "sn-t" }, it.label), meta ? h("span", { class: "sn-m num" }, meta) : null));
   };
@@ -324,6 +324,7 @@ function renderHub() {
   }
 
   root.append(...planSections({ verdict: true }));
+  if (D.over) { for (const f of [thisYearSection, journeySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
   const gk = upsetsSection();
   if (gk) root.append(gk);
 
@@ -370,8 +371,8 @@ function renderHub() {
     }
     road.append(col);
   }
-  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, "勝ち上がりの道"), h("p", {}, `${D.doneNote}。灰色は敗退した学校`)), road,
-    h("p", { class: "small muted prose" }, "「当たる確率」は、武蔵丘と相手の両方がその試合まで勝ち上がる見込みです。武蔵丘がその前に負けるとどちらとも当たらないため、候補2校を足すと「武蔵丘がその回戦まで進む見込み」になり、100%にはなりません。帯グラフの斜線がその差（武蔵丘がその前に負ける場合）です。")));
+  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, D.over ? "歩いた道" : "勝ち上がりの道"), h("p", {}, D.over ? "3試合それぞれのページへ" : `${D.doneNote}。灰色は敗退した学校`)), road,
+    D.over ? null : h("p", { class: "small muted prose" }, "「当たる確率」は、武蔵丘と相手の両方がその試合まで勝ち上がる見込みです。武蔵丘がその前に負けるとどちらとも当たらないため、候補2校を足すと「武蔵丘がその回戦まで進む見込み」になり、100%にはなりません。帯グラフの斜線がその差（武蔵丘がその前に負ける場合）です。")));
 
   const left = h("div", { class: "stack" },
     h("div", { class: "card" }, h("div", { class: "sec-head" }, h("h2", {}, "ブロックの山"), h("p", {}, "赤線は勝ち上がり。点線は武蔵丘の道")), bracketSVG()),
@@ -539,7 +540,11 @@ function renderTeam() {
   }
   const rv = reviewSection(k);
   if (rv) main.append(rv);
-  if (k === "城東") main.append(...planSections({ myths: true, style: true, clock: true, keys: true, risks: true, conditions: true }));
+  if (k === "城東") {
+    const pm = postmortemSection();
+    if (pm) main.append(pm);
+    main.append(...planSections({ myths: true, style: true, clock: true, keys: true, risks: true, conditions: true }));
+  }
   main.append(scout, leagueSection(t, false));
   main.append(h("section", { class: "sec" }, h("div", { class: "figure" },
     h("div", { class: "cap" }, h("h2", {}, "強さの点数の推移"), h("div", { class: "legend" }, h("span", {}, h("i", { style: "border-color:var(--us)" }), nameOf(D.me)), h("span", {}, h("i", { class: "dash", style: "border-color:var(--them)" }), t.display))),
@@ -838,7 +843,7 @@ function goalsChartSection(t) {
 /* ---------- 起動 ---------- */
 renderTopbar();
 renderSidenav();
-if (D.page === "hub") renderHub(); else if (D.page === "team") renderTeam(); else if (D.page === "seeds") renderSeeds(); else renderSelf();
+if (D.page === "hub") renderHub(); else if (D.page === "team") renderTeam(); else if (D.page === "seeds") renderSeeds(); else if (D.page === "second") renderSecond(); else renderSelf();
 $("#app").prepend(pager());  // 前後のページはページの上に置く（下まで読まないと次へ進めない、という指摘を受けて）
 fillToc();
 document.body.append(h("footer", { class: "foot" }, `データ: ${D.asOf}。強さの点数と見込みは過去の公式戦から計算した目安です。`));
@@ -925,7 +930,7 @@ function reviewSection(key) {
   return h("section", { class: "sec review" },
     h("div", { class: "sec-head" }, h("h2", {}, "総評"), h("p", {}, r.when)),
     h("p", { class: "vline" }, r.title),
-    h("p", { class: "prose" }, r.body),
+    ...r.body.split(/\n{2,}/).map((x) => h("p", { class: "prose" }, x)),
     h("ul", { class: "points" }, r.points.map((p) => h("li", {}, p))));
 }
 
@@ -950,8 +955,144 @@ function upsetsSection() {
     h("div", { class: "sec-head" }, h("h2", {}, "ジャイアントキリング番付"), h("p", {}, "第105回 選手権 東京 1次予選")),
     h("p", { class: "prose" }, `試合前の「勝つ見込み」が低かった側が勝った試合を、見込みの低い順に並べました。90分で決着したものが${solo.length}件。`
       + (myIdx >= 0 ? `武蔵丘の学習院戦は${myIdx + 1}位です。` : "")),
+    D.final && D.final.upsetsHighlight ? h("p", { class: "prose hi" }, D.final.upsetsHighlight) : null,
     h("ol", { class: "gk" }, top),
     pks.length ? h("details", { class: "more" }, h("summary", {}, `PK戦で決まった番狂わせ（${list.filter((x) => x.pk).length}件）`),
       h("div", { class: "body" }, h("ol", { class: "gk" }, pks.map((x, i) => row(x, i, i + 1))))) : null,
     h("p", { class: "small muted prose" }, D.final && D.final.upsetsNote));
+}
+
+/* ---------- ブロック決勝の答え合わせ ---------- */
+function postmortemSection() {
+  const P = D.final && D.final.postmortem;
+  if (!P) return null;
+  const mark = (v) => h("span", { class: "vd " + (v === "×" ? "no" : v === "△" ? "half" : v === "—" ? "na" : "yes") }, v);
+  return h("section", { class: "sec", id: "pm" },
+    h("div", { class: "sec-head" }, h("h2", {}, P.title), h("p", {}, "立てたプランと、実際")),
+    h("p", { class: "prose" }, P.lead),
+    h("p", { class: "vline" }, P.verdictLine),
+    h("ul", { class: "pmlist" }, P.keys.map((k) => h("li", {},
+      mark(k.v), h("div", {}, h("b", {}, `${k.n}. ${k.t}`), h("p", { class: "small" }, k.r))))),
+    h("h3", {}, "外した読み"),
+    h("div", { class: "myths" }, P.missed.map((m) => h("div", { class: "myth" },
+      h("div", { class: "mh" }, h("span", { class: "tag warn" }, "こう読んだ"), h("b", {}, m.claim)),
+      h("div", { class: "mr" }, h("b", {}, m.fact))))),
+    h("h3", {}, "当たった読み"),
+    h("div", { class: "risk hit" }, h("b", {}, P.hit.claim), h("p", { class: "small" }, P.hit.fact)),
+    h("div", { class: "card model" }, h("h3", {}, P.model.title),
+      h("p", { class: "prose" }, P.model.body), h("p", { class: "prose" }, P.model.why)));
+}
+
+/* ---------- 武蔵丘の5年 ---------- */
+function journeySection() {
+  const J = D.final && D.final.journey;
+  if (!J) return null;
+  const W = J.walls;
+  return h("section", { class: "sec", id: "journey" },
+    h("div", { class: "sec-head" }, h("h2", {}, J.title), h("p", {}, "2022年度からの公式戦31試合")),
+    h("p", { class: "prose" }, J.lead),
+    h("ol", { class: "years" }, J.years.map((y) => h("li", {},
+      h("b", { class: "num yr2" }, y.y),
+      h("div", {}, h("div", { class: "yhead" }, h("span", { class: "num elo" }, y.elo), h("span", { class: "small muted" }, y.rec)),
+        h("p", { class: "small" }, y.note))))),
+    h("h3", {}, W.title),
+    h("p", { class: "prose" }, W.body),
+    h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "年度"), h("th", {}, "舞台"), h("th", {}, "結果"), h("th", { class: "n" }, "相手との点差"))),
+      h("tbody", {}, W.rows.map((r) => h("tr", { class: r.y === "2026" ? "hl us" : null },
+        h("td", { class: "n" }, r.y), h("td", {}, r.s), h("td", {}, r.r), h("td", { class: "n" }, r.gap)))))),
+    h("p", { class: "prose hi" }, W.sting),
+    h("h3", {}, J.bright.title),
+    h("ul", { class: "points us" }, J.bright.points.map((p) => h("li", { html: p }))));
+}
+
+/* ---------- 数字で見る今大会 ---------- */
+function thisYearSection() {
+  const T = D.final && D.final.thisYear;
+  if (!T) return null;
+  return h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, T.title), h("p", {}, "第105回 選手権 東京都1次予選")),
+    h("div", { class: "tbl" }, h("table", {}, h("tbody", {}, T.rows.map((r) => h("tr", {},
+      h("td", {}, h("b", {}, r.k)), h("td", { class: "n big2" }, r.v), h("td", { class: "small muted" }, r.n)))))));
+}
+
+/* ---------- 外から見た武蔵丘（記事・掲示板・SNS） ---------- */
+function outsideSection() {
+  const O = D.final && D.final.outside;
+  if (!O || !(O.items || []).length) return null;
+  return h("section", { class: "sec", id: "outside" },
+    h("div", { class: "sec-head" }, h("h2", {}, O.title), h("p", {}, "外の記録に残っていたこと")),
+    O.lead ? h("p", { class: "prose" }, O.lead) : null,
+    h("div", { class: "tbl" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "出どころ"), h("th", {}, "分かったこと"))),
+      h("tbody", {}, O.items.map((x) => h("tr", {},
+        h("td", {}, h("b", {}, x.k), x.date ? h("span", { class: "small muted blk" }, x.date) : null),
+        h("td", {}, x.v, x.src ? h("span", { class: "small blk" }, h("a", { href: x.src, target: "_blank", rel: "noopener" }, "出典")) : null)))))),
+    O.none ? h("p", { class: "small muted prose" }, O.none) : null);
+}
+
+/* ---------- 2次予選（都大会）のトーナメント ---------- */
+function renderSecond() {
+  const S = D.second, root = $("#app");
+  const nm = (k) => k.replace("都・", "");
+  root.append(h("div", { class: "masthead" },
+    h("div", { class: "eyebrow" }, "第105回全国高校サッカー選手権 東京大会 2次予選"),
+    h("h1", {}, "都大会の", h("span", { class: "us" }, `${S.nTeams}校`), " を読む"),
+    h("p", { class: "lead" }, `1次予選を勝ち上がった34校と、1次予選を免除された33校。合わせて${S.nTeams}校が10月から都大会を戦います。`
+      + "武蔵丘はここに届きませんでしたが、倒した相手と倒された相手がどこまで行くのかは、この表で追えます。"),
+    h("p", { class: "lead" }, "強さの点数から、1試合ずつの勝つ見込みを掛け合わせて、山を勝ち抜く確率と優勝確率を出しました。")));
+
+  const top = S.teams.slice(0, 3);
+  root.append(h("div", { class: "kpis" },
+    ...top.map((t, i) => h("div", { class: "kpi" },
+      h("span", { class: "k" }, `優勝確率 ${i + 1}位`),
+      h("span", { class: "v" + (i ? "" : " us") }, pct(t.title, 1)),
+      h("span", { class: "note" }, `${nm(t.key)}（点数 ${t.elo}・第${t.block}ブロック）`))),
+    (() => { const j = S.teams.find((x) => x.key === "城東"); if (!j) return null;
+      return h("div", { class: "kpi" }, h("span", { class: "k" }, "武蔵丘を倒した城東"),
+        h("span", { class: "v them" }, `${j.rank}位`, h("small", {}, `/${S.nTeams}`)),
+        h("span", { class: "note" }, `点数 ${j.elo}・第${j.block}ブロック。山を勝ち抜く見込みは ${pct(j.blockWin, 2)}で、同じ山に実践学園と帝京がいる`)); })()));
+
+  const main = h("div", { class: "stack lg" });
+
+  // 出場校ランキング
+  const max = S.teams[0].title;
+  main.append(h("section", { class: "sec", id: "rank" },
+    h("div", { class: "sec-head" }, h("h2", {}, "出場校ランキング"), h("p", {}, `${S.nTeams}校を強さの点数の順に`)),
+    h("div", { class: "tbl" }, h("table", { class: "rank" },
+      h("thead", {}, h("tr", {}, h("th", { class: "n" }, "#"), h("th", {}, "学校"), h("th", { class: "n" }, "点数"),
+        h("th", { class: "n" }, "山"), h("th", {}, "山を勝ち抜く"), h("th", { class: "n" }, "優勝"))),
+      h("tbody", {}, S.teams.map((t) => h("tr", { class: t.key === "城東" ? "hl" : null },
+        h("td", { class: "n" }, t.rank),
+        h("td", { class: "nm" }, nm(t.key), t.key === "城東" ? h("span", { class: "tag" }, "武蔵丘を破った") : null),
+        h("td", { class: "n" }, t.elo),
+        h("td", { class: "n" }, t.block),
+        h("td", {}, h("div", { class: "totcell" }, h("span", { class: "num" }, pct(t.blockWin, 1)),
+          h("div", { class: "meter them" }, h("i", { style: `width:${Math.min(100, t.blockWin * 100)}%` })))),
+        h("td", { class: "n" }, t.title >= 0.001 ? pct(t.title, 1) : "―")))))),
+    h("p", { class: "small muted prose" }, "「山を勝ち抜く」はその4分の1の山で勝ち残る見込み、「優勝」は準決勝・決勝まで勝ち切る見込みです。"
+      + "1試合ごとの見込みを掛け合わせたもので、組み合わせの運がそのまま数字に出ます。点数が高くても山が厳しければ優勝確率は下がります。")));
+
+  // ブロックごとの1回戦
+  const byBlock = {};
+  for (const p of S.firstRound) (byBlock[p.block] = byBlock[p.block] || []).push(p);
+  main.append(h("section", { class: "sec", id: "draw" },
+    h("div", { class: "sec-head" }, h("h2", {}, "1回戦の組み合わせ"), h("p", {}, "4つの山・左の数字はその校が勝つ見込み")),
+    h("div", { class: "blocks" }, Object.keys(byBlock).map((b) => h("div", { class: "blk" },
+      h("h3", {}, `第${b}ブロック`),
+      h("ul", { class: "draw" }, byBlock[b].map((p) => h("li", { class: p.a === "城東" || p.b === "城東" ? "mine" : null },
+        p.b
+          ? [h("span", { class: "t" + (p.p >= 0.5 ? " win" : "") }, nm(p.a)), h("b", { class: "num" }, pct(p.p)),
+             h("span", { class: "t" + (p.p < 0.5 ? " win" : "") }, nm(p.b))]
+          : [h("span", { class: "t win" }, nm(p.a)), h("b", { class: "num" }, "―"), h("span", { class: "small muted" }, "1回戦なし")]))))))));
+
+  const side = h("aside", { class: "stack side" });
+  const blkTop = {};
+  for (const t of S.teams) if (!blkTop[t.block] || t.blockWin > blkTop[t.block].blockWin) blkTop[t.block] = t;
+  side.append(h("div", { class: "card" }, h("h2", {}, "山ごとの本命"),
+    h("dl", { class: "kv" }, Object.keys(blkTop).flatMap((b) => [h("dt", {}, `第${b}ブロック`), h("dd", {}, `${nm(blkTop[b].key)} ${pct(blkTop[b].blockWin, 1)}`)]))));
+  side.append(h("div", { class: "card" }, h("h2", {}, "この数字の読み方"),
+    h("ul", { class: "points" },
+      h("li", {}, "強さの点数は、過去5年の公式戦4,040試合と今季のリーグ戦から計算したもの。2次予選に出る67校は、1次予選を戦った学校より試合数が多く、点数の精度も高い"),
+      h("li", {}, "優勝確率を足すと100%になります。山の組み合わせを1試合ずつ掛け合わせているためです"),
+      h("li", {}, "会場・日程・けが人・当日のメンバーは入っていません。あくまで過去の結果からの目安です"))));
+  root.append(h("div", { class: "split" }, main, side));
 }
