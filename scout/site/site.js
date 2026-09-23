@@ -56,12 +56,15 @@ function renderSidenav() {
       h("span", { class: "sn-t" }, it.label), meta ? h("span", { class: "sn-m num" }, meta) : null));
   };
   const tree = h("nav", { class: "sn-tree" });
-  const first = D.nav.filter((g) => g.label !== "2次予選"), second = D.nav.filter((g) => g.label === "2次予選").map((g) => ({ ...g, label: "" }));
+  // 振り分けは phase で決める。ラベルの文字列で判定すると、文言を変えたときに
+  // 片方が空のグループになって展開できなくなる（2026-09-24）
+  const first = D.nav.filter((g) => g.phase !== 2), second = D.nav.filter((g) => g.phase === 2).map((g) => ({ ...g, label: "" }));
   const grp = (title, sub, groups) => h("details", { class: "sn-grp", open: "" }, h("summary", {}, h("span", {}, title), sub ? h("small", {}, sub) : null),
     h("ul", {}, groups.flatMap((g) => g.label
       ? [h("li", { class: "sn-round" }, h("span", { class: "sn-lab" }, g.label === "決勝" ? "ブロック決勝" : g.label), h("ul", {}, g.items.map(item)))]
       : g.items.map(item))));
-  tree.append(grp("1次予選", D.blockLabel ? D.blockLabel.replace(/^.*?(【\d+】).*$/, "$1ブロック") : "", first), grp("2次予選", "10/3〜", second));
+  tree.append(grp("1次予選", D.blockLabel ? D.blockLabel.replace(/^.*?(【\d+】).*$/, "$1ブロック") : "", first));
+  if (second.some((g) => g.items.length)) tree.append(grp("2次予選", "10/3〜", second));
   side.append(tree);
   const toc = h("nav", { class: "sn-toc", "aria-label": "このページの見出し" }, h("div", { class: "sn-h" }, "このページ"), h("ol", {}));
   side.append(toc, h("div", { class: "sn-foot" }, h("span", {}, "強さの点数は目安です。"), h("a", { href: hrefOf("index") + "#elo", target: D.linkTarget || null }, "点数のしくみ")));

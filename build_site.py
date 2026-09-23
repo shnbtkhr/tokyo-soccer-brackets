@@ -289,7 +289,7 @@ def build(links: str) -> Path:
         {"label": nav_label("決勝", 208), "items": nav_items([k for k in fin if k in keep])},
         {"label": nav_label("2回戦", 149), "items": nav_items([k for k in r2 if k in keep])},
         {"label": nav_label("1回戦", r1_no), "items": nav_items([k for k in (r1,) if k in keep])},
-        {"label": "2次予選 10/3〜", "items": [{"slug": "seeds", "label": "都大会 67校"}]},
+        {"label": "2次予選", "phase": 2, "items": [{"slug": "seeds", "label": "都大会 67校"}]},
     ]
     common = {
         "me": me, "blockLabel": data["blockLabel"], "asOf": data["asOf"], "schedule": data["schedule"], "slots": data["slots"],
