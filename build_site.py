@@ -192,6 +192,7 @@ def meet_breakdown(T: dict, block: list, me: str, decided: list) -> dict:
 def build(links: str) -> Path:
     data = build_data("武蔵丘", ROOT / "scout/sen2026_block10.json")
     FINAL = json.loads((ROOT / "scout/final_2026.json").read_text(encoding="utf-8"))
+    UPSETS = json.loads((ROOT / "out/scout/upsets_2026.json").read_text(encoding="utf-8"))
     me = data["me"]
     T = data["teams"]
     block = data["block"]
@@ -295,7 +296,7 @@ def build(links: str) -> Path:
         "keyToSlug": {k: SLUG[k] for k in [me, *opps]}, "order": order, "titles": titles,
         "nTeamsRated": data["nTeamsRated"], "styleNone": data["styleNone"],
         "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
-        "final": FINAL, "nextOpp": nxt_opp_key,
+        "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"],
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
     js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")
@@ -324,12 +325,9 @@ def build(links: str) -> Path:
             + (f"次は{nxt_sched['date']}({nxt_sched['dow']}) {nxt_sched['time']}の{T[nxt_opp_key]['display'].replace('都・', '')}戦です。" if nxt_sched and nxt_opp_key else "")
             + f"過去5年の公式戦{T[me]['summary']['n']}試合と今季のNSリーグから、強みと課題を整理しました。")
     write("musashigaoka", {"page": "self", "self": me_t, "insights": ins, "bands": bands, "bandNote": note, "selfLead": lead, "road": road})
-    conn_path = ROOT / f"data/connections/{me}_2026.json"
-    conns = json.loads(conn_path.read_text(encoding="utf-8")) if conn_path.exists() else {}
     for k in opps:
         t = {**T[k], "key": k}
         t["autoPoints"] = team_points(t, me_t, T[me]["games"], brief[k])
-        t["connections"] = conns.get(k)
         write(SLUG[k], {"page": "team", "team": t, "meHistory": T[me]["eloHistory"]})
     seeds = json.loads((ROOT / "out/scout/seeds_2026.json").read_text(encoding="utf-8"))
     write("seeds", {"page": "seeds", "seeds": seeds})
