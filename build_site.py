@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -288,7 +289,7 @@ def build(links: str) -> Path:
         {"label": nav_label("決勝", 208), "items": nav_items([k for k in fin if k in keep])},
         {"label": nav_label("2回戦", 149), "items": nav_items([k for k in r2 if k in keep])},
         {"label": nav_label("1回戦", r1_no), "items": nav_items([k for k in (r1,) if k in keep])},
-        {"label": "2次予選 10/3〜", "items": [{"slug": "seeds", "label": "都大会67校"}]},
+        {"label": "2次予選 10/3〜", "items": [{"slug": "seeds", "label": "都大会 67校"}]},
     ]
     common = {
         "me": me, "blockLabel": data["blockLabel"], "asOf": data["asOf"], "schedule": data["schedule"], "slots": data["slots"],
@@ -330,12 +331,11 @@ def build(links: str) -> Path:
         t["autoPoints"] = team_points(t, me_t, T[me]["games"], brief[k])
         write(SLUG[k], {"page": "team", "team": t, "meHistory": T[me]["eloHistory"]})
     second = json.loads((ROOT / "out/scout/second_2026.json").read_text(encoding="utf-8"))
-    # トーナメント表の画像は、手元では assets/、公開ページでは GitHub Pages の URL を指す
-    if links == "artifact":
-        asset_base = "https://shnbtkhr.github.io/tokyo-soccer-brackets/assets/"
-    else:
-        asset_base = "assets/"
-    assets = {"png": asset_base + "sen26_2j_pred.png", "pdf": asset_base + "sen26_2j_pred.pdf"}
+    # トーナメント表は画像をページに埋め込む（data URI）。こうすると手元・GitHub Pages・
+    # claude.ai のどれでも同じ1ファイルで同じように出る
+    png = (ROOT / "out/site/assets/sen26_2j_pred.png").read_bytes()
+    assets = {"png": "data:image/png;base64," + base64.b64encode(png).decode("ascii"),
+              "pdf": "https://shnbtkhr.github.io/tokyo-soccer-brackets/assets/sen26_2j_pred.pdf"}
     write("seeds", {"page": "second", "second": second, "assets": assets})
     return out_dir
 

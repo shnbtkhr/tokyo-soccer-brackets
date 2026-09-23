@@ -51,7 +51,7 @@ function renderSidenav() {
   side.append(h("a", { class: "sn-brand", ...linkAttrs("index") }, h("i", { class: "dot", "aria-hidden": "true" }), h("span", {}, h("b", {}, "武蔵丘スカウト"), h("small", {}, "選手権 2026 東京都予選"))));
   const item = (it) => {
     const k = slugKey[it.slug], br = k && B[k];
-    const meta = it.slug === "seeds" ? "67" : br && k !== D.me && br.alive === false ? "敗退" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
+    const meta = it.slug === "seeds" ? null : br && k !== D.me && br.alive === false ? "敗退" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
     return h("li", {}, h("a", { ...linkAttrs(it.slug), class: "sn-link" + (it.cls === "me" ? " me" : ""), "aria-current": it.slug === D.slug ? "page" : null, title: meta && it.slug !== "seeds" ? `武蔵丘が勝つ見込み ${meta}` : null },
       h("span", { class: "sn-t" }, it.label), meta ? h("span", { class: "sn-m num" }, meta) : null));
   };
@@ -1061,7 +1061,7 @@ function renderSecond() {
     h("figure", { class: "bracket-img" },
       h("a", { href: D.assets.pdf, target: "_blank", rel: "noopener" },
         h("img", { src: D.assets.png, alt: "第105回選手権 東京大会 2次予選のトーナメント表。予想の勝ち上がりを赤線で重ねたもの", loading: "lazy" })),
-      h("figcaption", { class: "small muted" }, "画像を押すと、赤線を入れたPDFが開きます（元は高体連 2026/9/23 版）。",
+      h("figcaption", { class: "small muted" }, "高体連 2026/9/23 版の組み合わせ表に赤線を重ねたもの。画像を押すと同じ内容のPDFが開きます。",
         h("a", { href: "https://tokyosoccer-u18.com/SEN26/sen26_2j.pdf", target: "_blank", rel: "noopener" }, " 公式PDF"))),
     h("p", { class: "small muted prose" }, "11/15 のブロック決勝の横線だけは、PDFの線をうまく読み取れず赤を引けていません。"
       + "そこまでの勝ち上がりは赤でたどれます。")));
