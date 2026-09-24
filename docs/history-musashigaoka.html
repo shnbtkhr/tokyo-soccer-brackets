@@ -1,0 +1,738 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>武蔵丘 の歩み｜東京都高校サッカー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<style>
+/* 武蔵丘スカウト — サイト共通の見た目
+   比率はすべて黄金比 φ = 1.618 から取る。
+   - 文字: 基準 15px に √φ（≈1.272）を掛けた段 … 12 / 15 / 19 / 24 / 31 / 39 / 50
+   - 余白: φ で増える段 … 5 / 8 / 13 / 21 / 34 / 55 / 89
+   - 配置: 本文列 : 脇列 = φ : 1（61.8% : 38.2%）
+   人間工学: 本文は1行 約36字（日本語で読みやすい幅）、押せるものは高さ 44px 以上、行間 1.75。 */
+
+/* 色: 武蔵丘のチームカラー（1st エンジ・紺／2nd 白・紺）。白地に紺の文字、武蔵丘はエンジ。
+   相手校は青緑（エンジ・紺のどちらとも区別できる色。色覚の違いへの配慮は検証済み）。
+   公式トーナメント表と同じく、勝ち上がりは赤線。 */
+:root {
+  --ground: #F5F6F8;
+  --surface: #FFFFFF;
+  --sunk: #ECEEF3;
+  --ink: #15213B;
+  --ink-2: #34405A;
+  --muted: #5A657A;
+  --rule: #DDE1E8;
+  --rule-strong: #C4CAD5;
+  --us: #9A2034;
+  --us-soft: #F6E6E9;
+  --us-ink: #FFFFFF;
+  --them: #00809A;
+  --them-soft: #E0F2F5;
+  --link: #006B80;
+  --line: #15213B;
+  --win: #D8392B;
+  --focus: #006B80;
+
+  --f-ja: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif;
+  --f-num: "Barlow Semi Condensed", "Zen Kaku Gothic New", "Arial Narrow", sans-serif;
+
+  --t-1: 12px; --t0: 15px; --t1: 19px; --t2: 24px; --t3: 31px; --t4: 39px; --t5: 50px;
+  --s1: 5px; --s2: 8px; --s3: 13px; --s4: 21px; --s5: 34px; --s6: 55px; --s7: 89px;
+  --r: 8px;
+  --measure: 36em;
+  --page: 1180px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0E131C; --surface: #141B26; --sunk: #1B2431; --ink: #E9ECF2; --ink-2: #C3C9D5; --muted: #939CAD;
+    --rule: #283243; --rule-strong: #384458; --us: #D25A6C; --us-soft: #33171E; --us-ink: #140608;
+    --them: #2FA3AD; --them-soft: #10292E; --link: #5CC2CB; --line: #C9CFDA; --win: #FF6B5E; --focus: #5CC2CB;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0E131C; --surface: #141B26; --sunk: #1B2431; --ink: #E9ECF2; --ink-2: #C3C9D5; --muted: #939CAD;
+  --rule: #283243; --rule-strong: #384458; --us: #D25A6C; --us-soft: #33171E; --us-ink: #140608;
+  --them: #2FA3AD; --them-soft: #10292E; --link: #5CC2CB; --line: #C9CFDA; --win: #FF6B5E; --focus: #5CC2CB;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--ground); color: var(--ink);
+  font-family: var(--f-ja); font-size: var(--t0); line-height: 1.75; font-weight: 400;
+  font-feature-settings: "palt" 0; -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { margin: 0; line-height: 1.3; text-wrap: balance; font-weight: 700; letter-spacing: .01em; }
+h1 { font-size: var(--t4); font-weight: 900; letter-spacing: .02em; line-height: 1.15; }
+h2 { font-size: var(--t2); }
+h3 { font-size: var(--t1); }
+p { margin: 0; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .01em; }
+.eyebrow { font-family: var(--f-num); font-size: var(--t-1); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: var(--t-1); line-height: 1.6; }
+.prose { max-width: var(--measure); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
+/* ヘッダー（全ページ共通のナビゲーション） */
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--rule); }
+.topbar .in { max-width: 1440px; margin: 0 auto; padding-inline: var(--s4); min-height: 55px; display: flex; align-items: center; gap: var(--s4); }
+.brand { display: flex; align-items: baseline; gap: var(--s2); text-decoration: none; color: var(--ink); white-space: nowrap; }
+.brand b { font-weight: 900; font-size: var(--t1); letter-spacing: .02em; }
+.brand .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--us); display: inline-block; transform: translateY(-2px); }
+.brand span { font-family: var(--f-num); font-size: var(--t-1); letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+/* 広い画面では折り返して全部見せる（横に隠さない）。狭い画面だけ横スクロールにし、スクロールバーを見せる */
+nav.pages { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s1); margin-left: auto; padding-block: var(--s2); min-width: 0; }
+nav.pages .grp { display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: var(--sunk); }
+nav.pages .grp > .lab { font-family: var(--f-num); font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--muted); padding-inline: var(--s2) var(--s1); white-space: nowrap; }
+nav.pages a { display: inline-flex; align-items: center; min-height: 36px; padding-inline: var(--s3); border-radius: 999px; color: var(--ink-2); text-decoration: none; font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+nav.pages a:hover { background: var(--surface); color: var(--ink); }
+nav.pages a[aria-current="page"] { background: var(--ink); color: var(--ground); }
+nav.pages a.me[aria-current="page"] { background: var(--us); color: var(--us-ink); }
+nav.pages a.out { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+/* 左のサイドパネル（PC）。上段 = サイトの地図（ツリー）、下段 = このページの見出し（読んでいる所が光る）。
+   幅は 1100px 以上で出し、そのときは上のタブを隠す。スマホは上のタブのまま */
+.sidenav { display: none; }
+@media (min-width: 1100px) {
+  :root { --side: 272px; }
+  body.has-side { padding-left: var(--side); }
+  body.has-side .topbar { display: none; }
+  .sidenav { display: flex; flex-direction: column; gap: var(--s4); position: fixed; inset: 0 auto 0 0; width: var(--side); z-index: 25; overflow-y: auto; overscroll-behavior: contain;
+    padding: var(--s4) var(--s3) var(--s4) var(--s4); background: var(--surface); border-right: 1px solid var(--rule); scrollbar-width: thin; scrollbar-color: var(--rule-strong) transparent; }
+  main.page { padding-top: var(--s4); }
+}
+.sn-brand { display: flex; align-items: center; gap: var(--s2); text-decoration: none; color: var(--ink); padding: var(--s1) var(--s2); }
+.sn-brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--us); box-shadow: 0 0 0 4px var(--us-soft); flex: none; }
+.sn-brand span { display: grid; line-height: 1.3; }
+.sn-brand b { font-weight: 900; font-size: var(--t1); letter-spacing: .02em; }
+.sn-brand small { font-size: 11px; color: var(--muted); }
+.sn-tree { display: grid; gap: var(--s2); }
+.sn-grp > summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; gap: var(--s2); padding: 6px var(--s2); border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--muted); }
+.sn-grp > summary::-webkit-details-marker { display: none; }
+.sn-grp > summary::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg) translateY(-1px); transition: transform .15s; }
+.sn-grp[open] > summary::before { transform: rotate(45deg) translateY(-2px); }
+.sn-grp > summary small { font-weight: 500; letter-spacing: 0; margin-left: auto; }
+.sn-grp > summary:hover { color: var(--ink); }
+.sn-tree ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; }
+.sn-tree .sn-round { margin-top: 6px; }
+.sn-tree .sn-lab { display: block; font-size: 11px; color: var(--muted); padding: 2px var(--s2) 2px 14px; }
+.sn-tree .sn-round ul { margin-left: 14px; padding-left: 8px; border-left: 1px solid var(--rule); }
+.sn-link { display: flex; align-items: center; gap: var(--s2); min-height: 36px; padding: 0 var(--s2) 0 var(--s3); border-radius: 8px; color: var(--ink-2); text-decoration: none; font-size: 14px; font-weight: 500; position: relative; transition: background .12s, color .12s; }
+.sn-link:hover { background: var(--sunk); color: var(--ink); }
+.sn-link .sn-t { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sn-link .sn-m { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--sunk); border-radius: 999px; padding: 1px 7px; }
+.sn-link[aria-current="page"] { background: var(--ink); color: var(--ground); font-weight: 700; }
+.sn-link[aria-current="page"] .sn-m { background: color-mix(in srgb, var(--ground) 18%, transparent); color: var(--ground); }
+.sn-link.me { color: var(--us); font-weight: 700; }
+.sn-link.me[aria-current="page"] { background: var(--us); color: var(--us-ink); }
+.sn-toc { display: grid; gap: var(--s1); padding-top: var(--s3); border-top: 1px solid var(--rule); }
+.sn-h { font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--muted); padding: 0 var(--s2) var(--s1); }
+.sn-toc ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; }
+.sn-toc li > a { display: block; padding: 5px var(--s2) 5px var(--s4); border-radius: 6px; color: var(--ink-2); text-decoration: none; font-size: 13px; line-height: 1.45; position: relative; }
+.sn-toc li > a::before { content: ""; position: absolute; left: 9px; top: 50%; width: 5px; height: 5px; border-radius: 50%; background: var(--rule-strong); transform: translateY(-50%); transition: background .15s, transform .15s; }
+.sn-toc li > a:hover { background: var(--sunk); color: var(--ink); }
+.sn-toc li.on > a { color: var(--ink); font-weight: 700; background: var(--them-soft); }
+.sn-toc li.on > a::before { background: var(--them); transform: translateY(-50%) scale(1.5); }
+.sn-sub { margin: 2px 0 4px var(--s4); }
+.sn-sub > summary { cursor: pointer; font-size: 12px; color: var(--link); padding: 3px var(--s2); list-style: none; }
+.sn-sub > summary::-webkit-details-marker { display: none; }
+.sn-sub ol { max-height: 320px; overflow-y: auto; padding-left: var(--s2); border-left: 1px solid var(--rule); scrollbar-width: thin; }
+.sn-sub li a { display: flex; gap: 6px; padding: 3px var(--s2); font-size: 12.5px; color: var(--ink-2); text-decoration: none; border-radius: 5px; }
+.sn-sub li a:hover { background: var(--sunk); }
+.sn-sub .sn-rk { width: 1.6em; text-align: right; color: var(--muted); }
+.sn-foot { margin-top: auto; padding: var(--s3) var(--s2) 0; border-top: 1px solid var(--rule); font-size: 11.5px; color: var(--muted); display: grid; gap: 2px; }
+
+/* ページの骨組み */
+main.page { max-width: var(--page); margin: 0 auto; padding: var(--s5) var(--s4) var(--s7); display: grid; gap: var(--s6); }
+.split { display: grid; grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr); gap: var(--s5); align-items: start; }
+.split.rev { grid-template-columns: minmax(0, 1fr) minmax(0, 1.618fr); }
+.stack { display: grid; gap: var(--s4); align-content: start; }
+.stack.lg { gap: var(--s5); }
+section.sec { display: grid; gap: var(--s4); }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; }
+.sec-head p { color: var(--muted); font-size: var(--t-1); }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s4); display: grid; gap: var(--s3); }
+.card.flush { padding: 0; overflow: hidden; }
+.side .card { padding: var(--s4); }
+.crumb { display: flex; gap: var(--s2); align-items: center; font-size: var(--t-1); color: var(--muted); }
+.crumb a { color: var(--muted); }
+
+/* 見出しブロック */
+.masthead { display: grid; gap: var(--s3); }
+.masthead .title-row { display: flex; align-items: flex-end; gap: var(--s4); flex-wrap: wrap; }
+.masthead h1 .us { color: var(--us); }
+.masthead .lead { font-size: var(--t1); line-height: 1.7; color: var(--ink-2); max-width: 34em; }
+.chips { display: flex; gap: var(--s2); flex-wrap: wrap; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding-inline: 10px; border-radius: 999px; font-size: var(--t-1); font-weight: 500; background: var(--surface); border: 1px solid var(--rule); color: var(--ink-2); white-space: nowrap; }
+.chip.solid { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+.chip.us { background: var(--us); color: var(--us-ink); border-color: var(--us); }
+.chip.them { background: var(--them-soft); color: var(--link); border-color: transparent; }
+.chip.out { color: var(--muted); background: transparent; }
+.chip.warn { border-color: var(--win); color: var(--win); }
+
+/* 数字のタイル（そのページの要点になる数字だけ） */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); }
+.kpi { padding: var(--s4); display: grid; gap: var(--s1); align-content: start; border-left: 1px solid var(--rule); }
+.kpi:first-child { border-left: 0; }
+.kpi .k { font-size: var(--t-1); color: var(--muted); line-height: 1.5; }
+.kpi .v { font-family: var(--f-num); font-weight: 600; font-size: var(--t4); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.kpi .v small { font-size: var(--t0); font-weight: 500; color: var(--muted); margin-left: 3px; letter-spacing: 0; }
+.kpi .v.us { color: var(--us); }
+.kpi .v.them { color: var(--them); }
+.kpi .note { font-size: var(--t-1); color: var(--muted); line-height: 1.5; }
+
+/* 次の試合 */
+.nextmatch { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--s5); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s4) var(--s5); position: relative; overflow: hidden; }
+.nextmatch::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--us); }
+.nextmatch .when .d { font-family: var(--f-num); font-weight: 600; font-size: var(--t4); line-height: 1; }
+.nextmatch .when .v { color: var(--muted); font-size: var(--t-1); margin-top: var(--s2); }
+.nextmatch .vs { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; }
+.nextmatch .vs .t { font-size: var(--t3); font-weight: 900; letter-spacing: .02em; }
+.nextmatch .vs .t.us { color: var(--us); }
+.nextmatch .vs a.t { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--them); }
+.nextmatch .vs .x { font-family: var(--f-num); color: var(--muted); font-size: var(--t1); }
+.nextmatch .odds { text-align: right; }
+.nextmatch .odds .p { font-family: var(--f-num); font-weight: 600; font-size: var(--t4); color: var(--us); line-height: 1; }
+.nextmatch .odds .l { font-size: var(--t-1); color: var(--muted); max-width: 16em; margin-top: var(--s2); }
+
+/* 勝ち上がりの道（相手ページへの入口） */
+.road { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); counter-reset: step; }
+.road .step { display: grid; gap: var(--s3); align-content: start; }
+.road .step-h { display: flex; align-items: baseline; gap: var(--s2); padding-bottom: var(--s2); border-bottom: 2px solid var(--ink); }
+.road .step-h .n { font-family: var(--f-num); font-weight: 700; font-size: var(--t2); line-height: 1; }
+.road .step-h .r { font-weight: 700; }
+.road .step-h .d { margin-left: auto; font-family: var(--f-num); font-size: var(--t-1); color: var(--muted); }
+a.team-card { display: grid; gap: var(--s2); padding: var(--s4); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); color: var(--ink); text-decoration: none; transition: border-color .15s, transform .15s; min-height: 44px; }
+a.team-card:hover { border-color: var(--them); transform: translateY(-1px); }
+a.team-card .nm { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2); }
+a.team-card .nm b { font-size: var(--t2); font-weight: 900; letter-spacing: .02em; }
+a.team-card .nm .go { font-family: var(--f-num); color: var(--link); font-size: var(--t-1); font-weight: 600; letter-spacing: .08em; white-space: nowrap; }
+a.team-card .sub { font-size: var(--t-1); color: var(--muted); }
+a.team-card .form { font-size: var(--t-1); color: var(--ink-2); line-height: 1.6; }
+a.team-card dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); margin: 0; padding-top: var(--s2); border-top: 1px solid var(--rule); }
+a.team-card dt { font-size: 11px; color: var(--muted); }
+a.team-card dd { margin: 0; font-family: var(--f-num); font-weight: 600; font-size: var(--t2); line-height: 1.1; }
+a.team-card dd.us { color: var(--us); }
+a.team-card.decided { background: transparent; }
+a.team-card .out-note { padding-top: var(--s2); border-top: 1px solid var(--rule); color: var(--muted); font-size: var(--t-1); font-weight: 700; }
+a.team-card.out { background: var(--sunk); }
+a.team-card.out .nm b, a.team-card.out .form { color: var(--muted); }
+a.team-card.out .nm .go { color: var(--muted); }
+
+/* トーナメント表（公式の表と同じく、勝ち上がりは赤線） */
+svg.bracket { width: 100%; height: auto; display: block; }
+svg.bracket text { font-family: var(--f-ja); fill: var(--ink); }
+svg.bracket .ln { stroke: var(--rule-strong); stroke-width: 1.5; fill: none; }
+svg.bracket .ln.win { stroke: var(--win); stroke-width: 3; }
+svg.bracket .ln.path { stroke: var(--us); stroke-width: 2; stroke-dasharray: 4 4; }
+svg.bracket .mno { font-family: var(--f-num); font-size: 11px; font-weight: 600; fill: var(--ink-2); }
+svg.bracket .mlab { font-family: var(--f-num); font-size: 11px; fill: var(--muted); }
+svg.bracket .score { font-family: var(--f-num); font-size: 12px; font-weight: 700; fill: var(--win); }
+svg.bracket .slot { font-family: var(--f-num); font-size: 11px; fill: var(--muted); }
+svg.bracket .nm { font-size: 13.5px; font-weight: 700; }
+svg.bracket .pct { font-family: var(--f-num); font-size: 11px; fill: var(--muted); }
+svg.bracket .hit { fill: transparent; }
+svg.bracket a:hover .hit { fill: var(--sunk); }
+svg.bracket a:focus-visible .hit { stroke: var(--focus); stroke-width: 2; }
+svg.bracket .me .hit { fill: var(--us-soft); }
+svg.bracket .me .nm { fill: var(--us); }
+svg.bracket .out .nm { fill: var(--muted); font-weight: 400; }
+svg.bracket .dest { font-family: var(--f-num); font-weight: 700; font-size: 14px; fill: var(--ink); }
+
+/* 日程 */
+.sched { display: grid; }
+.sched .r { display: grid; grid-template-columns: 55px 89px minmax(0, 1fr); gap: var(--s2); padding-block: var(--s3); border-top: 1px solid var(--rule); align-items: baseline; font-size: 13.5px; }
+.sched .r:first-child { border-top: 0; padding-top: 0; }
+.sched .r .m { font-family: var(--f-num); color: var(--muted); font-weight: 600; }
+.sched .r .dt { font-family: var(--f-num); font-weight: 600; }
+.sched .r .done { font-family: var(--f-num); font-weight: 700; color: var(--win); }
+.sched .r.mine { font-weight: 700; }
+.sched .r .where { display: block; color: var(--muted); font-size: var(--t-1); font-weight: 400; }
+
+/* グラフ */
+.figure { display: grid; gap: var(--s3); }
+.figure .cap { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); flex-wrap: wrap; }
+.legend { display: flex; gap: var(--s4); font-size: var(--t-1); color: var(--ink-2); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; vertical-align: middle; margin-right: 6px; }
+.legend i.dash { border-top-style: dashed; }
+.legend i.box { width: 10px; height: 10px; border: 0; border-radius: 2px; }
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+svg.chart text { font-family: var(--f-num); font-size: 12px; fill: var(--muted); }
+svg.chart .grid line { stroke: var(--rule); stroke-width: 1; }
+svg.chart .base { stroke: var(--rule-strong); stroke-width: 1; }
+svg.chart .val { fill: var(--ink); font-weight: 600; }
+svg.chart .lab-ja { font-family: var(--f-ja); font-size: 12.5px; fill: var(--ink-2); font-weight: 700; }
+.tip { position: fixed; z-index: 30; pointer-events: none; background: var(--ink); color: var(--ground); font-size: var(--t-1); line-height: 1.55; padding: var(--s2) var(--s3); border-radius: 6px; white-space: nowrap; box-shadow: 0 5px 21px rgba(0,0,0,.18); }
+.tip b { font-family: var(--f-num); font-weight: 600; }
+
+/* 表 */
+.tbl { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: var(--s2) var(--s3); border-top: 1px solid var(--rule); vertical-align: top; line-height: 1.55; }
+thead th { border-top: 0; background: var(--sunk); color: var(--muted); font-size: var(--t-1); font-weight: 500; white-space: nowrap; }
+td.n, th.n { font-family: var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.n { font-weight: 500; }
+tr.hl td { background: var(--them-soft); font-weight: 700; }
+tr.hl.us td { background: var(--us-soft); }
+/* 結果: 勝ちは ○、負けは ×。形・文字・色の3つで区別する */
+.res { font-weight: 700; white-space: nowrap; display: inline-flex; align-items: baseline; gap: 5px; color: var(--ink); }
+.res .g { font-family: var(--f-ja); font-weight: 900; width: 1em; text-align: center; }
+.res.w .g, .res.pkw .g { color: var(--us); }
+.res.l, .res.pkl { color: var(--muted); font-weight: 500; }
+.res.l .g, .res.pkl .g { color: var(--muted); }
+.formstrip { display: inline-flex; gap: 3px; vertical-align: middle; }
+.formstrip span { width: 22px; height: 22px; border-radius: 4px; display: inline-grid; place-items: center; font-size: 11px; font-weight: 700; border: 1px solid var(--rule); color: var(--ink-2); background: var(--surface); }
+.formstrip span.w { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+.formstrip span.d { background: var(--sunk); }
+.formstrip span.l { color: var(--muted); }
+.filters { display: flex; gap: var(--s1); flex-wrap: wrap; }
+.filters button { font: inherit; font-size: 13px; min-height: 36px; padding-inline: var(--s3); border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+
+/* 要点・注記・出典 */
+.points { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s3); }
+/* 本文に太字などが混ざっても1つの段落として流れるよう、格子ではなく通常の流し込みにする */
+.points li { position: relative; padding-left: 21px; max-width: var(--measure); }
+.points li::before { content: ""; position: absolute; left: 6px; top: .72em; width: 8px; height: 8px; border-radius: 2px; background: var(--them); }
+.points.us li::before { background: var(--us); }
+.points b { font-weight: 700; }
+.facts { margin: 0; display: grid; }
+.facts > div { display: grid; grid-template-columns: 89px minmax(0, 1fr); gap: var(--s3); padding-block: var(--s3); border-top: 1px solid var(--rule); }
+.facts > div:first-child { border-top: 0; padding-top: 0; }
+.facts dt { font-size: var(--t-1); color: var(--muted); }
+.facts dd { margin: 0; font-size: 13.5px; line-height: 1.65; }
+.facts .src { display: block; font-size: var(--t-1); color: var(--muted); overflow-wrap: anywhere; margin-top: 2px; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s2) var(--s4); margin: 0; font-size: 13.5px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--f-num); font-weight: 500; font-size: var(--t0); }
+.empty { color: var(--muted); font-size: 13.5px; }
+details.more { border-top: 1px solid var(--rule); padding-top: var(--s3); }
+details.more summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; list-style: none; gap: var(--s2); }
+details.more summary::-webkit-details-marker { display: none; }
+details.more summary::before { content: "+"; font-family: var(--f-num); font-weight: 700; width: 21px; height: 21px; display: inline-grid; place-items: center; border: 1px solid var(--rule-strong); border-radius: 50%; font-size: 13px; }
+details.more[open] summary::before { content: "−"; }
+details.more .body { padding-block: var(--s3) var(--s4); display: grid; gap: var(--s3); }
+.method { margin: 0; padding-left: 1.2em; display: grid; gap: var(--s2); color: var(--ink-2); font-size: 13.5px; max-width: 48em; }
+.insight { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); padding: var(--s4); border-radius: var(--r); background: var(--surface); border: 1px solid var(--rule); }
+.insight .h { font-weight: 700; font-size: var(--t1); line-height: 1.45; }
+.insight .b { color: var(--ink-2); font-size: 13.5px; line-height: 1.7; }
+.insight .fig { font-family: var(--f-num); font-weight: 600; font-size: var(--t3); line-height: 1; color: var(--us); }
+.insights { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4); }
+/* 計算の手順（順番に意味があるので番号を振る） */
+ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: st; display: grid; gap: var(--s3); }
+ol.steps li { counter-increment: st; display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: var(--s3); row-gap: 2px; max-width: 40em; }
+ol.steps li::before { content: counter(st); grid-row: span 2; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-num); font-weight: 700; font-size: var(--t1); background: var(--ink); color: var(--ground); }
+ol.steps li b { font-weight: 700; }
+ol.steps li span { color: var(--ink-2); font-size: 13.5px; line-height: 1.7; }
+/* つながりの糸口 */
+.conn-sum { display: grid; gap: var(--s2); }
+.conn-bar { display: flex; gap: 2px; height: 13px; border-radius: 4px; overflow: hidden; background: var(--sunk); }
+.conn-bar span { display: block; }
+ol.chains { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s2); }
+ol.chains li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: var(--s3); align-items: center; padding: var(--s2) var(--s3); border: 1px solid var(--rule); border-radius: var(--r); background: var(--surface); }
+ol.chains .imp { font-weight: 700; font-size: var(--t1); text-align: center; color: var(--muted); }
+ol.chains .imp.up { color: var(--us); }
+ol.chains .imp.down { color: var(--link); }
+.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 16px; font-size: 13px; }
+.chain .node { font-weight: 700; white-space: nowrap; }
+.chain .node.me { color: var(--us); }
+.chain .node.opp { color: var(--link); }
+.chain .edge { display: inline-grid; justify-items: center; line-height: 1.25; padding: 2px 8px 2px 6px; border-radius: 999px; background: var(--sunk); white-space: nowrap; position: relative; }
+.chain .edge::after { content: "→"; position: absolute; right: -13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 11px; }
+.chain .edge b { font-family: var(--f-num); font-weight: 600; font-size: 12.5px; }
+.chain .edge small { font-size: 10.5px; color: var(--muted); }
+.chain .edge.l b { color: var(--muted); }
+.meter { height: 8px; border-radius: 4px; background: var(--sunk); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--us); border-radius: 4px; }
+/* 前後のページ: ページの上に細い1行で置く（見出しとの間は詰める） */
+.pager { display: flex; justify-content: space-between; gap: var(--s3); margin-bottom: calc(var(--s3) - var(--s6)); }
+.pager a { display: inline-flex; align-items: center; gap: var(--s2); min-height: 44px; padding-inline: var(--s3); border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); text-decoration: none; color: var(--ink); font-size: 13.5px; min-width: 0; }
+.pager a:hover { border-color: var(--them); }
+.pager a .l { font-size: var(--t-1); color: var(--muted); white-space: nowrap; }
+.pager a b { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pager a.next { flex-direction: row-reverse; margin-left: auto; }
+footer.foot { max-width: var(--page); margin: 0 auto; padding: 0 var(--s4) var(--s6); color: var(--muted); font-size: var(--t-1); }
+
+/* ここまでの結果 */
+ul.done-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+ul.done-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; gap: var(--s3); align-items: baseline; padding: var(--s3) var(--s4); border-top: 1px solid var(--rule); }
+ul.done-list li:first-child { border-top: 0; }
+ul.done-list li.mine { background: var(--us-soft); }
+ul.done-list li.rlab { display: block; padding: var(--s2) var(--s4); background: var(--sunk); color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .1em; }
+ul.done-list .t { color: var(--muted); }
+ul.done-list .t.win { color: var(--ink); font-weight: 700; }
+ul.done-list .sc { font-size: var(--t1); }
+@media (max-width: 560px) { ul.done-list li { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); } ul.done-list li .small { grid-column: 1 / -1; } }
+
+/* 当たる確率の内訳（入口ページの勝ち上がりの道） */
+.result-banner { display: flex; align-items: baseline; gap: var(--s2); padding: var(--s2) var(--s3); border-radius: var(--r); background: var(--sunk); }
+.result-banner.won { background: var(--us-soft); }
+.result-banner .num { font-size: var(--t1); font-weight: 700; }
+.meet { display: grid; gap: 6px; }
+.meetbar { display: flex; gap: 2px; height: 13px; border-radius: 4px; overflow: hidden; }
+.meetbar span { display: block; min-width: 2px; }
+.meetbar .lose, .meetlist i.lose { background: repeating-linear-gradient(135deg, var(--sunk) 0 4px, var(--rule) 4px 6px); }
+.meetlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 12.5px; line-height: 1.5; }
+.meetlist li { display: grid; grid-template-columns: 10px minmax(0, 1fr); gap: 8px; align-items: start; }
+.meetlist i { width: 10px; height: 10px; border-radius: 2px; margin-top: 5px; }
+.meetlist b { font-weight: 700; }
+.meetlist small { display: block; color: var(--muted); font-size: 11.5px; }
+
+/* 2次予選の強豪 */
+.meter.them i { background: var(--them); }
+table.rank td.nm a { font-weight: 700; }
+table.rank th button.sort { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 28px; }
+table.rank th button.sort::after { content: "↕"; font-size: 10px; opacity: .45; }
+table.rank th button.sort[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
+table.rank th button.sort[aria-pressed="true"]::after { content: "↓"; opacity: 1; }
+.totcell { display: grid; grid-template-columns: 2.6em 5em; gap: 8px; align-items: center; }
+details.seed { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); scroll-margin-top: 70px; }
+details.seed[open] { border-color: var(--rule-strong); }
+details.seed > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto auto; gap: var(--s3); align-items: center; padding: var(--s3) var(--s4); min-height: 55px; }
+details.seed > summary::-webkit-details-marker { display: none; }
+details.seed > summary:hover { background: var(--sunk); }
+details.seed .rk { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: var(--t1); background: var(--them-soft); color: var(--link); }
+details.seed[open] .rk { background: var(--them); color: var(--surface); }
+details.seed .nm { display: grid; line-height: 1.35; min-width: 0; }
+details.seed .nm b { font-size: var(--t1); font-weight: 900; letter-spacing: .02em; }
+details.seed .tot, details.seed .vs { font-weight: 600; font-size: var(--t2); line-height: 1; text-align: right; display: grid; justify-items: end; gap: 3px; }
+details.seed .tot small, details.seed .vs small { font-family: var(--f-ja); font-size: 11px; font-weight: 500; color: var(--muted); }
+details.seed .vs { color: var(--us); min-width: 5.5em; }
+.seed-in { display: grid; gap: var(--s4); padding: var(--s3) var(--s4) var(--s4); border-top: 1px solid var(--rule); }
+.seed-body { display: grid; grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr); gap: var(--s4); align-items: start; }
+.seed-body .card { padding: var(--s3) var(--s4); gap: var(--s2); }
+.part { display: grid; grid-template-columns: 6.5em minmax(0, 1fr) 2em 2.6em; gap: 8px; align-items: center; font-size: 13px; }
+.part .num { text-align: right; font-weight: 600; }
+.part .r { font-size: 11px; text-align: right; }
+nav.toc { display: flex; gap: var(--s2); flex-wrap: wrap; }
+nav.toc a { display: inline-flex; align-items: center; min-height: 36px; padding-inline: var(--s3); border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); color: var(--ink-2); text-decoration: none; font-size: 13.5px; }
+nav.toc a:hover { border-color: var(--them); color: var(--ink); }
+section.sec[id] { scroll-margin-top: 70px; }
+.tags { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.tag { display: inline-flex; align-items: center; min-height: 20px; padding-inline: 7px; border-radius: 4px; font-size: 11px; font-weight: 700; background: var(--them-soft); color: var(--link); white-space: nowrap; }
+.tag.warn { background: transparent; border: 1px solid var(--win); color: var(--win); }
+.tag.first { background: var(--sunk); color: var(--ink-2); font-weight: 500; }
+.tag.first.me { background: var(--us-soft); color: var(--us); font-weight: 700; }
+.tag.club { background: transparent; color: var(--muted); font-weight: 500; border: 1px solid var(--rule); }
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
+.rule { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s3) var(--s4); display: grid; gap: var(--s2); align-content: start; }
+.rule.open { border-style: dashed; }
+.rh { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
+.rh b { font-weight: 700; line-height: 1.45; }
+.rule .no { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--ground); font-weight: 700; flex: none; }
+.rule .chip { margin-left: auto; }
+.exwhy { display: grid; gap: var(--s2); padding: var(--s3) var(--s4); background: var(--them-soft); border-radius: var(--r); }
+.exwhy .points li { max-width: none; font-size: 13.5px; }
+.exwhy .points li.muted::before { background: var(--rule-strong); }
+.tlgrid, .frgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--s3); align-items: start; }
+.frgrid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.tlc, .frb { padding: var(--s3); gap: var(--s2); }
+.tlc h3 { font-size: var(--t0); }
+.tlc h3 small { font-weight: 500; color: var(--muted); font-size: var(--t-1); }
+ol.tl { margin: 0; padding: 0; list-style: none; display: grid; }
+ol.tl li { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: 6px; align-items: center; padding-block: 3px; border-top: 1px solid var(--rule); font-size: 13px; }
+ol.tl li:first-child { border-top: 0; }
+ol.tl li .rk { color: var(--muted); text-align: right; }
+ol.tl li.seed .tm { font-weight: 700; }
+ol.tl li.club .tm, ol.tl li.sub .tm { color: var(--muted); }
+.frb.mine { border-color: var(--us); box-shadow: inset 0 0 0 1px var(--us); }
+.frh { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
+.frh .small { margin-left: auto; }
+.frb ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; font-size: 13px; }
+.frb li { display: flex; align-items: center; gap: 6px; justify-content: space-between; }
+.frb li.out { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.frb li.me { color: var(--us); font-weight: 700; }
+table.tourn td { white-space: nowrap; }
+table.tourn td.top { font-weight: 700; color: var(--ink); }
+table.tourn .ex { display: block; font-size: 10.5px; color: var(--link); font-weight: 500; }
+
+/* 画面幅ごとの組み替え */
+@media (max-width: 1280px) { .brand span { display: none; } }
+@media (max-width: 1000px) {
+  nav.pages { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: thin; padding-bottom: var(--s2); }
+  .split, .split.rev { grid-template-columns: minmax(0, 1fr); }
+  .road { grid-template-columns: minmax(0, 1fr); }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi:nth-child(3) { border-left: 0; }
+  .kpi:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .nextmatch { grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
+  .nextmatch .odds { text-align: left; }
+  .insights { grid-template-columns: minmax(0, 1fr); }
+  .seed-body { grid-template-columns: minmax(0, 1fr); }
+  .rules { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  details.seed > summary { grid-template-columns: 34px minmax(0, 1fr) auto; padding-inline: var(--s3); }
+  details.seed .vs { display: none; }
+  .seed-in { padding-inline: var(--s3); }
+}
+@media (max-width: 560px) {
+  h1 { font-size: var(--t3); }
+  .kpi .v { font-size: var(--t3); }
+  main.page { padding-inline: var(--s3); gap: var(--s5); }
+  .topbar .in { padding-inline: var(--s3); }
+  .brand span { display: none; }
+  .pager a b { max-width: 9em; }
+  .pager { margin-bottom: calc(var(--s2) - var(--s5)); }
+}
+
+/* ブロック決勝の分析（結論・解剖・勝ち筋・警戒） */
+.sec.verdict, .sec.review { background: var(--surface); border: 1px solid var(--rule); border-left: 5px solid var(--us); border-radius: var(--r); padding: var(--s4) var(--s5); }
+.vline { font-size: var(--t2); font-weight: 900; line-height: 1.45; letter-spacing: .01em; text-wrap: balance; }
+.prose.hi { background: var(--us-soft); border-radius: var(--r); padding: var(--s3) var(--s4); font-weight: 700; max-width: none; }
+a.srclink { font-size: 11px; white-space: nowrap; }
+.blk { display: block; margin-top: 3px; }
+.yr { font-family: var(--f-num); font-size: 11px; color: var(--muted); margin-left: 6px; }
+td.q { color: var(--ink-2); font-size: 12.5px; max-width: 34em; }
+
+.myths { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
+.myth { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s3) var(--s4); display: grid; gap: var(--s2); align-content: start; }
+.myth .mh { display: grid; gap: 4px; }
+.myth .mh b { color: var(--muted); font-weight: 500; text-decoration: line-through; text-decoration-thickness: 1px; line-height: 1.5; }
+.myth .mr { display: grid; gap: 2px; padding-top: var(--s2); border-top: 1px solid var(--rule); }
+.myth .mr b { font-size: var(--t1); line-height: 1.4; }
+.num.big { font-family: var(--f-num); font-weight: 600; font-size: var(--t3); line-height: 1; color: var(--us); }
+
+ul.clock { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+ul.clock li { display: grid; grid-template-columns: 6em minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--s3); align-items: baseline; padding: var(--s3) var(--s4); background: var(--surface); }
+ul.clock li b { font-size: var(--t1); color: var(--us); }
+
+ol.plan { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s3); counter-reset: none; }
+ol.plan li { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: var(--s3); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s4); }
+ol.plan .no { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--us); color: var(--us-ink); font-weight: 700; font-size: var(--t2); }
+ol.plan li > div > b { font-size: var(--t1); line-height: 1.45; display: block; margin-bottom: var(--s2); }
+ol.plan .ev { margin: var(--s2) 0 0; padding: var(--s2) 0 0; border-top: 1px dashed var(--rule); list-style: none; display: grid; gap: 3px; }
+ol.plan .ev li { display: block; padding: 0; border: 0; background: none; font-family: var(--f-num); font-size: 12px; color: var(--muted); }
+ol.plan .ev li::before { content: "根拠 "; font-family: var(--f-ja); }
+
+.risks { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: var(--s3); }
+.risk { background: var(--sunk); border-radius: var(--r); padding: var(--s3) var(--s4); display: grid; gap: var(--s2); align-content: start; border-left: 3px solid var(--win); }
+.risk b { line-height: 1.45; }
+@media (max-width: 560px) {
+  ul.clock li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .sec.verdict, .sec.review { padding: var(--s3) var(--s4); }
+  .vline { font-size: var(--t1); }
+}
+
+/* ジャイアントキリング番付 */
+ol.gk { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+ol.gk li { display: grid; grid-template-columns: 2.2em 4em minmax(0, 1fr) auto; gap: var(--s3); align-items: baseline; padding: var(--s3) var(--s4); background: var(--surface); }
+ol.gk li.mine { background: var(--us-soft); }
+ol.gk .rk { color: var(--muted); text-align: right; }
+ol.gk li.mine .rk { color: var(--us); }
+ol.gk .p { font-weight: 600; font-size: var(--t1); color: var(--us); }
+ol.gk .vs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+ol.gk .vs b { font-weight: 700; }
+ol.gk .vs small { color: var(--muted); font-size: 11px; }
+ol.gk .vs .sc { font-family: var(--f-num); font-style: normal; font-weight: 600; background: var(--sunk); border-radius: 4px; padding: 0 6px; }
+ol.gk li.gapline { display: block; text-align: center; color: var(--muted); padding: 2px; }
+@media (max-width: 560px) { ol.gk li { grid-template-columns: 2.2em 4em minmax(0, 1fr); } ol.gk li > .small { grid-column: 2 / -1; } }
+
+/* 答え合わせ・5年の軌跡 */
+ul.pmlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+ul.pmlist li { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); gap: var(--s3); padding: var(--s3) var(--s4); background: var(--surface); }
+.vd { display: grid; place-items: center; width: 2.4em; height: 2.4em; border-radius: 50%; font-weight: 700; font-size: var(--t1); }
+.vd.yes { background: var(--us-soft); color: var(--us); }
+.vd.no { background: var(--sunk); color: var(--win); }
+.vd.half { background: var(--sunk); color: var(--ink-2); }
+.vd.na { background: var(--sunk); color: var(--muted); }
+.risk.hit { border-left-color: var(--us); background: var(--us-soft); }
+.card.model { border-left: 5px solid var(--them); gap: var(--s3); }
+ol.years { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+ol.years li { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: var(--s3); padding: var(--s3) var(--s4); background: var(--surface); }
+ol.years .yr2 { font-size: var(--t1); font-weight: 700; color: var(--muted); }
+ol.years .yhead { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; }
+ol.years .elo { font-size: var(--t2); font-weight: 600; color: var(--us); }
+td.big2 { font-size: var(--t1); font-weight: 600; white-space: nowrap; }
+@media (max-width: 560px) { ol.years li, ul.pmlist li { grid-template-columns: minmax(0, 1fr); } }
+
+/* 2次予選の組み合わせ */
+.blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s4); }
+.blk h3 { margin-bottom: var(--s2); font-size: var(--t1); }
+ul.draw { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+ul.draw li { display: grid; grid-template-columns: minmax(0, 1fr) 3.4em minmax(0, 1fr); gap: var(--s2); align-items: baseline; padding: var(--s2) var(--s3); background: var(--surface); font-size: 13.5px; }
+ul.draw li.mine { background: var(--them-soft); }
+ul.draw .t { color: var(--muted); }
+ul.draw .t.win { color: var(--ink); font-weight: 700; }
+ul.draw b { text-align: center; color: var(--link); font-weight: 600; }
+
+/* トーナメント表の画像 */
+figure.bracket-img { margin: 0; display: grid; gap: var(--s2); }
+figure.bracket-img img { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--rule); border-radius: var(--r); }
+figure.bracket-img a { display: block; }
+
+/* 歩みのページだけで使う部品 */
+.yr > summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; }
+.yr > summary::-webkit-details-marker { display: none; }
+.yr > summary .y { font-family: var(--f-num); font-weight: 700; font-size: var(--t2); line-height: 1; }
+.yr > summary .r { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; color: var(--ink-2); font-size: var(--t-1); }
+.yr > summary:hover .y, .yr[open] > summary .y { color: var(--us); }
+.bar { display: grid; grid-auto-flow: column; gap: 2px; width: 132px; height: 9px; }
+.bar i { border-radius: 2px; }
+.bar i.w { background: var(--us); }
+.bar i.d { background: var(--rule-strong); }
+.bar i.l { background: var(--sunk); box-shadow: inset 0 0 0 1px var(--rule); }
+.bar i.u { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 6px); }
+.legend { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; color: var(--muted); font-size: var(--t-1); }
+.legend b { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+tr.lg td:first-child { position: relative; padding-left: var(--s4); }
+tr.lg td:first-child::before { content: ""; position: absolute; left: var(--s3); top: 50%; width: 5px; height: 5px; border-radius: 50%; background: var(--them); transform: translateY(-50%); }
+.hist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s4); align-items: start; }
+.hist-grid .card p { margin: 0 0 var(--s3); }
+.points { display: grid; gap: var(--s4); }
+.points h3 { font-size: var(--t0); margin: 0 0 var(--s1); }
+.points p { margin: 0; color: var(--ink-2); }
+svg.chart .elo { fill: none; stroke: var(--us); stroke-width: 2; stroke-linejoin: round; }
+svg.chart .dot { fill: var(--us); stroke: var(--surface); stroke-width: 2; }
+svg.chart .mid { stroke: var(--rule-strong); stroke-width: 1; stroke-dasharray: 4 4; }
+
+</style>
+<main class="page" id="app"><div class="crumb"><a href="index.html">武蔵丘スカウト</a><span>›</span><span>武蔵丘 の歩み</span></div>
+
+<header class="masthead">
+  <span class="eyebrow">History 2004–2026</span>
+  <div class="title-row"><h1><span class="us">武蔵丘</span> の歩み</h1></div>
+  <p class="lead">2004年度から2026年度までの公式戦 204 試合。選手権・総体・新人戦・関東大会の
+  東京都予選（トーナメント 107 試合）と、地区トップリーグ・NSリーグなどのリーグ戦（97 試合）を
+  1本の年表にまとめました。</p>
+</header>
+
+<div class="kpis"><div class="kpi"><span class="k">公式戦</span><span class="v num">204<small>試合</small></span><span class="note">トーナメント 107・リーグ戦 97</span></div><div class="kpi"><span class="k">勝敗</span><span class="v num"><span class="us">89</span><small>勝</small> 29<small>分</small> 76<small>敗</small></span><span class="note">勝率 46%・結果の分からない試合が 10</span></div><div class="kpi"><span class="k">得失点</span><span class="v num">435<small> - 332</small></span><span class="note">差 +103</span></div><div class="kpi"><span class="k">いまの強さの点数</span><span class="v num">1667</span><span class="note">東京 562 校のうち 118 位</span></div></div>
+
+<section class="stack">
+  <div class="sec-head"><h2>歩みの要点</h2><p>このページの表と図から言えること</p></div>
+  <div class="card points"><div><h3>都大会に届いた年</h3><p>一次予選を勝ち抜いて二次予選（都大会）に進んだのは 2017・2020 年度の 2 回。東京は一次予選が支部・地区ごとのトーナメントで、そこを抜けた学校だけが都大会に進む。</p></div><div><h3>所属リーグの移り変わり</h3><p>2008〜2012年度 NSリーグ1部 → 2016年度 NSリーグ2部D → 2018年度 NSリーグ2部B → 2021〜2024年度 NSリーグ1部 → 2025〜2026年度 NSリーグ2部A。星取表が残っている年だけなので、間の年が抜けているところがある。</p></div><div><h3>点数がいちばん高かった年</h3><p>2019年度の 1792。いちばん低かったのは 2014年度の 1472 で、その差は 320。直近は 2026年度の 1667。この点数はトーナメントの結果だけから計算していて、リーグ戦は入れていない。</p></div><div><h3>3回以上あたった相手との分</h3><p>勝ち越しているのは 杉並総合（4勝0敗）、杉並FC（4勝0敗）、富士（3勝0敗）。負け越しているのは 日大鶴ヶ丘（0勝7敗）、専大附属A（0勝4敗）、佼成学園（0勝3敗）。</p></div><div><h3>記録のある最初の5年度と直近の5年度</h3><p>2004・2008・2009・2010・2011年度は 34 試合で 14 勝（勝率 41%）、2022・2023・2024・2025・2026年度は 71 試合で 31 勝（勝率 44%）。ただし古い年はスコアの読めない試合があり、母数がそろっていない。</p></div></div>
+</section>
+
+<section class="stack">
+  <div class="sec-head"><h2>強さの点数の移り変わり</h2><p>年度末の時点・2011年度から</p></div>
+  <div class="card"><svg class="chart" viewBox="0 0 880 230" role="img" aria-label="2011年度から2026年度までの強さの点数の推移"><g class="grid"><line x1="48" x2="862" y1="196.0" y2="196.0"/><line x1="48" x2="862" y1="136.0" y2="136.0"/><line x1="48" x2="862" y1="76.0" y2="76.0"/><line x1="48" x2="862" y1="16.0" y2="16.0"/></g><text x="40" y="200.0" text-anchor="end">1427</text><text x="40" y="140.0" text-anchor="end">1564</text><text x="40" y="80.0" text-anchor="end">1700</text><text x="40" y="20.0" text-anchor="end">1837</text><line class="mid" x1="48" x2="862" y1="164.0" y2="164.0"/><text x="862" y="157.0" text-anchor="end">東京の平均 1500</text><path class="elo" d="M48.0 153.9 L102.3 170.1 L156.5 157.8 L210.8 176.2 L265.1 121.8 L319.3 147.3 L373.6 125.3 L427.9 77.5 L482.1 35.8 L536.4 91.5 L590.7 39.3 L644.9 102.0 L699.2 98.1 L753.5 67.8 L807.7 119.2 L862.0 90.6"/><circle class="dot" cx="48.0" cy="153.9" r="3.5"><title>2011年度 1523</title></circle><circle class="dot" cx="102.3" cy="170.1" r="3.5"><title>2012年度 1486</title></circle><circle class="dot" cx="156.5" cy="157.8" r="3.5"><title>2013年度 1514</title></circle><circle class="dot" cx="210.8" cy="176.2" r="3.5"><title>2014年度 1472</title></circle><circle class="dot" cx="265.1" cy="121.8" r="3.5"><title>2015年度 1596</title></circle><circle class="dot" cx="319.3" cy="147.3" r="3.5"><title>2016年度 1538</title></circle><circle class="dot" cx="373.6" cy="125.3" r="3.5"><title>2017年度 1588</title></circle><circle class="dot" cx="427.9" cy="77.5" r="3.5"><title>2018年度 1697</title></circle><circle class="dot" cx="482.1" cy="35.8" r="3.5"><title>2019年度 1792</title></circle><circle class="dot" cx="536.4" cy="91.5" r="3.5"><title>2020年度 1665</title></circle><circle class="dot" cx="590.7" cy="39.3" r="3.5"><title>2021年度 1784</title></circle><circle class="dot" cx="644.9" cy="102.0" r="3.5"><title>2022年度 1641</title></circle><circle class="dot" cx="699.2" cy="98.1" r="3.5"><title>2023年度 1650</title></circle><circle class="dot" cx="753.5" cy="67.8" r="3.5"><title>2024年度 1719</title></circle><circle class="dot" cx="807.7" cy="119.2" r="3.5"><title>2025年度 1602</title></circle><circle class="dot" cx="862.0" cy="90.6" r="3.5"><title>2026年度 1667</title></circle><text x="48.0" y="222" text-anchor="middle">2011</text><text x="156.5" y="222" text-anchor="middle">2013</text><text x="265.1" y="222" text-anchor="middle">2015</text><text x="373.6" y="222" text-anchor="middle">2017</text><text x="482.1" y="222" text-anchor="middle">2019</text><text x="590.7" y="222" text-anchor="middle">2021</text><text x="699.2" y="222" text-anchor="middle">2023</text><text x="807.7" y="222" text-anchor="middle">2025</text><text x="862.0" y="222" text-anchor="middle">2026</text></svg>
+    <p class="small muted">勝てば上がり、負ければ下がる点数（Elo）。1500 が東京全体の平均で、格上に勝つほど大きく上がります。
+    学年が入れ替わるたびに少しだけ平均へ戻しているので、卒業と入学をまたいだ変化もなだらかに出ます。
+    東京全体を同じ物差しで並べるため、計算に使うのはトーナメントの結果だけで、リーグ戦は入れていません。</p></div>
+</section>
+
+<section class="stack">
+  <div class="sec-head"><h2>大会・リーグ別の成績</h2><p>2004年度からの通算</p></div>
+  <div class="hist-grid">
+    <div class="tbl"><table><thead><tr><th>大会</th><th class="n">試合</th><th class="n">勝</th><th class="n">分</th><th class="n">敗</th><th class="n">勝率</th></tr></thead>
+    <tbody><tr><td>選手権</td><td class="n">44</td><td class="n">21</td><td class="n">7</td><td class="n">12</td><td class="n">52%</td></tr><tr><td>総体</td><td class="n">32</td><td class="n">15</td><td class="n">6</td><td class="n">10</td><td class="n">48%</td></tr><tr><td>新人戦</td><td class="n">30</td><td class="n">13</td><td class="n">4</td><td class="n">9</td><td class="n">50%</td></tr><tr><td>関東</td><td class="n">1</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">—</td></tr><tr class="lg"><td>NSリーグ</td><td class="n">97</td><td class="n">40</td><td class="n">12</td><td class="n">45</td><td class="n">41%</td></tr></tbody></table></div>
+    <div class="card"><p><span class="eyebrow">いちばん大きな勝ち</span><br><b class="num">16-0</b> 光丘A <span class="muted small">2023年度 NSリーグ 1部</span></p><p><span class="eyebrow">いちばん大きな負け</span><br><b class="num">0-9</b> 早大学院B <span class="muted small">2022年度 NSリーグ 1部</span></p>
+      <p class="small muted">得失点差がいちばん開いた試合。スコアの読み取れた 194 試合から選んでいます。</p></div>
+  </div>
+</section>
+
+<section class="stack">
+  <div class="sec-head"><h2>年度ごとの歩み</h2><p>年度をひらくと全試合が出ます</p></div>
+  <p class="legend"><span><b style="background:var(--us)"></b>勝ち</span><span><b style="background:var(--rule-strong)"></b>引き分け</span>
+  <span><b style="background:var(--sunk);box-shadow:inset 0 0 0 1px var(--rule)"></b>負け</span><span><b style="background:var(--rule)"></b>結果なし</span>
+  <span style="margin-left:auto">左に●が付く行はリーグ戦</span></p>
+  <details class="card yr" open>
+<summary><span class="y">2026<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:7fr 2fr 1fr" role="img" aria-label="7勝 2分 1敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">7勝 2分 1敗</span><span class="chip">選手権 一次予選 ブロック決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>昭和第一</td><td class="n">5-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>学習院</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>城東</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>富士</td><td class="n">5-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>明大世田谷</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>中大杉並A</td><td class="n">3-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>日大鶴ヶ丘C</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>国学院久我山E</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>東大附属A</td><td class="n">4-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>保谷C</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2025<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:9fr 1fr 4fr" role="img" aria-label="9勝 1分 4敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">9勝 1分 4敗</span><span class="chip">総体 支部予選 ブロック決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>八丈</td><td class="n">6-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>星槎国際八王子</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>目黒</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>桜町</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 1回戦</td><td>大泉</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>佼成学園</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>杉並アヤックス</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>西A</td><td class="n">6-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>早大学院C</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>日大鶴ヶ丘C</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>杉並アヤックスサッカークラブA</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>保谷B</td><td class="n">0-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>豊多摩B</td><td class="n">4-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>鷺宮B</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2024<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:7fr 2fr 8fr" role="img" aria-label="7勝 2分 8敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">7勝 2分 8敗</span><span class="chip">新人戦 地区大会 準々決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>松原</td><td class="n">13-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>野津田</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>城北</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>成瀬</td><td class="n">4-3</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>駒場</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>学芸大国際</td><td class="n">3-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>中大杉並</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 準々決勝</td><td>日大鶴ヶ丘</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並ソシオA</td><td class="n">3-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大鶴ヶ丘B</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>中大杉並A</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>実践学園D</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>鷺宮A</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専大附属A</td><td class="n">1-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山E</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>豊多摩A</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2023<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:4fr 1fr 9fr" role="img" aria-label="4勝 1分 9敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">4勝 1分 9敗</span><span class="chip">新人戦 地区大会 3回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>府中</td><td class="n">4-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>保善</td><td class="n">0-5</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>目黒日大</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>杉並</td><td class="n">8-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>杉並学院</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並FC</td><td class="n">6-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並ソシオA</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専大附属A</td><td class="n">4-6</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>明大中野A</td><td class="n">0-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">0-5</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山E</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>光丘A</td><td class="n">16-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>実践学園D</td><td class="n">0-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>中大杉並</td><td class="n">1-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2022<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:4fr 4fr 8fr 1fr" role="img" aria-label="4勝 4分 8敗・結果不明 1"><i class="w"></i><i class="d"></i><i class="l"></i><i class="u"></i></span><span class="num">4勝 4分 8敗</span><span class="chip">選手権 一次予選 ブロック決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>学芸大附</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>昭和第一学園</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>日大二</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>深沢</td><td class="n">3-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>豊多摩</td><td class="n">0-0</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>日大鶴ヶ丘</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>東京立正</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>明大中野</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>大泉</td><td class="n">3-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山E</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>鷺宮</td><td class="n">0-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専大附属A</td><td class="n">0-6</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">0-9</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>明大中野A</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並ソシオA</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>光が丘A</td><td class="n">0-0</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>田無A</td><td class="n">5-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2021<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:8fr 1fr 5fr 1fr" role="img" aria-label="8勝 1分 5敗・結果不明 1"><i class="w"></i><i class="d"></i><i class="l"></i><i class="u"></i></span><span class="num">8勝 1分 5敗</span><span class="chip">選手権 一次予選 ブロック決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 2回戦</td><td>巣鴨</td><td class="n">3-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 3回戦</td><td>国学院</td><td class="n">9-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>高島</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>田柄</td><td class="n">8-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>一次トーナメント 1回戦</td><td>足立</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>井草</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>日本学園</td><td class="n">0-0</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>新人戦</td><td>地区大会 1回戦</td><td>第四商業</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>実践学園D</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山E</td><td class="n">0-5</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>豊多摩</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>鷺宮</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専大附属A</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">4-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大二A</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2020<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:2fr 2fr 2fr" role="img" aria-label="2勝 0分 2敗・結果不明 2"><i class="w"></i><i class="l"></i><i class="u"></i></span><span class="num">2勝 0分 2敗</span><span class="chip">選手権 二次予選 1回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 2回戦</td><td>東大教育学部附</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>杉並5-3</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr><tr><td>選手権</td><td>二次予選 1回戦</td><td>東京</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>杉並工業</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>光丘</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>関東</td><td>東京都予選 1回戦</td><td>東京科学大附</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2019<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:7fr 3fr 3fr" role="img" aria-label="7勝 3分 3敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">7勝 3分 3敗</span><span class="chip">新人戦 地区大会 決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>杉並総合</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 1回戦</td><td>杉並総合</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>戸山</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>八王子</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>大泉</td><td class="n">4-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>農大一</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>日大鶴ヶ丘</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 1回戦</td><td>明大中野</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>富士</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 準々決勝</td><td>保谷</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 準決勝</td><td>豊多摩</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>新人戦</td><td>地区大会 決勝</td><td>石神井</td><td class="n">1-5</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部 3位~4位順位決定戦</td><td>早大学院</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2018<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:8fr 5fr 3fr" role="img" aria-label="8勝 5分 3敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">8勝 5分 3敗</span><span class="chip">選手権 一次予選 ブロック決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>武蔵</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>選手権</td><td>一次予選 1回戦</td><td>武蔵</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>明星</td><td class="n">6-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>明星</td><td class="n">6-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>深沢</td><td class="n">0-0</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>自由ヶ丘学園</td><td class="n">5-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>保谷</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>東京立正</td><td class="n">9-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>豊多摩</td><td class="n">4-4</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部B</td><td>光丘A</td><td class="n">5-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部B</td><td>国学院久我山E</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部B</td><td>明大中野A</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部B</td><td>日大鶴ヶ丘B</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部B</td><td>石神井B</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部B</td><td>早大学院C</td><td class="n">5-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部B</td><td>杉並アヤックス</td><td class="n">5-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2017<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:1fr 2fr 1fr" role="img" aria-label="1勝 2分 1敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">1勝 2分 1敗</span><span class="chip">選手権 二次予選 1回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>二次予選 1回戦</td><td>駿台学園</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>石神井</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>練馬工科</td><td class="n">6-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>町田</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2016<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:3fr 1fr 4fr" role="img" aria-label="3勝 1分 4敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">3勝 1分 4敗</span><span class="chip">選手権 一次予選 1回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>調布南</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>石神井</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部D</td><td>早大学院B</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部D</td><td>杉並総合</td><td class="n">4-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部D</td><td>武蔵B</td><td class="n">3-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部D</td><td>専大附属C</td><td class="n">8-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部D</td><td>杉並工業</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部D</td><td>石神井C</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2015<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:5fr 1fr 1fr" role="img" aria-label="5勝 1分 1敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">5勝 1分 1敗</span><span class="chip">総体 支部予選 ブロック決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 2回戦</td><td>豊南</td><td class="n">5-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>豊南</td><td class="n">5-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>杉並学院</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>一次トーナメント 1回戦</td><td>大東文化一</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>田無工業</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>学芸大国際</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>明大中野</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2014<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:6fr 1fr 2fr 1fr" role="img" aria-label="6勝 1分 2敗・結果不明 1"><i class="w"></i><i class="d"></i><i class="l"></i><i class="u"></i></span><span class="num">6勝 1分 2敗</span><span class="chip">新人戦 地区大会 準々決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 2回戦</td><td>東京学園</td><td class="n">11-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>東京学園</td><td class="n">11-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 3回戦</td><td>江北</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>日野台</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>都市大等々力</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>練馬</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>専修大附</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>第四商業</td><td class="n">7-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>鷺宮</td><td class="n">3-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 準々決勝</td><td>武蔵</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2013<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:2fr 1fr 3fr" role="img" aria-label="2勝 1分 3敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">2勝 1分 3敗</span><span class="chip">新人戦 地区大会 準々決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>富士</td><td class="n">3-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>日大鶴ヶ丘</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>井草</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>豊多摩</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>大泉</td><td class="n">0-0</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>新人戦</td><td>地区大会 準々決勝</td><td>西</td><td class="n">1-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2012<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:2fr 6fr" role="img" aria-label="2勝 0分 6敗"><i class="w"></i><i class="l"></i></span><span class="num">2勝 0分 6敗</span><span class="chip">新人戦 地区大会 2回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>新人戦</td><td>地区大会 2回戦</td><td>東亜学園</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">4-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山C</td><td class="n">1-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>実践学園C</td><td class="n">0-7</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大鶴ヶ丘A</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>大宮ソシオ</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>中大杉並</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>堀越B</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2011<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:5fr 1fr 7fr" role="img" aria-label="5勝 1分 7敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">5勝 1分 7敗</span><span class="chip">新人戦 地区大会 ブロック決勝進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>杉並</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>武蔵</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 3回戦</td><td>堀越</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 1回戦</td><td>農芸</td><td class="n">5-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 ブロック決勝</td><td>日大鶴ヶ丘</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並FC</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大鶴ヶ丘</td><td class="n">2-6</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院A</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>大宮ソシオ</td><td class="n">3-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>東亜学園</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>実践学園C</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山C</td><td class="n">1-5</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2010<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:4fr 1fr 2fr 1fr" role="img" aria-label="4勝 1分 2敗・結果不明 1"><i class="w"></i><i class="d"></i><i class="l"></i><i class="u"></i></span><span class="num">4勝 1分 2敗</span><span class="chip">選手権 一次予選 1回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>石神井</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山B</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山C</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院A</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>西高B</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並FC</td><td class="n">6-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大鶴ヶ丘</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並総合</td><td class="n">4-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2009<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:2fr 1fr 4fr 2fr" role="img" aria-label="2勝 1分 4敗・結果不明 2"><i class="w"></i><i class="d"></i><i class="l"></i><i class="u"></i></span><span class="num">2勝 1分 4敗</span><span class="chip">選手権 一次予選 1回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>練馬</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>第四商業</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>武蔵</td><td class="n">2-2</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並FC</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>佼成学園</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>東亜学園B</td><td class="n">3-6</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">1-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>西A</td><td class="n">6-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>西B</td><td class="n">3-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2008<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:3fr 1fr 3fr 1fr" role="img" aria-label="3勝 1分 3敗・結果不明 1"><i class="w"></i><i class="d"></i><i class="l"></i><i class="u"></i></span><span class="num">3勝 1分 3敗</span><span class="chip">選手権 一次予選 2回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>選手権</td><td>一次予選 2回戦</td><td>（不明）</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山B</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>佼成学園</td><td class="n">0-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専大附属</td><td class="n">0-0</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院C</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>東亜学園B</td><td class="n">4-7</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大二</td><td class="n">5-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
+<summary><span class="y">2004<span class="small muted"> 年度</span></span>
+<span class="r"><span class="bar" style="grid-template-columns:1fr" role="img" aria-label="0勝 0分 0敗・結果不明 1"><i class="u"></i></span><span class="num">0勝 0分 0敗</span><span class="chip">新人戦 地区大会 1回戦進出</span></span></summary>
+<div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
+<tbody><tr><td>新人戦</td><td>地区大会 1回戦</td><td>東京立正</td><td class="n">—</td><td><span class="muted small">結果なし</span></td></tr></tbody></table></div></details>
+</section>
+
+<section class="stack">
+  <div class="sec-head"><h2>よく当たる相手</h2><p>対戦の多い順に 24 校</p></div>
+  <div class="tbl"><table><thead><tr><th>相手</th><th class="n">対戦</th><th class="n">勝</th><th class="n">分</th><th class="n">敗</th><th class="n">結果なし</th></tr></thead>
+  <tbody><tr><td>早大学院B</td><td class="n">9</td><td class="n">3</td><td class="n">1</td><td class="n">5</td><td class="n"></td></tr><tr><td>日大鶴ヶ丘</td><td class="n">7</td><td class="n">0</td><td class="n">0</td><td class="n">7</td><td class="n"></td></tr><tr><td>国学院久我山E</td><td class="n">6</td><td class="n">1</td><td class="n">3</td><td class="n">2</td><td class="n"></td></tr><tr><td>武蔵</td><td class="n">5</td><td class="n">1</td><td class="n">3</td><td class="n">0</td><td class="n">1</td></tr><tr><td>豊多摩</td><td class="n">5</td><td class="n">2</td><td class="n">3</td><td class="n">0</td><td class="n"></td></tr><tr><td>石神井</td><td class="n">4</td><td class="n">0</td><td class="n">1</td><td class="n">2</td><td class="n">1</td></tr><tr><td>大泉</td><td class="n">4</td><td class="n">3</td><td class="n">1</td><td class="n">0</td><td class="n"></td></tr><tr><td>杉並総合</td><td class="n">4</td><td class="n">4</td><td class="n">0</td><td class="n">0</td><td class="n"></td></tr><tr><td>杉並FC</td><td class="n">4</td><td class="n">4</td><td class="n">0</td><td class="n">0</td><td class="n"></td></tr><tr><td>専大附属A</td><td class="n">4</td><td class="n">0</td><td class="n">0</td><td class="n">4</td><td class="n"></td></tr><tr><td>東京立正</td><td class="n">3</td><td class="n">1</td><td class="n">0</td><td class="n">0</td><td class="n">2</td></tr><tr><td>第四商業</td><td class="n">3</td><td class="n">1</td><td class="n">0</td><td class="n">0</td><td class="n">2</td></tr><tr><td>富士</td><td class="n">3</td><td class="n">3</td><td class="n">0</td><td class="n">0</td><td class="n"></td></tr><tr><td>鷺宮</td><td class="n">3</td><td class="n">1</td><td class="n">0</td><td class="n">2</td><td class="n"></td></tr><tr><td>明大中野</td><td class="n">3</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n"></td></tr><tr><td>中大杉並</td><td class="n">3</td><td class="n">1</td><td class="n">0</td><td class="n">2</td><td class="n"></td></tr><tr><td>佼成学園</td><td class="n">3</td><td class="n">0</td><td class="n">0</td><td class="n">3</td><td class="n"></td></tr><tr><td>早大学院C</td><td class="n">3</td><td class="n">3</td><td class="n">0</td><td class="n">0</td><td class="n"></td></tr><tr><td>国学院久我山C</td><td class="n">3</td><td class="n">0</td><td class="n">0</td><td class="n">3</td><td class="n"></td></tr><tr><td>明大中野A</td><td class="n">3</td><td class="n">1</td><td class="n">0</td><td class="n">2</td><td class="n"></td></tr><tr><td>実践学園D</td><td class="n">3</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n"></td></tr><tr><td>杉並ソシオA</td><td class="n">3</td><td class="n">0</td><td class="n">0</td><td class="n">3</td><td class="n"></td></tr><tr><td>練馬</td><td class="n">2</td><td class="n">1</td><td class="n">0</td><td class="n">0</td><td class="n">1</td></tr><tr><td>杉並</td><td class="n">2</td><td class="n">2</td><td class="n">0</td><td class="n">0</td><td class="n"></td></tr></tbody></table></div>
+</section>
+
+<section class="prose">
+  <h2>このページの元データ</h2>
+  <p class="small muted">トーナメントは東京都高体連サッカー専門部の公式トーナメント表（現行サイトとインターネットアーカイブ）、
+  リーグ戦は早大学院サッカー部が公開している星取表と goalnote の日程・結果から読み取りました。
+  どちらも古い年ほど残っている資料が少なく、2004年度から2010年度あたりのトーナメントは対戦相手だけ分かって
+  スコアが読めない試合が混ざります（このページでは 10 試合）。リーグ戦は星取表が残っている年だけで、
+  14 年度ぶんです。勝率と得失点は、スコアの読み取れた試合だけで計算しています。
+  下部チーム（B・C）の試合は含めていません。</p>
+</section></main>
+<script>
+
+</script>
+<script>
+
+</script>
