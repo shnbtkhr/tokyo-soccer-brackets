@@ -40,7 +40,63 @@ SERIES_FILE = {
 }
 
 
+SHIBU_KEY = [("higashi", "higashi"), ("hiagshi", "higashi"), ("naka", "naka"), ("minami", "minami"), ("nishi", "nishi")]
+
+
+def archive_meta(stem: str) -> dict | None:
+    """インターネットアーカイブから拾った古い年のファイル。
+
+    名前の付け方が年ごとにばらばらなので、fetch_archive.py が付けた接頭辞
+    （SOTAI19_ のような大会＋年度）を手がかりにし、残りで段階と地区を見る。
+    """
+    m = re.match(r"(SOTAI|SEN|SINJ)(\d\d)_(.+)", stem)
+    if not m:
+        return None
+    comp, yy, rest = m[1], int(m[2]), m[3]
+    year = 2000 + yy
+    low = rest.lower()
+    url = f"https://web.archive.org/web/*/{BASE_URL}/{comp}{m[2]}/{rest}.pdf"
+    base = {"year": year, "area": "", "url": url, "archive": True}
+
+    if comp == "SOTAI":
+        for key, canon in SHIBU_KEY:
+            if key in low:
+                return {**base, "series": "総体", "stage": "支部予選", "area": SHIBU[canon], "order": 1}
+        n = re.search(r"(?:to|_|j)(\d)(?:\D|$)", low) or re.search(r"(\d)\s*$", low)
+        order = int(n[1]) if n and n[1] in "12" else 1
+        return {**base, "series": "総体", "stage": f"{'一次' if order == 1 else '二次'}トーナメント", "order": order + 1}
+
+    if comp == "SINJ":
+        # 新人戦のフォルダには関東大会の表も混ざっている
+        if "kanto" in low:
+            y = re.search(r"h(\d\d)", low)
+            y2 = re.search(r"(20\d\d)", low)
+            kanto_year = 1988 + int(y[1]) if y else int(y2[1]) if y2 else year + 1
+            if "r2" in low:  # 令和2年
+                kanto_year = 2020
+            return {**base, "series": "関東", "year": kanto_year, "stage": "東京都予選", "order": 1}
+        if "to" in low and not re.search(r"\d\s*$", low):
+            return {**base, "series": "新人戦", "stage": "都大会", "order": 9}
+        d = re.search(r"(\d)p?$", low)
+        if d:
+            return {**base, "series": "新人戦", "stage": "地区大会", "area": f"第{d[1]}地区", "order": int(d[1])}
+        return {**base, "series": "新人戦", "stage": "地区大会", "order": 1}
+
+    # 選手権
+    if re.search(r"(2j|_2$|to|topdf|henko|lea)", low):
+        return {**base, "series": "選手権", "stage": f"第{year - 2022 + 101}回 二次予選", "order": 2}
+    if re.search(r"1j", low):
+        return {**base, "series": "選手権", "stage": f"第{year - 2022 + 101}回 一次予選", "order": 1}
+    d = re.search(r"(\d)p?$", low)
+    if d:
+        return {**base, "series": "選手権", "stage": f"第{year - 2022 + 101}回 一次予選",
+                "area": f"第{d[1]}地区", "order": 1}
+    return {**base, "series": "選手権", "stage": f"第{year - 2022 + 101}回 一次予選", "order": 1}
+
+
 def file_meta(stem: str) -> dict:
+    if (a := archive_meta(stem)) is not None:
+        return a
     if m := re.fullmatch(r"sotai(\d\d)_(1|2)jt", stem):
         y = 2000 + int(m[1])
         return {
@@ -239,9 +295,10 @@ def build() -> None:
         r = json.loads(path.read_text(encoding="utf-8"))
         stem = path.stem
         meta = file_meta(stem)
-        pdf_title = (
-            pymupdf.open(ROOT / "pdfs" / f"{stem}.pdf").metadata.get("title") or ""
-        )
+        pdf_path = ROOT / "pdfs" / f"{stem}.pdf"
+        if not pdf_path.exists():
+            pdf_path = ROOT / "pdfs/archive" / f"{stem}.pdf"
+        pdf_title = (pymupdf.open(pdf_path).metadata.get("title") or "") if pdf_path.exists() else ""
         n_trees = max(
             len(
                 {
