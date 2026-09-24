@@ -13,10 +13,12 @@ import csv
 import json
 import re
 import unicodedata
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pymupdf
+
+from koko_fill import apply_fills
 
 ROOT = Path(__file__).parent
 BASE_URL = "https://tokyosoccer-u18.com"
@@ -224,6 +226,43 @@ def apply_corrections(stem: str, matches: list[dict], fixes: dict) -> None:
             m.setdefault("corrected", []).append(fx["reason"])
 
 
+def drop_bogus_reads(pages: list[dict]) -> dict:
+    """1つの表の中で明らかに成り立たない読み取りを取り消す。
+
+    どれも「読めなかった」ではなく「別のものを読んでしまった」形の壊れ方で、値が入って
+    いるぶん質が悪い。空に戻して、あとの突き合わせ（koko_fill）に任せる。
+
+    - 得点が片側だけ … 「5/19」の 19 だけを拾った形
+    - 同じ得点の組が表の3割以上 … 8月16日を 1-6 と読んだ形
+    - 勝者が全試合で同じ側 … 勝ち上がりの線を拾えず、片側に倒れている形
+
+    - 根拠: 第97回一次予選の表は139試合中126試合が 1-6 か 1-7 で、勝者は140試合すべてが
+      下側だった。どちらも日付と罫線の読み違いで、Elo にそのまま効いていた（2026-09-24 実測）
+    """
+    ms = [m for p in pages for m in p["matches"]]
+    both = [m for m in ms if m["score1"] is not None and m["score2"] is not None]
+    n = Counter((m["score1"], m["score2"]) for m in both)
+    repeated = {k for k, c in n.items() if c >= 8 and c / len(both) >= 0.30} if both else set()
+    won = Counter(m["winner_slot"] for m in ms if m["winner_slot"])
+    one_sided = len(won) == 1 and sum(won.values()) >= 6
+
+    out = {"dropped": 0, "unwon": 0}
+    for m in ms:
+        if m.get("corrected"):  # 目視で直したものは動かさない
+            continue
+        has = m["score1"] is not None or m["score2"] is not None
+        half = (m["score1"] is None) != (m["score2"] is None)
+        if has and (half or (m["score1"], m["score2"]) in repeated):
+            m["score1"] = m["score2"] = None
+            m["notes"] = m["notes"] + ["スコアの読み取りを取り消し"]
+            out["dropped"] += 1
+        if one_sided and m["winner_slot"]:
+            m["winner_slot"] = None
+            m["notes"] = m["notes"] + ["勝者の読み取りを取り消し"]
+            out["unwon"] += 1
+    return out
+
+
 def round_names(page: dict, block_mode: bool) -> dict[int, str]:
     ms = page["matches"]
     facing_trees = set()
@@ -291,6 +330,7 @@ def score_text(m: dict, for_slot: int = 1) -> str:
 def build() -> None:
     fixes = load_corrections()
     rows = []
+    tally = {"dropped": 0, "unwon": 0, "filled": 0, "ambiguous": 0, "conflict": 0}
     for path in sorted((ROOT / "out/json").glob("*.json")):
         r = json.loads(path.read_text(encoding="utf-8"))
         stem = path.stem
@@ -310,8 +350,16 @@ def build() -> None:
             for p in r["pages"]
         )
         block_mode = n_trees > 2
+        # 訂正 → 誤読の取り消し → 外部の結果で穴埋め、の順に通す。
+        # 目視の訂正がいちばん強く、自動の穴埋めがいちばん弱い
         for p in r["pages"]:
             apply_corrections(stem, p["matches"], fixes)
+        for k, v in drop_bogus_reads(r["pages"]).items():
+            tally[k] += v
+        for k, v in apply_fills(meta, [m for p in r["pages"] for m in p["matches"]], normalize).items():
+            if k in tally:
+                tally[k] += v
+        for p in r["pages"]:
             names = round_names(p, block_mode)
             by = {m["id"]: m for m in p["matches"]}
             tree_label = {}
@@ -419,6 +467,9 @@ def build() -> None:
         wr.writerows(teams)
     write_markdown(rows, teams, out / "notebook")
     print(f"matches: {len(rows)}  teams: {len(teams)}")
+    print(f'  誤読の取り消し スコア {tally["dropped"]}・勝者 {tally["unwon"]}'
+          f' / 外部の結果で穴埋め {tally["filled"]}'
+          f'（候補割れ {tally["ambiguous"]}・赤線と矛盾 {tally["conflict"]} は見送り）')
 
 
 def build_teams(rows: list[dict]) -> list[dict]:
