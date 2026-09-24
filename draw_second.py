@@ -62,6 +62,9 @@ def main() -> int:
     for r in roots:
         resolve(r["id"])
 
+    # 葉（チーム名）の位置。縦線をチーム名のところまで伸ばすのに使う
+    leaf_pt = {(lf["match"], lf["slot"]): lf["point"] for lf in page0.get("leaves", [])}
+
     doc = pymupdf.open(ROOT / "pdfs/sen26_2j.pdf")
     page = doc[0]
     drawn = 0
@@ -82,12 +85,31 @@ def main() -> int:
                 sides.append("")
         if w not in sides:
             continue
-        end = a0 if sides.index(w) == 0 else a1
+        idx = sides.index(w)
+        end = a0 if idx == 0 else a1
         j = m["j"]
+        # 横棒（試合の線）：合流点から、勝者が来た側の端まで
         p1 = pymupdf.Point(j, c) if o == "h" else pymupdf.Point(c, j)
         p2 = pymupdf.Point(end, c) if o == "h" else pymupdf.Point(c, end)
         page.draw_line(p1, p2, color=RED, width=1.6, overlay=True)
         drawn += 1
+
+        # 縦線（勝ち上がりの線）：勝者が来た側の端から、下の試合の横棒／チーム名まで下ろす。
+        # ここを描かないと赤が横棒だけになり、どこから上がってきたのかが読めない
+        src = m.get("slot1" if idx == 0 else "slot2") or {}
+        far = None
+        if src.get("from") in ms:
+            child = ms[src["from"]]
+            far = child["bar"][1]  # 子の横棒の位置（BT なので下側）
+        else:
+            pt = leaf_pt.get((m["id"], idx + 1))
+            if pt:
+                far = pt[1] if o == "h" else pt[0]
+        if far is not None:
+            q1 = pymupdf.Point(end, c) if o == "h" else pymupdf.Point(c, end)
+            q2 = pymupdf.Point(end, far) if o == "h" else pymupdf.Point(far, end)
+            page.draw_line(q1, q2, color=RED, width=1.6, overlay=True)
+            drawn += 1
 
     out_dir = ROOT / "out/site/assets"
     out_dir.mkdir(parents=True, exist_ok=True)
