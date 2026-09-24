@@ -135,7 +135,7 @@ def elo_explainer(T: dict, me: str, r1: str, opps: list) -> dict:
             "2022〜2026年度の大会の試合を、試合前の点数で当てられたかで設定を選んだ。2025・26年度の大会1,314試合で、見込みの高い側が勝った割合は80.3%（旧方式は76.9%）。",
             "リーグ戦をそのまま入れると当たり具合は悪くなった。控え（B・C）やクラブは点数が分からないまま始まるため。控えは学校のAから差し引いた点数で始め、試合数の少ないチームとの結果では学校の点数を動かさないようにして、はじめて良くなった。",
             "地区リーグは地区ごとに取れた量が違う（第8地区は学校の試合記録だけ）。取れた量の多い地区の学校ほど点数がよく動く。",
-            "2022年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。ホームかどうか、延長かどうかは考えていない。",
+            "いちばん古い 2004年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。ホームかどうか、延長かどうかは考えていない。",
         ],
     }
 
@@ -258,6 +258,8 @@ def build(links: str) -> Path:
     for st in road:
         st["teams"] = [k for k in st["teams"] if k in opps]
     order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds"]
+    # 歩みのページは build_history.py が別に書き出す。ここでは行き先として繋ぐだけ
+    hist = f"history-{SLUG[me]}"
     for k in opps:
         TITLE[SLUG[k]] = f"{T[k]['display'].replace('都・', '')} スカウティング"
     def state(k: str) -> str:
@@ -265,14 +267,15 @@ def build(links: str) -> Path:
             return f"{rounds[k][0]}・敗退"
         return f"{rounds[k][0]}" + ("の候補" if rounds[k][1] else "・次の相手" if k == nxt_opp_key else "")
 
-    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選 都大会"}
+    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選 都大会", hist: f"{T[me]['display']} の歩み"}
 
+    urls: dict = {}
     if links == "artifact":
         urls = json.loads((ROOT / "scout/site_urls.json").read_text(encoding="utf-8"))
-        hrefs = {s: urls.get(s, urls["index"]) for s in order}
+        hrefs = {s: urls.get(s, urls["index"]) for s in [*order, hist]}
         target, out_dir = "_blank", ROOT / "out/site_artifact"
     else:
-        hrefs = {s: ("index.html" if s == "index" else f"{s}.html") for s in order}
+        hrefs = {s: ("index.html" if s == "index" else f"{s}.html") for s in [*order, hist]}
         target, out_dir = None, ROOT / "out/site"
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -290,19 +293,30 @@ def build(links: str) -> Path:
         {"label": nav_label("2回戦", 149), "items": nav_items([k for k in r2 if k in keep])},
         {"label": nav_label("1回戦", r1_no), "items": nav_items([k for k in (r1,) if k in keep])},
         {"label": "2次予選", "phase": 2, "items": [{"slug": "seeds", "label": "都大会 67校"}]},
+        # 歩みのページは別にビルドする。アーティファクト版はまだ公開URLが無いので、
+        # 行き先の無いリンクを出さないように項目ごと落とす
+        *([{"label": "記録", "items": [{"slug": hist, "label": "2004年からの歩み"}]}]
+          if links == "local" or hist in (urls if links == "artifact" else {}) else []),
     ]
+    # 収録している試合数と、点数の計算に実際に使えた試合数（結果の読めたもの）は別の数字。
+    # 2004年度まで遡った結果、古い年は対戦だけ分かってスコアが無い試合が増えた
+    import rating
+    from analyze_team import load_matches as _lm
+    all_rows = _lm()
+    total, rated = len(all_rows), sum(1 for r in all_rows if rating.played_tournament(r))
+    first_year = min(r["年度"] for r in all_rows)
     common = {
         "me": me, "blockLabel": data["blockLabel"], "asOf": data["asOf"], "schedule": data["schedule"], "slots": data["slots"],
         "decided": data["decided"], "block": block, "brief": brief, "nav": nav, "links": hrefs, "linkTarget": target,
         "keyToSlug": {k: SLUG[k] for k in [me, *opps]}, "order": order, "titles": titles,
         "nTeamsRated": data["nTeamsRated"], "styleNone": data["styleNone"],
+        "totalMatches": total, "ratedMatches": rated, "firstYear": first_year,
         "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
         "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"],
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
     js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")
     shell = (ROOT / "scout/site/page.html").read_text(encoding="utf-8")
-    total = sum(1 for _ in (ROOT / "out/matches.csv").open(encoding="utf-8-sig")) - 1
 
     def write(slug: str, page: dict) -> None:
         html = shell.replace("__TITLE__", TITLE[slug]).replace("/*__CSS__*/", css).replace("/*__JS__*/", js)
@@ -314,7 +328,7 @@ def build(links: str) -> Path:
     nm = sched[mine_no] if mine_no else None
     nxt_opp = (nm["a"] if nm["b"] == me else nm["b"]) if nm else None
     write("index", {"page": "hub", "next": {**nm, "opp": nxt_opp} if nm else None, "road": road, "formNote": data["formNote"], "pyramid": data["pyramid"],
-                    "pyramidNote": data["pyramidNote"], "method": data["method"], "totalMatches": total,
+                    "pyramidNote": data["pyramidNote"], "method": data["method"], "totalMatches": total, "ratedMatches": rated, "firstYear": first_year,
                     "elo": elo_explainer(T, me, nxt_opp or r1, opps)})
     me_t = {**T[me], "key": me}
     ins, bands, note = self_insights(me_t, block, {T[k]["display"]: T[k]["elo"] for k in opps})

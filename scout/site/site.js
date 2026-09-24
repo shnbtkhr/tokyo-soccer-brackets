@@ -307,16 +307,16 @@ function renderHub() {
       const mine = B[D.me].outcome;
       if (D.over) {
         return `第105回選手権の東京都1次予選は、3試合を戦って2勝1敗で終わりました。`
-          + `過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦から、3試合それぞれを振り返ります。`;
+          + `${D.firstYear}年度からの公式戦 ${D.ratedMatches.toLocaleString()} 試合とリーグ戦から、3試合それぞれを振り返ります。`;
       }
       const nx = D.nextOpp && B[D.nextOpp];
       if (nx && D.final) {
         return `${mine.round}は${mine.opp.replace("都・", "")}に ${mine.score} で勝ち、残るは${alive.length}校。`
-          + `次に勝てば2次予選です。過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦、それに観戦記事から、`
+          + `次に勝てば2次予選です。${D.firstYear}年度からの公式戦 ${D.ratedMatches.toLocaleString()} 試合とリーグ戦、それに観戦記事から、`
           + `${nx.display.replace("都・", "")}をできる限り調べて、勝ち筋をまとめました。`;
       }
       return (mine ? `${mine.round}は${mine.opp.replace("都・", "")}に ${mine.score} で${mine.won ? "勝ちました" : "負けました"}。` : "")
-        + `残るは${alive.length}校です。過去5年の公式戦 ${D.totalMatches.toLocaleString()} 試合と今季のリーグ戦から、相手ごとに分析しています。学校名を選ぶと、その学校のページが開きます。`;
+        + `残るは${alive.length}校です。${D.firstYear}年度からの公式戦 ${D.ratedMatches.toLocaleString()} 試合とリーグ戦から、相手ごとに分析しています。学校名を選ぶと、その学校のページが開きます。`;
     })())));
 
   if (nm) {
@@ -425,7 +425,7 @@ function eloSection() {
     ["大差の勝ちほど大きく動かす", "点差の倍率は、1点差以内 1倍、2点差 1.5倍、3点差以上は（11 ＋ 点差）÷ 8 倍（3点差 1.75倍、5点差 2倍）。"],
     E.carry >= 1 ? ["年度が変わっても点数は戻さない", "部員は入れ替わっても、学校ごとの強さ（指導や部員の集まり方）は続きます。平均へ戻す計算と比べて、戻さないほうが当たりました。"]
       : ["年度が変わったら平均へ少し戻す", `年度の終わりに ${E.base} 点との差を ${Math.round((1 - E.carry) * 100)}% 縮めます。`],
-    ["大会とリーグ戦を日付順に数える", `高体連のトーナメント表にある ${D.totalMatches.toLocaleString()} 試合（総体・選手権・新人戦・関東予選）に、Tリーグ・プリンスリーグ関東・地区リーグの試合を足します。控えやクラブは学校とは別のチームとして数え、控えの負けで学校の点数は下がりません。試合数の少ないチームとの試合では、学校の点数を動かしません。`],
+    ["大会とリーグ戦を日付順に数える", `高体連のトーナメント表から ${D.firstYear}年度以降の ${D.totalMatches.toLocaleString()} 試合（総体・選手権・新人戦・関東予選）を読み取り、そのうち結果の分かる ${D.ratedMatches.toLocaleString()} 試合を使います。これに Tリーグ・プリンスリーグ関東・地区リーグの試合を足します。控えやクラブは学校とは別のチームとして数え、控えの負けで学校の点数は下がりません。試合数の少ないチームとの試合では、学校の点数を動かしません。`],
   ];
   const ol = h("ol", { class: "steps" }, steps.map(([t, b]) => h("li", {}, h("b", {}, t), h("span", {}, b))));
   const ex = E.example;
@@ -1107,7 +1107,7 @@ function renderSecond() {
     h("dl", { class: "kv" }, Object.keys(blkTop).flatMap((b) => [h("dt", {}, blkTop[b].blockName || `第${b}ブロック`), h("dd", {}, `${nm(blkTop[b].key)} ${pct(blkTop[b].blockWin, 1)}`)]))));
   side.append(h("div", { class: "card" }, h("h2", {}, "この数字の読み方"),
     h("ul", { class: "points" },
-      h("li", {}, "強さの点数は、過去5年の公式戦4,040試合と今季のリーグ戦から計算したもの。2次予選に出る67校は、1次予選を戦った学校より試合数が多く、点数の精度も高い"),
+      h("li", {}, `強さの点数は、${D.firstYear}年度からの公式戦のうち結果の分かる ${D.ratedMatches.toLocaleString()} 試合とリーグ戦から計算したもの。2次予選に出る67校は、1次予選を戦った学校より試合数が多く、点数の精度も高い`),
       h("li", {}, "優勝確率を足すと100%になります。山の組み合わせを1試合ずつ掛け合わせているためです"),
       h("li", {}, "会場・日程・けが人・当日のメンバーは入っていません。あくまで過去の結果からの目安です"),
       h("li", {}, h("b", {}, "狛江はなぜ1次予選にいないのか"), "。1次予選を免除された33校の1つです。ただし免除の条件として割り出せた2つ"
