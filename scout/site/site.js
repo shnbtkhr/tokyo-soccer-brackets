@@ -77,7 +77,9 @@ function fillToc() {
   const heads = [...document.querySelectorAll("#app h2")].filter((e) => !e.closest("details.seed, .kpis, details.more"));
   heads.forEach((e, i) => { if (!e.id) e.id = `h-${i}`; });
   const links = heads.map((e) => {
-    const li = h("li", {}, h("a", { href: `#${e.id}`, onclick: (ev) => { ev.preventDefault(); e.scrollIntoView({ behavior: "smooth", block: "start" }); history.replaceState(null, "", `#${e.id}`); } }, e.textContent.trim()));
+    const li = h("li", {}, h("a", { href: `#${e.id}`, onclick: (ev) => { ev.preventDefault(); e.scrollIntoView({ behavior: "smooth", block: "start" }); history.replaceState(null, "", `#${e.id}`); } },
+      (() => { const no = e.querySelector(".secno"); const txt = e.textContent.replace(no ? no.textContent : "", "").trim();
+               return no ? [h("span", { class: "toc-no num" }, no.textContent), txt] : txt; })()));
     if (D.page === "seeds" && e.closest("#each")) {
       li.append(h("details", { class: "sn-sub" }, h("summary", {}, `${D.seeds.seeds.length}校を表示`),
         h("ol", {}, D.seeds.seeds.map((t) => h("li", {}, h("a", { href: `#s-${t.rank}`, onclick: () => openSeed(t.rank) }, h("span", { class: "num sn-rk" }, t.rank), t.display))))));
@@ -328,7 +330,9 @@ function renderHub() {
   }
 
   root.append(...planSections({ verdict: true }));
-  if (D.over) { for (const f of [thisYearSection, squadSection, journeySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
+  // 並びは「2026年度 → 武蔵丘というチーム → 東京都のなかで」の順。
+  // 時間軸を行き来させない（2026-09-25）
+  if (D.over) { for (const f of [thisYearSection, squadSection]) { const s = f(); if (s) root.append(s); } }
   const gk = upsetsSection();
   if (gk) root.append(gk);
 
@@ -349,7 +353,7 @@ function renderHub() {
       }
     }
     root.append(h("section", { class: "sec" },
-      h("div", { class: "sec-head" }, h("h2", {}, "5  1次予選の結果"), h("p", {}, rounds.join("・"))),
+      h("div", { class: "sec-head" }, h("h2", {}, "1次予選の結果"), h("p", {}, rounds.join("・"))),
       h("ul", { class: "done-list" }, rows)));
   }
 
@@ -375,14 +379,17 @@ function renderHub() {
     }
     road.append(col);
   }
-  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, D.over ? "歩いた道" : "勝ち上がりの道"), h("p", {}, D.over ? "3試合それぞれのページへ" : `${D.doneNote}。灰色は敗退した学校`)), road,
+  root.append(h("section", { class: "sec", id: "road" }, h("div", { class: "sec-head" }, h("h2", {}, D.over ? "3試合の経過" : "勝ち上がりの道"), h("p", {}, D.over ? "3試合それぞれのページへ" : `${D.doneNote}。灰色は敗退した学校`)), road,
     D.over ? null : h("p", { class: "small muted prose" }, "「当たる確率」は、武蔵丘と相手の両方がその試合まで勝ち上がる見込みです。武蔵丘がその前に負けるとどちらとも当たらないため、候補2校を足すと「武蔵丘がその回戦まで進む見込み」になり、100%にはなりません。帯グラフの斜線がその差（武蔵丘がその前に負ける場合）です。")));
 
+  // 武蔵丘というチーム編（5年間の推移・報道と記録）は、今季の3試合を見せたあとに置く
+  if (D.over) { for (const f of [journeySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
+
   const left = h("div", { class: "stack" },
-    h("div", { class: "card" }, h("div", { class: "sec-head" }, h("h2", {}, "ブロックの山"), h("p", {}, "赤線は勝ち上がり。点線は武蔵丘の道")), bracketSVG()),
+    h("div", { class: "card" }, h("div", { class: "sec-head" }, h("h2", {}, "トーナメント表"), h("p", {}, "赤線は勝ち上がり。点線は武蔵丘の道")), bracketSVG()),
     h("div", { class: "card" }, h("h2", {}, "日程と会場"), scheduleList()));
   const right = h("div", { class: "stack lg" }, D.over ? null : outlookSection(),
-    h("section", { class: "sec" }, h("h2", {}, "6  今季の位置づけ"), h("ul", { class: "points" }, D.formNote.map((t) => h("li", {}, t)))));
+    h("section", { class: "sec" }, h("h2", {}, "今季の位置づけ"), h("ul", { class: "points" }, D.formNote.map((t) => h("li", {}, t)))));
   root.append(h("div", { class: "split rev" }, left, right));
 
   root.append(eloSection());
@@ -416,7 +423,7 @@ const winP = (d) => 1 / (1 + Math.pow(10, -d / 400));
 function eloSection() {
   const E = D.elo;
   const sec = h("section", { class: "sec", id: "elo" },
-    h("div", { class: "sec-head" }, h("h2", {}, "7  点数の算出"), h("p", {}, "Elo（イロ）レーティング")),
+    h("div", { class: "sec-head" }, h("h2", {}, "点数の算出"), h("p", {}, "Elo（イロ）レーティング")),
     h("p", { class: "prose" }, "チェスなどで使われる Elo レーティングを、高校サッカー向けに少し変えた計算です。全校を同じ物差しで並べ、試合の勝ち負けから少しずつ点数を動かします。",
       h("b", {}, "設定は、2022〜2026年度の大会の試合を試合前の点数でどれだけ当てられたかで選びました（2025・26年度の大会で、見込みの高い側が勝った割合 80.3%）。"), "それでも過去の試合からの目安です。"));
   const steps = [
@@ -855,6 +862,7 @@ function goalsChartSection(t) {
 renderTopbar();
 renderSidenav();
 if (D.page === "hub") renderHub(); else if (D.page === "team") renderTeam(); else if (D.page === "seeds") renderSeeds(); else if (D.page === "second") renderSecond(); else if (D.page === "book") renderIndexBook(); else renderSelf();
+numberSections();
 $("#app").prepend(pager());  // 前後のページはページの上に置く（下まで読まないと次へ進めない、という指摘を受けて）
 fillToc();
 document.body.append(h("footer", { class: "foot" }, `データ: ${D.asOf}。強さの点数と見込みは過去の公式戦から計算した目安です。`));
@@ -963,7 +971,7 @@ function upsetsSection() {
   if (myIdx >= 10) top.push(h("li", { class: "gapline" }, "…"), row(solo[myIdx], myIdx, myIdx + 1));
   const pks = list.filter((x) => x.pk).slice(0, 8);
   return h("section", { class: "sec", id: "gk" },
-    h("div", { class: "sec-head" }, h("h2", {}, "4  東京都内での位置"), h("p", {}, "第105回 選手権 東京 1次予選")),
+    h("div", { class: "sec-head" }, h("h2", {}, "東京都内での位置"), h("p", {}, "第105回 選手権 東京 1次予選")),
     h("p", { class: "prose" }, `試合前の「勝つ見込み」が低かった側が勝った試合を、見込みの低い順に並べました。90分で決着したものが${solo.length}件。`
       + (myIdx >= 0 ? `武蔵丘の学習院戦は${myIdx + 1}位です。` : "")),
     D.final && D.final.upsetsHighlight ? h("p", { class: "prose hi" }, D.final.upsetsHighlight) : null,
@@ -1177,7 +1185,7 @@ function squadSection() {
   };
 
   return h("section", { class: "sec", id: "squad" },
-    h("div", { class: "sec-head" }, h("h2", {}, "2  3年間の全19試合"),
+    h("div", { class: "sec-head" }, h("h2", {}, "3年間の全19試合"),
       h("p", {}, `${S.years[0]}〜${S.years[S.years.length - 1]}年度 ${S.tournaments.length}大会`)),
     h("p", { class: "prose" }, "点数は2つ並べています。左が試合の時点、右がいまの値です。"
       + "試合のときは下だった相手が、その後に上へ行くことがあります。片方だけでは相手の力を読み違えます。"),
@@ -1251,4 +1259,23 @@ function renderIndexBook() {
         h("li", {}, "「武蔵丘と」は2004年度以降の対戦成績"),
         h("li", {}, "左端の番号は、その表の中で点数の高い順に振ったもの。東京都全体での順位ではない"))));
   root.append(h("div", { class: "split" }, main, side));
+}
+
+
+/* ---------- 章番号は描画後に表示順から振る ----------
+   手で番号を書くと、出し分けで消えたセクションのぶんが欠番になり、
+   「2  3年間の…」のように数字が2つ並んで読めなくなる（2026-09-25） */
+function numberSections() {
+  const secs = [...document.querySelectorAll("#app section.sec")]
+    .filter((s) => !s.closest("details") && !s.closest("aside.side"))
+    .filter((s) => s.querySelector(":scope > .sec-head > h2, :scope > h2"));
+  secs.forEach((s, i) => {
+    const h = s.querySelector(":scope > .sec-head > h2, :scope > h2");
+    if (!h || h.dataset.numbered) return;
+    h.dataset.numbered = "1";
+    h.prepend(h2num(i + 1));
+  });
+}
+function h2num(n) {
+  return h("span", { class: "secno num", "aria-hidden": "true" }, String(n).padStart(2, "0") + " ");
 }

@@ -625,3 +625,8 @@ nav.hist-nav { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); padding
 nav.hist-nav a { color: var(--link); text-decoration: none; }
 nav.hist-nav a:hover { text-decoration: underline; }
 nav.hist-nav b { color: var(--ink); }
+
+/* 章番号（表示順から自動で振る） */
+h2 .secno { font-size: 0.62em; font-weight: 600; color: var(--muted); margin-right: .6em; letter-spacing: .06em; vertical-align: .08em; }
+.sn-toc .toc-no { color: var(--muted); margin-right: .5em; font-size: 11px; }
+.sn-toc li.on > a .toc-no { color: var(--us); }
