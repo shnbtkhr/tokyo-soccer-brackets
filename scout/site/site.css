@@ -591,3 +591,27 @@ ul.glist li.l .mark { color: var(--muted); }
 }
 ul.glist li.grew { background: var(--them-soft); margin-inline: calc(var(--s3) * -1); padding-inline: var(--s3); border-radius: var(--r); }
 .grew-note { color: var(--link); font-weight: 600; }
+
+/* 対戦校名鑑 */
+ul.book { margin: 0; padding: 0; list-style: none; display: grid; }
+ul.book li { display: grid; grid-template-columns: 2.6em minmax(0, 1fr) 4em 10em minmax(0, 8em) minmax(0, 9em);
+  gap: var(--s3); align-items: baseline; padding: var(--s2) 0; border-bottom: 1px solid var(--rule); }
+ul.book li.hd { border-bottom: 2px solid var(--ink); padding-bottom: var(--s1); font-size: 11px; letter-spacing: .06em; }
+ul.book li.me { background: var(--us-soft); margin-inline: calc(var(--s2) * -1); padding-inline: var(--s2); }
+ul.book .rk { color: var(--muted); text-align: right; }
+ul.book li.me .rk { color: var(--us); }
+ul.book .nm { font-weight: 700; }
+ul.book .el { font-weight: 600; }
+ul.book li.me .el { color: var(--us); }
+.thin-mark { color: var(--win); margin-left: 4px; }
+details.dist { border-top: 0; padding-top: 0; }
+details.dist > summary { min-height: 40px; border-bottom: 1px solid var(--rule); }
+@media (max-width: 900px) {
+  ul.book li { grid-template-columns: 2.4em minmax(0, 1fr) 4em; row-gap: 2px; }
+  ul.book li > .gm, ul.book li > .bs, ul.book li > .vs { grid-column: 2 / -1; }
+  ul.book li.hd > .gm, ul.book li.hd > .bs, ul.book li.hd > .vs { display: none; }
+}
+
+/* 年鑑の表紙（英字は各ページ最上部に1度だけ） */
+.masthead .eyebrow { letter-spacing: .18em; }
+.sub-title { margin-top: -2px; }

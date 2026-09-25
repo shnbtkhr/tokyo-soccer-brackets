@@ -27,7 +27,7 @@ from build_scout_page import build_data
 
 ROOT = Path(__file__).parent
 SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
-TITLE = {"index": "武蔵丘 選手権スカウティング", "musashigaoka": "武蔵丘 自己分析", "seeds": "2次予選 都大会トーナメント"}
+TITLE = {"index": "武蔵丘 選手権スカウティング", "musashigaoka": "武蔵丘 自己分析", "seeds": "2次予選 都大会トーナメント", "book": "対戦校名鑑"}
 
 
 def band_of(g: dict) -> str:
@@ -195,6 +195,7 @@ def build(links: str) -> Path:
     FINAL = json.loads((ROOT / "scout/final_2026.json").read_text(encoding="utf-8"))
     UPSETS = json.loads((ROOT / "out/scout/upsets_2026.json").read_text(encoding="utf-8"))
     SQUAD = json.loads((ROOT / "out/scout/squad_2026.json").read_text(encoding="utf-8"))
+    BOOK = json.loads((ROOT / "out/scout/index_2026.json").read_text(encoding="utf-8"))
     me = data["me"]
     T = data["teams"]
     block = data["block"]
@@ -258,7 +259,7 @@ def build(links: str) -> Path:
     # 当たらなかった学校のカードは出さない。ページを作らないのでリンクが切れる
     for st in road:
         st["teams"] = [k for k in st["teams"] if k in opps]
-    order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds"]
+    order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds", "book"]
     # 歩みのページは build_history.py が別に書き出す。ここでは行き先として繋ぐだけ
     hist = f"history-{SLUG[me]}"
     for k in opps:
@@ -268,7 +269,7 @@ def build(links: str) -> Path:
             return f"{rounds[k][0]}・敗退"
         return f"{rounds[k][0]}" + ("の候補" if rounds[k][1] else "・次の相手" if k == nxt_opp_key else "")
 
-    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選 都大会", hist: f"{T[me]['display']} の歩み"}
+    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選 都大会", "book": "対戦校名鑑", hist: f"{T[me]['display']} の歩み"}
 
     urls: dict = {}
     if links == "artifact":
@@ -294,6 +295,7 @@ def build(links: str) -> Path:
         {"label": nav_label("2回戦", 149), "items": nav_items([k for k in r2 if k in keep])},
         {"label": nav_label("1回戦", r1_no), "items": nav_items([k for k in (r1,) if k in keep])},
         {"label": "2次予選", "phase": 2, "items": [{"slug": "seeds", "label": "都大会 67校"}]},
+        {"label": "資料", "phase": 2, "items": [{"slug": "book", "label": "対戦校名鑑"}]},
         # 歩みのページは別にビルドする。アーティファクト版はまだ公開URLが無いので、
         # 行き先の無いリンクを出さないように項目ごと落とす
         *([{"label": "記録", "items": [{"slug": hist, "label": "2004年からの歩み"}]}]
@@ -352,6 +354,7 @@ def build(links: str) -> Path:
     assets = {"png": "data:image/png;base64," + base64.b64encode(png).decode("ascii"),
               "pdf": "https://shnbtkhr.github.io/tokyo-soccer-brackets/assets/sen26_2j_pred.pdf"}
     write("seeds", {"page": "second", "second": second, "assets": assets})
+    write("book", {"page": "book", "book": BOOK})
     return out_dir
 
 
