@@ -633,6 +633,52 @@ nav.hist-nav a { color: var(--link); text-decoration: none; }
 nav.hist-nav a:hover { text-decoration: underline; }
 nav.hist-nav b { color: var(--ink); }
 
+/* 章番号（表示順から自動で振る） */
+h2 .secno { font-size: 0.62em; font-weight: 600; color: var(--muted); margin-right: .6em; letter-spacing: .06em; vertical-align: .08em; }
+.sn-toc .toc-no { color: var(--muted); margin-right: .5em; font-size: 11px; }
+.sn-toc li.on > a .toc-no { color: var(--us); }
+
+/* 都内全校データベース */
+.srch-box .srch { width: 100%; max-width: 30em; font: inherit; font-size: var(--t1); padding: var(--s2) var(--s3);
+  border: 1px solid var(--rule-strong); border-radius: var(--r); background: var(--surface); color: var(--ink); }
+.srch-box .srch:focus-visible { border-color: var(--focus); }
+.srch-hint { margin-top: var(--s2); }
+ul.book { margin: 0; padding: 0; list-style: none; display: grid; }
+ul.book > li { border-bottom: 1px solid var(--rule); }
+ul.book > li.me { background: var(--us-soft); }
+details.sch > summary { list-style: none; cursor: pointer; display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.2em minmax(0, 11em) minmax(0, 12em); gap: var(--s3);
+  align-items: baseline; padding: var(--s2) var(--s3); min-height: 40px; }
+details.sch > summary::-webkit-details-marker { display: none; }
+details.sch > summary:hover { background: var(--sunk); }
+details.sch .nm { font-weight: 700; }
+details.sch .el { font-weight: 600; font-family: var(--f-num); }
+ul.book > li.me .el { color: var(--us); }
+.sch-in { display: grid; gap: var(--s3); padding: var(--s3) var(--s3) var(--s4); border-top: 1px solid var(--rule); background: var(--sunk); }
+.kv2 { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); font-size: 13.5px; }
+.sch-blk h4 { margin: 0 0 var(--s2); font-size: var(--t-1); letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.yrs { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.yr-chip { background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 2px var(--s3); font-size: 13px; }
+ul.mini { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font-size: 13px; }
+ul.mini li { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); align-items: baseline; }
+ul.mini .r { width: 1.2em; text-align: center; }
+ul.mini li.w .r { color: var(--us); font-weight: 700; }
+ul.mini li.l .r { color: var(--muted); }
+ul.mini .sc { font-family: var(--f-num); font-weight: 600; }
+ul.mini .op { font-weight: 700; min-width: 7em; }
+ul.mini.co li { display: grid; grid-template-columns: minmax(0, 8em) minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 760px) {
+  details.sch > summary { grid-template-columns: minmax(0, 1fr) 4.2em; row-gap: 2px; }
+  details.sch > summary > :nth-child(n+3) { grid-column: 1 / -1; }
+  ul.mini.co li { grid-template-columns: minmax(0, 1fr); }
+}
+ol.rank-list { margin: 0; padding: 0; list-style: none; display: grid; }
+ol.rank-list li { display: grid; grid-template-columns: 3em minmax(0, 1fr) 4.2em 6em; gap: var(--s3);
+  align-items: baseline; padding: 3px var(--s3); border-bottom: 1px solid var(--rule); font-size: 13.5px; }
+ol.rank-list li.me { background: var(--us-soft); font-weight: 700; }
+ol.rank-list .rk { color: var(--muted); text-align: right; }
+ol.rank-list .el { font-weight: 600; }
+
 /* 歩みのページだけで使う部品 */
 .yr > summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; }
 .yr > summary::-webkit-details-marker { display: none; }

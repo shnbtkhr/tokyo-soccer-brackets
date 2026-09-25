@@ -1196,45 +1196,86 @@ function squadSection() {
     h("div", { class: "tours" }, S.tournaments.map(tour)));
 }
 
-/* ---------- 対戦校名鑑 ---------- */
+/* ---------- 都内全校データベース ---------- */
 function renderIndexBook() {
   const X = D.book, root = $("#app"), me = D.me;
   const nm = (k) => k.replace("都・", "");
+  const RES = { "○": "w", "●": "l", "△": "d" };
   const byD = {};
   for (const s of X.schools) (byD[s.district ?? "?"] = byD[s.district ?? "?"] || []).push(s);
   for (const k of Object.keys(byD)) byD[k].sort((a, b) => b.elo - a.elo);
 
   root.append(h("div", { class: "masthead" },
-    h("div", { class: "eyebrow" }, "OPPONENT INDEX"),
-    h("h1", {}, "対戦校名鑑"),
+    h("div", { class: "eyebrow" }, "TOKYO DATABASE"),
+    h("h1", {}, "都内全校データベース"),
     h("p", { class: "lead" }, `東京都の${X.nSchools}校を、大会とリーグ戦の記録から同じ物差しで並べました。`
-      + `武蔵丘が属する第${X.myDistrict}地区を開いた状態にしています。`),
-    h("p", { class: "lead small muted" }, "点数は大会の結果にリーグ戦を足したもの。リーグ戦の記録がどれだけ残っているかは地区で差があり、"
-      + "記録の少ない学校は点数が動きにくく、実力より低く出ることがあります。試合数の内訳を各校に出しました。")));
+      + `まだ当たったことのない学校も含みます（武蔵丘と対戦歴があるのは${X.schools.filter((s) => s.vsMe && s.vsMe.n).length}校）。`),
+    h("p", { class: "lead small muted" }, "来季の相手を調べるための一覧です。校名で探すか、地区から開いてください。")));
 
-  const numbered = (list) => list.map((s, i) => Object.assign({}, s, { __n: i + 1 }));
-  const row = (s) => {
+  /* 校名で探す */
+  const results = h("ul", { class: "book hits" });
+  const hint = h("p", { class: "small muted srch-hint" }, "校名の一部を入れてください。");
+  const input = h("input", {
+    type: "search", class: "srch", placeholder: "校名で探す（例: 城東、日大、都立）",
+    "aria-label": "校名で探す",
+    oninput: (ev) => {
+      const q = ev.target.value.trim();
+      results.replaceChildren();
+      if (!q) { hint.textContent = "校名の一部を入れてください。"; return; }
+      const hits = X.schools.filter((s) => s.display.includes(q) || s.key.includes(q) || (s.city || "").includes(q))
+        .sort((a, b) => b.elo - a.elo);
+      hint.textContent = hits.length ? `${hits.length}校` : "見つかりませんでした。";
+      results.append(...hits.slice(0, 40).map((s) => card(s)));
+      if (hits.length > 40) hint.textContent += "（上位40校を表示）";
+    },
+  });
+  root.append(h("section", { class: "sec srch-box" },
+    h("div", { class: "sec-head" }, h("h2", {}, "校名で探す"), h("p", {}, "来季の相手が決まったら、まずここから")),
+    input, hint, results));
+
+  /* 1校ぶんの詳細 */
+  function card(s) {
     const thin = s.leagueGames <= 2;
-    return h("li", { class: s.key === me ? "me" : null },
-      h("b", { class: "rk num" }, s.__n || ""),
-      h("span", { class: "nm" }, nm(s.display), s.key === me ? h("span", { class: "tag first me" }, "自校") : null),
-      h("b", { class: "el num" }, s.elo),
-      h("span", { class: "gm num small muted" }, `大会${s.tournamentGames}・リーグ${s.leagueGames}`,
-        thin ? h("span", { class: "thin-mark" }, "▲") : null),
-      h("span", { class: "bs small" }, s.best ? s.best.text : ""),
-      s.vsMe && s.vsMe.n
-        ? h("span", { class: "vs small" }, `武蔵丘と${s.vsMe.n}試合 ${s.vsMe.w}勝${s.vsMe.l}敗`)
-        : h("span", { class: "vs small muted" }, "対戦なし"));
-  };
-
-  const head = h("li", { class: "hd small muted" }, h("span", {}, "順"), h("span", {}, "学校"),
-    h("span", {}, "点数"), h("span", {}, "試合数"), h("span", {}, "最高成績"), h("span", {}, "武蔵丘と"));
+    const ry = (s.recentYears || []).map((y) =>
+      h("span", { class: "yr-chip" }, h("b", { class: "num" }, y.year), ` ${y.w}勝${y.d ? y.d + "分" : ""}${y.l}敗`,
+        h("small", { class: "muted" }, ` ${y.best || ""}`)));
+    const ts = (s.thisSeason || []).map((g) =>
+      h("li", { class: RES[g.res] || "" }, h("b", { class: "r" }, g.res),
+        h("span", { class: "sc num" }, `${g.gf}-${g.ga}`), h("span", { class: "op" }, nm(g.opp)),
+        h("span", { class: "small muted" }, `${g.series}${g.round ? " " + g.round : ""}${g.date ? " " + g.date : ""}`)));
+    const co = (s.commonOpponents || []).map((c) =>
+      h("li", {}, h("span", { class: "op" }, nm(c.opp)),
+        h("span", { class: "small" }, `武蔵丘 ${c.me.res} ${c.me.gf}-${c.me.ga}（${c.me.year}）`),
+        h("span", { class: "small" }, `${nm(s.display)} ${c.them.res} ${c.them.gf}-${c.them.ga}（${c.them.year}）`)));
+    return h("li", { class: "card-row" + (s.key === me ? " me" : "") },
+      h("details", { class: "sch" },
+        h("summary", {},
+          h("b", { class: "nm" }, nm(s.display), s.key === me ? h("span", { class: "tag first me" }, "自校") : null),
+          h("b", { class: "el num" }, s.elo),
+          h("span", { class: "small muted" }, s.district ? `第${s.district}地区・${s.city || ""}` : "地区不明"),
+          s.vsMe && s.vsMe.n
+            ? h("span", { class: "tag" }, `武蔵丘と${s.vsMe.n}試合 ${s.vsMe.w}勝${s.vsMe.l}敗`)
+            : h("span", { class: "small muted" }, "対戦なし")),
+        h("div", { class: "sch-in" },
+          h("div", { class: "kv2" },
+            h("span", {}, "通算 ", h("b", {}, `${s.summary.w}勝${s.summary.l}敗`), h("small", { class: "muted" }, ` 得${s.summary.gfPer}・失${s.summary.gaPer}`)),
+            h("span", {}, "記録 ", h("b", {}, `大会${s.tournamentGames}・リーグ${s.leagueGames}`), thin ? h("span", { class: "thin-mark" }, " ▲") : null),
+            s.league ? h("span", {}, "今季 ", h("b", {}, `${s.league.name} ${s.league.rank}位/${s.league.of}`)) : null,
+            s.best ? h("span", {}, "最高 ", h("b", {}, `${s.best.text}`), h("small", { class: "muted" }, ` ${s.best.year}`)) : null),
+          ry.length ? h("div", { class: "sch-blk" }, h("h4", {}, "直近3年"), h("div", { class: "yrs" }, ry)) : null,
+          ts.length ? h("div", { class: "sch-blk" }, h("h4", {}, "今季の試合"),
+            h("ul", { class: "mini" }, ts),
+            h("p", { class: "small muted" }, "今季の選手権は多くの試合に日付の記録がありません。大会と回戦の順で並べており、厳密な時系列ではありません。")) : null,
+          co.length ? h("div", { class: "sch-blk" }, h("h4", {}, "共通の対戦相手"),
+            h("ul", { class: "mini co" }, co),
+            h("p", { class: "small muted" }, "直接の対戦が無くても、同じ相手との結果から力関係の見当がつきます。ただし年度が違えばメンバーも違うので、弱い手がかりです。")) : null)));
+  }
 
   const main = h("div", { class: "stack lg" });
   const mine = byD[X.myDistrict] || [];
-  main.append(h("section", { class: "sec", id: "d-me" },
-    h("div", { class: "sec-head" }, h("h2", {}, `第${X.myDistrict}地区`), h("p", {}, `${mine.length}校・点数の高い順`)),
-    h("ul", { class: "book" }, head, numbered(mine).map(row))));
+  main.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, `第${X.myDistrict}地区`), h("p", {}, `武蔵丘が属する地区・${mine.length}校・点数の高い順`)),
+    h("ul", { class: "book" }, mine.map(card))));
 
   const others = Object.keys(byD).filter((k) => String(k) !== String(X.myDistrict))
     .sort((a, b) => (a === "?" ? 9 : +a) - (b === "?" ? 9 : +b));
@@ -1242,25 +1283,27 @@ function renderIndexBook() {
     h("div", { class: "sec-head" }, h("h2", {}, "ほかの地区"), h("p", {}, "見出しを押すと開きます")),
     ...others.map((k) => h("details", { class: "more dist" },
       h("summary", {}, k === "?" ? "地区が分かっていない学校" : `第${k}地区`, h("small", { class: "muted" }, ` ${byD[k].length}校`)),
-      h("div", { class: "body" }, h("ul", { class: "book" }, head, numbered(byD[k]).map(row)))))));
+      h("div", { class: "body" }, h("ul", { class: "book" }, byD[k].map(card)))))));
 
+  // 全校の並びは、詳細を持たない軽い1行にする（カードで再描画すると量が倍になる）
   main.append(h("section", { class: "sec" },
-    h("div", { class: "sec-head" }, h("h2", {}, "点数の高い順"), h("p", {}, `全${X.nSchools}校`)),
+    h("div", { class: "sec-head" }, h("h2", {}, "点数の高い順"), h("p", {}, `全${X.nSchools}校・詳細は校名で探すか地区から`)),
     h("details", { class: "more" }, h("summary", {}, "全校を点数の順に見る"),
-      h("div", { class: "body" }, h("ul", { class: "book" }, head,
-        numbered(X.schools.slice().sort((a, b) => b.elo - a.elo)).map(row))))));
+      h("div", { class: "body" }, h("ol", { class: "rank-list" },
+        X.schools.slice().sort((a, b) => b.elo - a.elo).map((s, i) => h("li", { class: s.key === me ? "me" : null },
+          h("b", { class: "rk num" }, i + 1), h("span", { class: "nm" }, nm(s.display)),
+          h("b", { class: "el num" }, s.elo),
+          h("span", { class: "small muted" }, s.district ? `第${s.district}地区` : "地区不明"))))))));
 
   const side = h("aside", { class: "stack side" },
-    h("div", { class: "card" }, h("h2", {}, "この名鑑の見方"),
+    h("div", { class: "card" }, h("h2", {}, "この一覧の使い方"),
       h("ul", { class: "points" },
+        h("li", {}, "来季の相手が決まったら、まず", h("b", {}, "校名で探す"), "。学校名を押すと、直近3年の成績・今季の試合・共通の対戦相手が開きます"),
         h("li", {}, "点数は全校を同じ物差しで並べたもの。大会の結果にリーグ戦を足して計算している"),
         h("li", {}, h("b", {}, "▲"), " が付く学校は、リーグ戦の記録が2試合以下。点数が動きにくく、実力より低く出ることがある"),
-        h("li", {}, "「大会◯・リーグ◯」は記録が残っている試合数。点数の計算に使えた数とは一致しない（日付の無いリーグ戦は時系列に置けないため）"),
-        h("li", {}, "「武蔵丘と」は2004年度以降の対戦成績"),
-        h("li", {}, "左端の番号は、その表の中で点数の高い順に振ったもの。東京都全体での順位ではない"))));
+        h("li", {}, "「大会◯・リーグ◯」は記録が残っている試合数。点数の計算に使えた数とは一致しない（日付の無いリーグ戦は時系列に置けないため）"))));
   root.append(h("div", { class: "split" }, main, side));
 }
-
 
 /* ---------- 章番号は描画後に表示順から振る ----------
    手で番号を書くと、出し分けで消えたセクションのぶんが欠番になり、

@@ -37,7 +37,7 @@ PAGE_NAME = {
     "gakushuin": "2回戦 学習院戦",
     "joto": "ブロック決勝 城東戦",
     "seeds": "2次予選 都大会",
-    "book": "対戦校名鑑",
+    "book": "都内全校データベース",
     "history-musashigaoka": "武蔵丘の歩み",
 }
 TITLE = {k: f"{v}｜{SITE_NAME}" for k, v in PAGE_NAME.items()}
