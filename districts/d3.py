@@ -40,16 +40,23 @@ ENIBLO_2026 = [
 ]
 
 # 2024年度: junior-soccer.jp の勝敗グリッド（順位表ページは無いので試合から計算する）
+# 1部・2部B・3部A・3部B の番号は discover_junior_soccer.py で総当たりして見つけたもの
+# （2026-09-25）。それまでは番号が分からず、ブログ記事の最終順位だけを使っていた。
 MATRIX_2024 = [
+    ("1部", "47947", "https://junior-soccer.jp/kanto/tokyo/league/table/47947"),
     ("2部A", "47948", "https://junior-soccer.jp/kanto/tokyo/league/table/47948"),
+    ("2部B", "47949", "https://junior-soccer.jp/kanto/tokyo/league/table/47949"),
+    ("3部A", "47950", "https://junior-soccer.jp/kanto/tokyo/league/table/47950"),
+    ("3部B", "47951", "https://junior-soccer.jp/kanto/tokyo/league/table/47951"),
     ("3部C", "50057", "https://junior-soccer.jp/kanto/tokyo/league/table/50057"),
     ("3部D", "47953", "https://junior-soccer.jp/kanto/tokyo/league/table/47953"),
 ]
 
-# 2024年度: juniorsoccer-news.com のブログ記事（最終順位のみ。試合ごとの結果は無い）
+# 2024年度: juniorsoccer-news.com のブログ記事（最終順位のみ。試合ごとの結果は無い）。
+# 上の勝敗グリッドが取れたブロックは、そちらから順位も計算するのでここでは扱わない
 NEWS_2024_URL = "https://www.juniorsoccer-news.com/post-1629009"
 NEWS_2024_PATH = RAW / "juniorsoccer-news_1629009.html"
-NEWS_2024_BLOCKS = ["1部", "2部B", "3部A", "3部B"]
+NEWS_2024_BLOCKS: list[str] = []
 
 # 2025年度: 公式Wixブログ（最終結果の一部のみ）
 WIX_2025_URL = "https://kmnkzt1530.wixsite.com/youthleage/single-post/" + urllib.parse.quote("2025年度リーグ戦結果")

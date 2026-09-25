@@ -1,0 +1,1571 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+
+<head>
+	<meta name="viewport"
+		content="width=320px, minimum-scale=1, maximum-scale=2, user-scalable=yes, target-densitydpi=device-dpi">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="copyright" content="少年サッカー応援団事務局" />
+	<meta name="Keywords" content="少年サッカー,ジュニアサッカー,中学生サッカー,ユースチーム,ガールズチーム" />
+	<meta name="Description" content="東京の少年サッカー、ジュニアサッカー、ジュニアユース、ユースの大会やチーム情報を集めたサイトです。各チームのブログの更新情報や大会情報、リーグ戦情報や会場情報も集めています。気になる情報はチェックしてください！" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="thumbnail" content="https://junior-soccer.jp/img/kanto/tokyo/img/logo.png" />
+
+	<title>東京少年サッカー応援団 </title>
+
+	<link href="/sp/_css/import.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/sp/_js/bxslider/jquery.bxslider.css">
+
+	<style type="text/css">
+		#navi li.navi_home a,
+		#navi li.navi_home a:link,
+		#navi li.navi_home a:visited {
+			background-position: 0px -38px;
+		}
+
+		ul.slider {
+			width: 96%;
+			margin: 0px auto;
+			padding: 10px 0px 15px 0px;
+		}
+	</style>
+
+	<script src="/sp/_js/jquery-1.9.0.min.js"></script>
+	<script src="/sp/_js/bxslider/jquery.bxslider.min.js"></script>
+	<script src="/sp/_js/ss.js"></script>
+
+	<script>
+		$(document).ready(function(){
+  var sliderImg = $('.slider li').length;
+  if(sliderImg > 1){
+	  $('.slider').bxSlider({
+		controls: false,
+		auto: true,
+		pause: 8000,
+		pager: false,
+		speed: 700
+	  });
+  }
+});
+	</script>
+
+	
+	<script type="text/javascript">
+		$(function(){
+        $("#header #header_nav").on("click", function() {
+            $("#header #navi #acMenu dd").slideToggle();
+        });
+    });
+    $(function(){
+        $("#header #navi .navi_close").on("click", function() {
+            $("#header #navi #acMenu dd").slideToggle();
+        });
+    });
+    $(function(){
+        $("#contents_main_index #index_bar_news #nav .refine").on("click", function() {
+            $("#contents_main_index .contents_shiborikomi dl#acMenu_news_shiborikomi dd").slideToggle();
+        });
+    });
+    $(function(){
+      $("#acMenu_shiborikomi dt.region").on("click", function() {
+          $("#acMenu_shiborikomi dd.region").slideToggle();
+      });
+    });
+   $(function(){
+        $("#acMenu_shiborikomi dt.age").on("click", function() {
+           $("#acMenu_shiborikomi dd.age").slideToggle();
+        });
+    });
+    $(function(){
+      $("#acMenu_shiborikomi dd .navi_close").on("click", function() {
+        $("#acMenu_shiborikomi dd").slideToggle();
+      });
+    });
+    $(function(){
+      $("#acMenu_shiborikomi dt").on("click", function() {
+        $(this).next().next().slideToggle();
+      });
+    });
+    $(function(){
+       // #で始まるアンカーをクリックした場合に処理
+       $('a[href^=#]').click(function() {
+          var speed = 400; // ミリ秒
+          var href= $(this).attr("href");
+          var target = $(href == "#" || href == "" ? 'html' : href);
+          var position = target.offset().top;
+          $("#acMenu_shiborikomi dd").slideToggle();
+          $('body,html').animate({scrollTop:position}, speed, 'swing');
+          return false;
+       });
+    });
+	</script>
+
+	<!-- カレンダー Tag Start -->
+	<link type="text/css" rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+	<script src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+	<script>
+		$(function() {
+    $.datepicker.setDefaults( $.datepicker.regional[ "ja" ] );
+    $( ".inputCal" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    $('.han').change(function(){
+      var txt  = $(this).val();
+      var han = txt.replace(/[Ａ-Ｚａ-ｚ０-９]/g,function(s){return String.fromCharCode(s.charCodeAt(0)-0xFEE0)});
+      $(this).val(han);
+    });
+  });
+	</script>
+	<!-- カレンダー Tag end -->
+
+	<!-- GoogleAnalytics Tag Start -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-57282891-1', 'auto');
+    ga('send', 'pageview');
+	</script>
+	<!-- GoogleAnalytics Tag End   -->
+
+	<!-- Research Artisan Pro Script Tag Start -->
+	<script type="text/javascript">
+		var _Ra = {};
+    _Ra.hId = '1';
+    _Ra.uCd = '15050100002906140610';
+    (function() {var s=document.getElementsByTagName('script')[0],js=document.createElement('script');js.type='text/javascript';js.async='async';js.src='http://analyze.pro.research-artisan.com/track/script.php';s.parentNode.insertBefore(js,s);})();
+	</script>
+	<noscript>
+		<p><img
+				src="http://analyze.pro.research-artisan.com/track/tracker.php?ucd=15050100002906140610&amp;hid=1&amp;guid=ON"
+				alt="" width="1" height="1" /></p>
+	</noscript>
+	<!-- Research Artisan Pro Script Tag End   -->
+
+	<!-- Google ad -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3734940028090902",
+          enable_page_level_ads: true
+     });
+	</script>
+	<!-- /Google ad -->
+
+	<!-- 自社広告ヘッダーPC　DFP -->
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+		var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+	</script>
+
+	<script>
+		googletag.cmd.push(function() {
+   googletag.defineSlot('/21636933890/psaスマホ応援団', [320, 100], 'div-gpt-ad-1655464674861-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/psapc', [1130, 290], 'div-gpt-ad-1655462360418-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/noikaouen320x100', [320, 100], 'div-gpt-ad-1551170688614-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/ouennoikapsa521', [320, 100], 'div-gpt-ad-1558409755777-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/noikaouen320x100', [320, 100], 'div-gpt-ad-1559276873664-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/noikaouen320x100', [320, 100], 'div-gpt-ad-1559619168881-0').addService(googletag.pubads());
+   googletag.pubads().enableSingleRequest();
+   googletag.enableServices();
+  });
+	</script>
+	<!-- End自社広告ヘッダーDFP -->
+
+</head>
+
+<body>
+
+	<!-- facebook -->
+	<script>
+		(function(d, s, id) {
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=533584260113128";
+fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+	</script>
+	<!-- /facebook -->
+
+	<!-- twitter -->
+	<script>
+		!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+	</script>
+	<!-- /twitter -->
+
+	<a name="top" id="top"></a>
+
+	<!-- #container -->
+	<div id="container">
+
+		<!-- #header -->
+		<div id="header">
+
+			<div id="header_logo">
+				<p>東京のジュニアサッカーの速報サイト</p>
+				<a href="/sp/kanto/tokyo">
+					<h1>東京サッカー応援団</h1>
+				</a>
+			</div>
+
+			<div id="header_nav">
+				<img src="/sp/_images/common/nav_menu.png" alt="MENU" width="118" height="35">
+			</div>
+			<div class="clear"></div>
+
+			<div id="navi">
+				<dl id="acMenu">
+
+					<dd>
+						<div class="navi_darkblue">
+							<p>情報メニュー</p>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/blog">ﾌﾞﾛｸﾞ情報</a></div>
+																												<div class="navi_dd_box"><a href="https://www.juniorsoccer-news.com/post-893993">大会情報</a></div>
+																					<div class="navi_dd_box"><a href="/sp/kanto/tokyo/stadium">会場情報</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/team">ﾁｰﾑ情報</a></div>
+							<div class="navi_dd_box"><a href="https://www.juniorsoccer-news.com/" target="blank">みんなのﾆｭｰｽ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/result">みんなの速報</a></div>
+																												<div class="navi_dd_box"><a
+									href="https://www.juniorsoccer-news.com/?tag=toresen-jyouhou&cat=1352">トレセン情報</a></div>
+																					<div class="navi_dd_box"><a href="/sp/kanto/tokyo/league">リーグ戦情報</a></div>
+							<div class="clear"></div>
+						</div>
+
+						<div class="navi_skyblue">
+							<p>参加メニュー</p>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/juggling">ﾘﾌﾃｨﾝｸﾞ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/futsal">ｼﾞｭﾆｱ個ｻﾙ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/papaleague">ﾊﾟﾊﾟﾘｰｸﾞ</a></div>
+							<div class="clear"></div>
+						</div>
+
+						<div class="navi_blue">
+							<p>サイトメニュー</p>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/about">サイトについて</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/contact">お問合せ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/company">会社概要</a></div>
+							<div class="clear"></div>
+						</div>
+
+						<div class="navi_close">CLOSE</div>
+
+					</dd>
+				</dl>
+			</div>
+			<!-- /#navi -->
+
+		</div>
+		<!-- ヘッダーバナー start-->
+		<!-- ヘッダーバナー end -->
+		<!-- /#header -->
+
+		
+<!--<div style="padding: 8px 0px 0px 0px;">
+	<div class="mb10">
+	    <a href="https://camp-fire.jp/projects/view/272775" target="_blank"><img src="/sp/_images/common/campfire_ouendan_sp.png" /></a>
+	</div>
+</div>-->
+
+<div class="league_title">
+	<h1>リーグ戦情報</h1>
+	<div class="nbox">
+		<a href="https://junior-soccer.jp/sp/kanto/tokyo/league">TOP</a>
+		<a href="https://junior-soccer.jp/sp/kanto/tokyo/league/note">注意事項</a>
+		<a href="https://junior-soccer.jp/sp/kanto/tokyo/league/create">ﾘｰｸﾞ戦新規作成</a>
+	</div>
+</div>
+
+<div id="result" class="league_search_box">
+	<div class="point"></div>
+	<form method="GET" action="https://junior-soccer.jp/sp/kanto/tokyo/league?#result" accept-charset="UTF-8">
+	学年
+	<select class="form-control" name="age"><option value="*" selected="selected">全て</option><option value="U-6">U-6</option><option value="U-7">U-7</option><option value="U-8">U-8</option><option value="U-9">U-9</option><option value="U-10">U-10</option><option value="U-11">U-11</option><option value="U-12">U-12</option><option value="U-13">U-13</option><option value="U-14">U-14</option><option value="U-15">U-15</option><option value="U-16">U-16</option><option value="U-17">U-17</option><option value="U-18">U-18</option><option value="U-23">U-23</option></select>
+	地域
+	<select id="id_branch" class="form-control" name="id_branchs"><option value="*" selected="selected">東京都全域</option><option value="eight">8ブロック</option><option value="eleven">11ブロック</option><option value="fifteen">15ブロック</option><option value="five">5ブロック</option><option value="four">4ブロック</option><option value="fourteen">14ブロック</option><option value="nine">9ブロック</option><option value="one">1ブロック</option><option value="other">その他</option><option value="seven">7ブロック</option><option value="six">6ブロック</option><option value="sixteen">16ブロック</option><option value="ten">10ブロック</option><option value="thirteen">13ブロック</option><option value="three">3ブロック</option><option value="tokyo-ch">中学生情報</option><option value="tokyo-ko">高校生情報</option><option value="twelve">12ブロック</option><option value="two">2ブロック</option></select>
+	<input type="submit" class="btn" value="絞込">
+	<input class="search" name="keyword" type="text">
+	<input type="submit" class="btn" value="検索">
+	</form>
+</div>
+<!--/.league search box-->
+
+<!-- #contents -->
+<div id="contents">
+	<!--<div class="league_title_img">
+	試験運転中のため、<br>
+	内容に誤りがある場合がございます。<br>
+	ご了承ください。
+	</div>-->
+
+	<div class="league_sub_title">
+		<h2>最近更新されたリーグ戦</h2>
+	</div>
+
+	<div class="league_new_list">
+		<dl>
+									<dt>2026年09月25日 01:52 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/163378">【T5C】2026年度東京U-18リーグ</a></dd>
+									<dt>2026年09月25日 01:50 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/163376">【T5A】2026年度東京U-18リーグ</a></dd>
+									<dt>2026年09月24日 10:15 minaさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/164264">【Cブロック】2026フレッシュカップU-14</a></dd>
+									<dt>2026年09月24日 01:27 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165820">【1部Oブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:27 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165819">【1部Nブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:26 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165818">【1部Mブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:25 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165817">【1部Lブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:24 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165816">【1部Kブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:22 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165815">【1部Jブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:22 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165814">【1部Iブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:19 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165813">【1部Hブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:18 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165812">【1部Gブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:18 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165811">【1部Fブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:17 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165810">【1部Eブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:16 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165808">【1部Cブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:15 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/165807">【1部Bブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年09月24日 01:11 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/164298">【2G】2026東京クラブユースU-14 2次リーグ</a></dd>
+									<dt>2026年09月24日 01:09 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/164292">【2A】2026東京クラブユースU-14 2次リーグ</a></dd>
+									<dt>2026年09月24日 01:07 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/163141">【T4Fリーグ】2026年度高円宮杯U-15リーグ東京T4</a></dd>
+									<dt>2026年09月24日 01:06 まとみさん</dt><dd><a href="https://junior-soccer.jp/kanto/tokyo/league/table/163140">【T4Eリーグ】2026年度高円宮杯U-15リーグ東京T4</a></dd>
+					</dl>
+	</div>
+	<!--/.league new list-->
+
+	<div style="margin:10px 0px;">
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<!-- 2019/10/18　少年サッカー応援団スマホ_リーグ戦TOPページ　一覧中　レスポンシブ -->
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-3734940028090902"
+		     data-ad-slot="6509337334"
+		     data-ad-format="auto"
+		     data-full-width-responsive="true"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
+	</div>
+		
+	<div class="league_sub_title">
+		<h2>最近作成されたリーグ戦</h2>
+	</div>
+
+	<div class="league_new_list">
+		<dl>
+									<dt>2026年09月18日 16:29 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246804">【予選1次・D】2026年度 JA東京カップ 第16ブロック</a></dd>
+									<dt>2026年09月18日 16:28 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246803">【予選1次・C】2026年度 JA東京カップ 第16ブロック</a></dd>
+									<dt>2026年09月18日 16:28 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246802">【予選1次・B】2026年度 JA東京カップ 第16ブロック</a></dd>
+									<dt>2026年09月18日 16:27 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246801">【予選1次・A】2026年度 JA東京カップ 第16ブロック</a></dd>
+									<dt>2026年09月12日 21:24 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246755">【後期3部B】2026東京U-12三井のリハウスリーグ</a></dd>
+									<dt>2026年09月12日 21:23 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246754">【後期3部A】2026東京U-12三井のリハウスリーグ</a></dd>
+									<dt>2026年09月12日 21:23 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246753">【後期2部C】2026東京U-12三井のリハウスリーグ</a></dd>
+									<dt>2026年09月12日 21:22 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246752">【後期2部B】2026東京U-12三井のリハウスリーグ</a></dd>
+									<dt>2026年09月12日 21:22 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246751">【後期2部A】2026東京U-12三井のリハウスリーグ</a></dd>
+									<dt>2026年09月12日 21:21 名無しさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246750">【後期1部】2026東京U-12三井のリハウスリーグ</a></dd>
+									<dt>2026年09月06日 16:40 森保一さん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/246694">東京都U12東京都リーグ</a></dd>
+									<dt>2026年06月05日 01:45 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165823">【2部Bブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:44 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165822">【2部Aブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:43 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165821">【1部Pブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:43 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165820">【1部Oブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:42 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165819">【1部Nブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:42 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165818">【1部Mブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:41 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165817">【1部Lブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:40 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165816">【1部Kブロック】2026東京U-13リーグ前期</a></dd>
+									<dt>2026年06月05日 01:40 まとみさん</dt><dd><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/165815">【1部Jブロック】2026東京U-13リーグ前期</a></dd>
+					</dl>
+	</div>
+
+	<div style="margin:10px 0px;">
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<ins class="adsbygoogle"
+		     style="display:block; text-align:center;"
+		     data-ad-layout="in-article"
+		     data-ad-format="fluid"
+		     data-ad-client="ca-pub-3734940028090902"
+		     data-ad-slot="6148019538"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
+	</div>
+
+	<div class="league_sub_title">
+		<h2>最新更新リーグ戦一覧</h2>
+	</div>
+
+	<div id="result" class="league_search_box">
+		<div class="point"></div>
+		<form method="GET" action="https://junior-soccer.jp/sp/kanto/tokyo/league?#result" accept-charset="UTF-8">
+		学年
+		<select class="form-control" name="age"><option value="*" selected="selected">全て</option><option value="U-6">U-6</option><option value="U-7">U-7</option><option value="U-8">U-8</option><option value="U-9">U-9</option><option value="U-10">U-10</option><option value="U-11">U-11</option><option value="U-12">U-12</option><option value="U-13">U-13</option><option value="U-14">U-14</option><option value="U-15">U-15</option><option value="U-16">U-16</option><option value="U-17">U-17</option><option value="U-18">U-18</option><option value="U-23">U-23</option></select>
+		地域
+		<select id="id_branch" class="form-control" name="id_branchs"><option value="*" selected="selected">東京都全域</option><option value="eight">8ブロック</option><option value="eleven">11ブロック</option><option value="fifteen">15ブロック</option><option value="five">5ブロック</option><option value="four">4ブロック</option><option value="fourteen">14ブロック</option><option value="nine">9ブロック</option><option value="one">1ブロック</option><option value="other">その他</option><option value="seven">7ブロック</option><option value="six">6ブロック</option><option value="sixteen">16ブロック</option><option value="ten">10ブロック</option><option value="thirteen">13ブロック</option><option value="three">3ブロック</option><option value="tokyo-ch">中学生情報</option><option value="tokyo-ko">高校生情報</option><option value="twelve">12ブロック</option><option value="two">2ブロック</option></select>
+		<input type="submit" class="btn" value="絞込">
+		<input class="search" name="keyword" type="text">
+		<input type="submit" class="btn" value="検索">
+		</form>
+	</div>
+	<!--/.league search box-->
+		
+			<div class="league_list_box">
+		<h2>2019年度 第4地区ユースリーグ （東京都）3部Aリーグ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>都立日比谷</td>
+				<td>4</td>
+				<td>12</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>暁星C</td>
+				<td>5</td>
+				<td>12</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>大森学園D</td>
+				<td>3</td>
+				<td>6</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>東海大高輪台E</td>
+				<td>1</td>
+				<td>3</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>都立つばさ総合B</td>
+				<td>1</td>
+				<td>3</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11059">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11059">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11059">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月10日 13:41
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11059">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 第4地区ユースリーグ （東京都）2部リーグ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>東海大高輪台D</td>
+				<td>4</td>
+				<td>12</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>暁星B</td>
+				<td>4</td>
+				<td>10</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>都立小山台</td>
+				<td>3</td>
+				<td>7</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>正則学園B</td>
+				<td>5</td>
+				<td>7</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>朋優学院A</td>
+				<td>3</td>
+				<td>6</td>
+			</tr>
+																																																		</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11058">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11058">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11058">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月10日 13:31
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11058">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度　三井のリハウスU-12サッカーリーグ第13ブロック　Aグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>STFC</td>
+				<td>8</td>
+				<td>22</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>小金井３K</td>
+				<td>4</td>
+				<td>9</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>フリッパーズ</td>
+				<td>3</td>
+				<td>6</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>碧山SC</td>
+				<td>2</td>
+				<td>4</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>滝山JFC</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11005">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11005">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11005">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 16:56
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11005">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度　三井のリハウスU-12サッカーリーグ【東京】第14ブロック（前期）Dグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>小平ウエスト</td>
+				<td>9</td>
+				<td>23</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>わらごま</td>
+				<td>9</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>OPJFC</td>
+				<td>9</td>
+				<td>19</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>WDSC</td>
+				<td>9</td>
+				<td>15</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>秋津SC</td>
+				<td>9</td>
+				<td>13</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11486">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11486">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11486">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 16:18
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11486">管　理</a></div>
+		</div>
+	</div>
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<!-- geniee_1338553_少年サッカー応援団_各県リーグ戦ページ中間 -->
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:336px;height:280px"
+	     data-ad-client="ca-pub-3734940028090902"
+	     data-ad-slot="4519355822"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+		<div class="league_list_box">
+		<h2> 2019年度　三井のリハウスU-12サッカーリーグ【東京】第14ブロック（前期）Cグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>REGALO</td>
+				<td>8</td>
+				<td>24</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>JACPA</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>化成小SC</td>
+				<td>8</td>
+				<td>16</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>VIGORE</td>
+				<td>8</td>
+				<td>13</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>FCウィングス</td>
+				<td>8</td>
+				<td>12</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11872">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11872">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11872">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 16:15
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11872">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2> 2019年度　三井のリハウスU-12サッカーリーグ【東京】第14ブロック（前期）Bグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>小平九小FC</td>
+				<td>8</td>
+				<td>22</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>東大和2FC</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>NOBIDOME</td>
+				<td>8</td>
+				<td>18</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>FCイレブン</td>
+				<td>8</td>
+				<td>16</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>JSC東京</td>
+				<td>8</td>
+				<td>12</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/12134">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/12134">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/12134">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 16:03
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/12134">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ 東京 第11ブロック前期 3部B</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>つるまSC</td>
+				<td>8</td>
+				<td>22</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>ブルファイト</td>
+				<td>8</td>
+				<td>19</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>FC芹ヶ谷</td>
+				<td>8</td>
+				<td>18</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>坂浜SC</td>
+				<td>8</td>
+				<td>15</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>東寺方</td>
+				<td>8</td>
+				<td>13</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/14434">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/14434">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/14434">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 15:36
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/14434">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ 東京 第11ブロック前期 ３部 A</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>若葉台FC</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>小山田SC</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>南大谷</td>
+				<td>8</td>
+				<td>16</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>ムスタング</td>
+				<td>8</td>
+				<td>15</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>落合SC</td>
+				<td>8</td>
+				<td>13</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11788">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11788">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11788">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 14:29
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11788">管　理</a></div>
+		</div>
+	</div>
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<!-- geniee_1338553_少年サッカー応援団_各県リーグ戦ページ中間 -->
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:336px;height:280px"
+	     data-ad-client="ca-pub-3734940028090902"
+	     data-ad-slot="4519355822"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+		<div class="league_list_box">
+		<h2>2019年度三井のリハウスU-12サッカーリーグ【東京】第10ブロック（前期）Division 3B</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>府中三小フットボールクラブ</td>
+				<td>9</td>
+				<td>25</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>国分寺九小フットボールクラブ</td>
+				<td>9</td>
+				<td>18</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>国分寺7小FC</td>
+				<td>9</td>
+				<td>17</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>立川4小FC</td>
+				<td>9</td>
+				<td>16</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>くにたちジュニアフットボールクラブ</td>
+				<td>9</td>
+				<td>14</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11482">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11482">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11482">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 14:03
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11482">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ 東京 第11ブロック前期 2部</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>相原FC</td>
+				<td>8</td>
+				<td>24</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>小山FC</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>境川イレブン</td>
+				<td>8</td>
+				<td>15</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>SEISEKI</td>
+				<td>8</td>
+				<td>11</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>南山EFC-A</td>
+				<td>8</td>
+				<td>11</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11787">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11787">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11787">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 14:00
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11787">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度　三井のリハウスU-12サッカーリーグ【東京】第10ブロック（前期）Division 2</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td> FC VIGORE Jr</td>
+				<td>9</td>
+				<td>22</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>本宿蹴球団</td>
+				<td>9</td>
+				<td>22</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>府中南フットボールクラブ</td>
+				<td>9</td>
+				<td>20</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>Tachikawa elf FC</td>
+				<td>9</td>
+				<td>19</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>国立二小サッカークラブフェリシダージェ</td>
+				<td>9</td>
+				<td>14</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11480">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11480">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11480">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 13:54
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11480">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ 東京 第11ブロック前期 １部</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>トリアネーロ</td>
+				<td>8</td>
+				<td>24</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>本町田FC</td>
+				<td>8</td>
+				<td>19</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>プログレッソ</td>
+				<td>8</td>
+				<td>17</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>レオヴィスタ</td>
+				<td>8</td>
+				<td>12</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>町田JFC-B</td>
+				<td>8</td>
+				<td>12</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11786">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11786">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11786">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月08日 13:41
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11786">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度　三井のリハウスU-12サッカーリーグ【東京】第14ブロック（前期）Aグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>KS-A</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>ファイターズ</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>ミラクルキッズ</td>
+				<td>8</td>
+				<td>21</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>レインボーズ</td>
+				<td>8</td>
+				<td>15</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>富士見SS</td>
+				<td>8</td>
+				<td>12</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11483">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11483">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11483">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月06日 16:21
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11483">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ 東京 第5ブロック前期 ２部リーグ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>松原</td>
+				<td>9</td>
+				<td>27</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>深沢</td>
+				<td>9</td>
+				<td>17</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>キタミ</td>
+				<td>8</td>
+				<td>13</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>松沢</td>
+				<td>5</td>
+				<td>10</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>二子玉川</td>
+				<td>7</td>
+				<td>9</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11770">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11770">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11770">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月06日 15:59
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11770">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2> 2019年度 三井のリハウスU-12サッカーリーグ 東京 第5ブロック前期　１部リーグ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>烏山北</td>
+				<td>9</td>
+				<td>27</td>
+			</tr>
+												<tr>
+				<td>2</td>
+				<td>GIUSTI</td>
+				<td>9</td>
+				<td>22</td>
+			</tr>
+												<tr>
+				<td>3</td>
+				<td>INAC</td>
+				<td>9</td>
+				<td>19</td>
+			</tr>
+												<tr>
+				<td>4</td>
+				<td>太子堂</td>
+				<td>9</td>
+				<td>18</td>
+			</tr>
+												<tr>
+				<td>5</td>
+				<td>瀬田</td>
+				<td>9</td>
+				<td>14</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/11769">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/11769">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/11769">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019年07月06日 15:57
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/11769">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ東京 第13ブロック後期 Dグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>小金井３K</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>小金井４SC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>FC前原</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>TTK </td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>FC明成</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/14339">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/14339">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/14339">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019-07-02 23:24:47
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/14339">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ東京 第13ブロック後期 Cグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>こみねFC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>田無富士見</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>清瀬VALIANT</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>クリストロア</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>ひばりSC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/14338">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/14338">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/14338">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019-07-02 23:23:44
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/14338">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ東京 第14ブロック 後期 Dグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>北山小SC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>KS-B</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>萩山SA</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>大岱小SC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>武蔵大和UTO</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+																																						</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/14335">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/14335">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/14335">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019-07-02 22:29:24
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/14335">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ東京 第14ブロック 後期 Cグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>ジュベニール</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>青葉FC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>FCアベリア</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>サンデーSC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>けやきSC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/14334">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/14334">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/14334">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019-07-02 22:28:09
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/14334">管　理</a></div>
+		</div>
+	</div>
+			<div class="league_list_box">
+		<h2>2019年度 三井のリハウスU-12サッカーリーグ東京 第14ブロック 後期 Bグループ</h2>
+		<table>
+			<tr>
+				<th></th>
+				<th>チーム名</th>
+				<th>試合</th>
+				<th>勝点</th>
+			</tr>
+									<tr>
+				<td>1</td>
+				<td>レインボーズ</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>O.P.J.FC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>WDSC</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>VIGORE</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+												<tr>
+				<td>1</td>
+				<td>FSS</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+																																</table>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/14333">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/14333">戦績表</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/14333">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div class="date_box">
+				最終更新：
+									2019-07-02 22:27:09
+							</div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/14333">管　理</a></div>
+		</div>
+	</div>
+		<!--/.league_list_box-->
+
+
+	<div class="league_nav_pager">
+	<ul class="pagination">
+			<li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=94" rel="prev">&laquo;</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=1">1</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=2">2</a></li><li class="disabled"><span>...</span></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=92">92</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=93">93</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=94">94</a></li><li class="active"><span>95</span></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=96">96</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=97">97</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=98">98</a></li><li class="disabled"><span>...</span></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=127">127</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=128">128</a></li><li><a href="https://junior-soccer.jp/sp/kanto/tokyo/league?page=96" rel="next">&raquo;</a></li>	</ul>
+
+	</div>
+
+		<!--/.nav pager-->
+
+	  <div id="bottom_info">
+		<!-- adsense start-->
+		<div class="mb10">
+		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-format="autorelaxed"
+		     data-ad-client="ca-pub-3734940028090902"
+		     data-ad-slot="9610209408"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
+		</div>
+		<!-- adsense end -->
+	  </div>
+
+</div>
+<!-- /#contents-->
+
+		<!--<div class="mb10"><a href="/sp/kanto/tokyo/contact"><img src="/sp/_images/common/support_bana.png"></a></div>-->
+
+		<!-- <div id="bottom_info">
+				<div class="mb10"><a href="http://www.san-plus.net/supple/"><img src="/sp/_images/common/js_bn.jpg"></a></div>
+		  </div>-->
+
+		
+		<!-- サイド右下バナーゾーン  -->
+		<div style="margin:0px 0px 20px 0px;">
+			<a href="https://tmix.jp/product_categories/9" target="_blank"><img class="mb10"
+					src="/sp/_images/common/taol_2020_0127.jpg"></a>
+		</div>
+		<!-- /サイド右下バナーゾーン  -->
+
+		<div id="pagetop">
+			<a href="/sp/kanto/tokyo">トップページへ</a> ｜ <a href="#header">ページの先頭へ</a>
+		</div>
+
+		<!-- #footer -->
+		<div id="footer">
+			<p class="mb20">
+				<a href="/sp/kanto/tokyo/company">会社概要</a>　<a href="/sp/kanto/tokyo/about">当サイトについて</a><br />
+			</p>
+			未来のストライカーの活躍をチェック！<br />
+			<b class="f_20">東京少年サッカー応援団</b>
+		</div>
+		<!-- /#footer -->
+
+		<p align="center" class="f_10">(C) 2015-2019 全国ジュニアサッカー応援団</p>
+
+	</div>
+	<!-- /#container -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"0fc5e99ec96e463289f84e2d4ae69bac","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4065cd16bfd4e57',t:'MTc5MDMwMDg2NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+</html>

@@ -1,0 +1,1318 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+
+<head>
+	<meta name="viewport"
+		content="width=320px, minimum-scale=1, maximum-scale=2, user-scalable=yes, target-densitydpi=device-dpi">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="copyright" content="少年サッカー応援団事務局" />
+	<meta name="Keywords" content="少年サッカー,ジュニアサッカー,中学生サッカー,ユースチーム,ガールズチーム" />
+	<meta name="Description" content="東京の少年サッカー、ジュニアサッカー、ジュニアユース、ユースの大会やチーム情報を集めたサイトです。各チームのブログの更新情報や大会情報、リーグ戦情報や会場情報も集めています。気になる情報はチェックしてください！" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="thumbnail" content="https://junior-soccer.jp/img/kanto/tokyo/img/logo.png" />
+
+	<title>東京少年サッカー応援団 </title>
+
+	<link href="/sp/_css/import.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/sp/_js/bxslider/jquery.bxslider.css">
+
+	<style type="text/css">
+		#navi li.navi_home a,
+		#navi li.navi_home a:link,
+		#navi li.navi_home a:visited {
+			background-position: 0px -38px;
+		}
+
+		ul.slider {
+			width: 96%;
+			margin: 0px auto;
+			padding: 10px 0px 15px 0px;
+		}
+	</style>
+
+	<script src="/sp/_js/jquery-1.9.0.min.js"></script>
+	<script src="/sp/_js/bxslider/jquery.bxslider.min.js"></script>
+	<script src="/sp/_js/ss.js"></script>
+
+	<script>
+		$(document).ready(function(){
+  var sliderImg = $('.slider li').length;
+  if(sliderImg > 1){
+	  $('.slider').bxSlider({
+		controls: false,
+		auto: true,
+		pause: 8000,
+		pager: false,
+		speed: 700
+	  });
+  }
+});
+	</script>
+
+	
+	<script type="text/javascript">
+		$(function(){
+        $("#header #header_nav").on("click", function() {
+            $("#header #navi #acMenu dd").slideToggle();
+        });
+    });
+    $(function(){
+        $("#header #navi .navi_close").on("click", function() {
+            $("#header #navi #acMenu dd").slideToggle();
+        });
+    });
+    $(function(){
+        $("#contents_main_index #index_bar_news #nav .refine").on("click", function() {
+            $("#contents_main_index .contents_shiborikomi dl#acMenu_news_shiborikomi dd").slideToggle();
+        });
+    });
+    $(function(){
+      $("#acMenu_shiborikomi dt.region").on("click", function() {
+          $("#acMenu_shiborikomi dd.region").slideToggle();
+      });
+    });
+   $(function(){
+        $("#acMenu_shiborikomi dt.age").on("click", function() {
+           $("#acMenu_shiborikomi dd.age").slideToggle();
+        });
+    });
+    $(function(){
+      $("#acMenu_shiborikomi dd .navi_close").on("click", function() {
+        $("#acMenu_shiborikomi dd").slideToggle();
+      });
+    });
+    $(function(){
+      $("#acMenu_shiborikomi dt").on("click", function() {
+        $(this).next().next().slideToggle();
+      });
+    });
+    $(function(){
+       // #で始まるアンカーをクリックした場合に処理
+       $('a[href^=#]').click(function() {
+          var speed = 400; // ミリ秒
+          var href= $(this).attr("href");
+          var target = $(href == "#" || href == "" ? 'html' : href);
+          var position = target.offset().top;
+          $("#acMenu_shiborikomi dd").slideToggle();
+          $('body,html').animate({scrollTop:position}, speed, 'swing');
+          return false;
+       });
+    });
+	</script>
+
+	<!-- カレンダー Tag Start -->
+	<link type="text/css" rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+	<script src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+	<script>
+		$(function() {
+    $.datepicker.setDefaults( $.datepicker.regional[ "ja" ] );
+    $( ".inputCal" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    $('.han').change(function(){
+      var txt  = $(this).val();
+      var han = txt.replace(/[Ａ-Ｚａ-ｚ０-９]/g,function(s){return String.fromCharCode(s.charCodeAt(0)-0xFEE0)});
+      $(this).val(han);
+    });
+  });
+	</script>
+	<!-- カレンダー Tag end -->
+
+	<!-- GoogleAnalytics Tag Start -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-57282891-1', 'auto');
+    ga('send', 'pageview');
+	</script>
+	<!-- GoogleAnalytics Tag End   -->
+
+	<!-- Research Artisan Pro Script Tag Start -->
+	<script type="text/javascript">
+		var _Ra = {};
+    _Ra.hId = '1';
+    _Ra.uCd = '15050100002906140610';
+    (function() {var s=document.getElementsByTagName('script')[0],js=document.createElement('script');js.type='text/javascript';js.async='async';js.src='http://analyze.pro.research-artisan.com/track/script.php';s.parentNode.insertBefore(js,s);})();
+	</script>
+	<noscript>
+		<p><img
+				src="http://analyze.pro.research-artisan.com/track/tracker.php?ucd=15050100002906140610&amp;hid=1&amp;guid=ON"
+				alt="" width="1" height="1" /></p>
+	</noscript>
+	<!-- Research Artisan Pro Script Tag End   -->
+
+	<!-- Google ad -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3734940028090902",
+          enable_page_level_ads: true
+     });
+	</script>
+	<!-- /Google ad -->
+
+	<!-- 自社広告ヘッダーPC　DFP -->
+	<script async='async' src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+		var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+	</script>
+
+	<script>
+		googletag.cmd.push(function() {
+   googletag.defineSlot('/21636933890/psaスマホ応援団', [320, 100], 'div-gpt-ad-1655464674861-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/psapc', [1130, 290], 'div-gpt-ad-1655462360418-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/noikaouen320x100', [320, 100], 'div-gpt-ad-1551170688614-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/ouennoikapsa521', [320, 100], 'div-gpt-ad-1558409755777-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/noikaouen320x100', [320, 100], 'div-gpt-ad-1559276873664-0').addService(googletag.pubads());
+   googletag.defineSlot('/21636933890/noikaouen320x100', [320, 100], 'div-gpt-ad-1559619168881-0').addService(googletag.pubads());
+   googletag.pubads().enableSingleRequest();
+   googletag.enableServices();
+  });
+	</script>
+	<!-- End自社広告ヘッダーDFP -->
+
+</head>
+
+<body>
+
+	<!-- facebook -->
+	<script>
+		(function(d, s, id) {
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=533584260113128";
+fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+	</script>
+	<!-- /facebook -->
+
+	<!-- twitter -->
+	<script>
+		!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+	</script>
+	<!-- /twitter -->
+
+	<a name="top" id="top"></a>
+
+	<!-- #container -->
+	<div id="container">
+
+		<!-- #header -->
+		<div id="header">
+
+			<div id="header_logo">
+				<p>東京のジュニアサッカーの速報サイト</p>
+				<a href="/sp/kanto/tokyo">
+					<h1>東京サッカー応援団</h1>
+				</a>
+			</div>
+
+			<div id="header_nav">
+				<img src="/sp/_images/common/nav_menu.png" alt="MENU" width="118" height="35">
+			</div>
+			<div class="clear"></div>
+
+			<div id="navi">
+				<dl id="acMenu">
+
+					<dd>
+						<div class="navi_darkblue">
+							<p>情報メニュー</p>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/blog">ﾌﾞﾛｸﾞ情報</a></div>
+																												<div class="navi_dd_box"><a href="https://www.juniorsoccer-news.com/post-893993">大会情報</a></div>
+																					<div class="navi_dd_box"><a href="/sp/kanto/tokyo/stadium">会場情報</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/team">ﾁｰﾑ情報</a></div>
+							<div class="navi_dd_box"><a href="https://www.juniorsoccer-news.com/" target="blank">みんなのﾆｭｰｽ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/result">みんなの速報</a></div>
+																												<div class="navi_dd_box"><a
+									href="https://www.juniorsoccer-news.com/?tag=toresen-jyouhou&cat=1352">トレセン情報</a></div>
+																					<div class="navi_dd_box"><a href="/sp/kanto/tokyo/league">リーグ戦情報</a></div>
+							<div class="clear"></div>
+						</div>
+
+						<div class="navi_skyblue">
+							<p>参加メニュー</p>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/juggling">ﾘﾌﾃｨﾝｸﾞ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/futsal">ｼﾞｭﾆｱ個ｻﾙ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/papaleague">ﾊﾟﾊﾟﾘｰｸﾞ</a></div>
+							<div class="clear"></div>
+						</div>
+
+						<div class="navi_blue">
+							<p>サイトメニュー</p>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/about">サイトについて</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/contact">お問合せ</a></div>
+							<div class="navi_dd_box"><a href="/sp/kanto/tokyo/company">会社概要</a></div>
+							<div class="clear"></div>
+						</div>
+
+						<div class="navi_close">CLOSE</div>
+
+					</dd>
+				</dl>
+			</div>
+			<!-- /#navi -->
+
+		</div>
+		<!-- ヘッダーバナー start-->
+		<!-- ヘッダーバナー end -->
+		<!-- /#header -->
+
+		<div class="league_title">
+	<h1>リーグ戦情報</h1>
+	<div class="nbox">
+		<a href="https://junior-soccer.jp/sp/kanto/tokyo/league">TOP</a>
+		<a href="https://junior-soccer.jp/sp/kanto/tokyo/league/note">注意事項</a>
+		<a href="https://junior-soccer.jp/sp/kanto/tokyo/league/create">ﾘｰｸﾞ戦新規作成</a>
+	</div>
+</div>
+
+<!-- #contents -->
+<div id="contents">
+
+	<!--<div class="league_sub_title">
+		<h2>リーグ戦試合</h2>
+	</div>-->
+
+	<div class="league_detail">
+
+		<div id='errors' style="color: #ff0000;">
+			結果投稿は完了しておりません。
+	    	  </div>
+		<br>
+
+        	<div class="top_box">
+			<h3>【2部B】2024年度 第3地区リーグ ユースリーグ</h3>
+            		<div class="nbox">[ <a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/47949">管　理</a> ]</div>
+			<div class="date_box">最終更新：2024年12月21日 15:51</div>
+        	</div>
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/47949">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/47949">戦績表</a></div>
+			<div class="nbox"><a href="#" class="act">試　合</a></div>
+		</div>
+		<div class="bottom_box">
+			<div style="letter-spacing: normal; color:red;">※修正依頼は<a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/47949">試合一覧ページ</a>の「編集/削除」か、<a href="http://www.junior-soccer.jp/contact">お問い合わせ</a>に「県名」「リーグ名」「修正内容」をご記載の上ご連絡ください。</div>
+		</div>
+
+								<div class="mb10">
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<ins class="adsbygoogle"
+			     style="display:block; text-align:center;"
+			     data-ad-layout="in-article"
+			     data-ad-format="fluid"
+			     data-ad-client="ca-pub-3734940028090902"
+			     data-ad-slot="9064636961"></ins>
+			<script>
+			     (adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+		</div>
+				
+		<div class="league_match_box">
+
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">駿台学園D</div>
+					<div class="cbox">3 - 2</div>
+					<div class="rbox">成城B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/959238">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/959238">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立北園</div>
+					<div class="cbox">4 - 0</div>
+					<div class="rbox">目白研心D</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/963607">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/963607">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">保善C</div>
+					<div class="cbox">0 - 0</div>
+					<div class="rbox">成城B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/963608">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/963608">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">目白研心D</div>
+					<div class="cbox">3 - 1</div>
+					<div class="rbox">保善C</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/970885">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/970885">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">城北B</div>
+					<div class="cbox">0 - 10</div>
+					<div class="rbox">都立北園</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/980315">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/980315">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立戸山</div>
+					<div class="cbox">0 - 1</div>
+					<div class="rbox">駿台学園D</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/980316">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/980316">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立北園</div>
+					<div class="cbox">3 - 0</div>
+					<div class="rbox">保善C</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/988859">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/988859">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">駿台学園D</div>
+					<div class="cbox">5 - 0</div>
+					<div class="rbox">城北B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/988860">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/988860">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">目白研心D</div>
+					<div class="cbox">2 - 1</div>
+					<div class="rbox">城北B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1004618">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1004618">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">駿台学園D</div>
+					<div class="cbox">2 - 1</div>
+					<div class="rbox">都立北園</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1004619">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1004619">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立北園</div>
+					<div class="cbox">10 - 0</div>
+					<div class="rbox">成城B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1015762">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1015762">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">成城B</div>
+					<div class="cbox">3 - 7</div>
+					<div class="rbox">城北B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1015763">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1015763">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">城北B</div>
+					<div class="cbox">0 - 3</div>
+					<div class="rbox">保善C</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1024468">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1024468">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立戸山</div>
+					<div class="cbox">3 - 3</div>
+					<div class="rbox">保善C</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1034477">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1034477">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立戸山</div>
+					<div class="cbox">5 - 1</div>
+					<div class="rbox">成城B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1034478">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1034478">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">目白研心D</div>
+					<div class="cbox">4 - 1</div>
+					<div class="rbox">駿台学園D</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1034479">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1034479">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">成城B</div>
+					<div class="cbox">2 - 1</div>
+					<div class="rbox">目白研心D</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1041358">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1041358">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">駿台学園D</div>
+					<div class="cbox">1 - 1</div>
+					<div class="rbox">保善C</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1041410">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1041410">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立戸山</div>
+					<div class="cbox">3 - 7</div>
+					<div class="rbox">城北B</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														-
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td></td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1045212">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1045212">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立戸山</div>
+					<div class="cbox">1 - 0</div>
+					<div class="rbox">都立北園</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														04/28 
+							(日)
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td>戸山高校</td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/969695">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/969695">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+						<div class="sbox">
+				<div class="match_box">
+					<div class="lbox">都立戸山</div>
+					<div class="cbox">1 - 0</div>
+					<div class="rbox">目白研心D</div>
+				</div>
+				<table>
+					<tr>
+						<td>キックオフ</td>
+						<td>
+														11/09 
+							(土)
+													</td>
+					</tr>
+					<tr>
+						<td>試合会場</td>
+						<td>戸山高校</td>
+					</tr>
+				</table>
+				<div class="nbox">
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/comment/create/47949/1035221">コメント</a></div>
+					<div class="btn_box"><a href="https://junior-soccer.jp/sp/kanto/tokyo/match/edit/1035221">編集/削除</a></div>
+				</div>
+			</div>
+			<!--/.sbox-->
+					</div>
+		<!--/.league match box-->
+
+		<div class="nav_box">
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/47949">全順位</a></div>
+			<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/47949">戦績表</a></div>
+			<div class="nbox"><a href="#" class="act">試　合</a></div>
+		</div>
+
+		<div class="nav_other">
+			<div class="nbox"><a href="#comment">コメント</a></div>
+			<div class="nbox"><a href="#caution">リーグについて</a></div>
+		</div>
+
+		<!-- アドセンス -->
+		<div class="mb10">
+			<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<ins class="adsbygoogle"
+			     style="display:block; text-align:center;"
+			     data-ad-layout="in-article"
+			     data-ad-format="fluid"
+			     data-ad-client="ca-pub-3734940028090902"
+			     data-ad-slot="1288902531"></ins>
+			<script>
+			     (adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+		</div>
+		<!-- アドセンス end -->
+
+				<div class="league_sub_title">
+			<h2>このリーグの試合結果を追加する</h2>
+		</div>
+		<div class="league_sub_title_point"></div>
+
+		<div id='errors' style="color: #ff0000;">
+	    	  </div>
+		<br>
+
+		<div class="league_input_box input_result">
+			<form method="POST" action="https://junior-soccer.jp/sp/kanto/tokyo/comment/store0" accept-charset="UTF-8" class="form-horizontal form-label-left"><input name="_token" type="hidden" value="dEIuyDszi8dzv3Dj9mV6yDRBe6u7NyEEXPu89hKo">
+				<input name="leagues_id" type="hidden" value="47949">
+				<div class="form-group">
+					<label class="league_label">試合結果　<span class="required">※必須</span></label>
+					<div class="input_area">
+						<select class="form-control" name="home_id"><option value="305860">都立戸山</option><option value="305861">目白研心D</option><option value="305862">駿台学園D</option><option value="305863">都立北園</option><option value="305864">城北B</option><option value="305865">成城B</option><option value="305866">保善C</option></select>
+						<input class="form-control han" name="home_pt" type="text" value="0"> ―
+						<input class="form-control han" name="away_pt" type="text" value="0">
+						<select class="form-control" name="away_id"><option value="305860">都立戸山</option><option value="305861">目白研心D</option><option value="305862">駿台学園D</option><option value="305863">都立北園</option><option value="305864">城北B</option><option value="305865">成城B</option><option value="305866">保善C</option></select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="league_label">試合日　<span class="required">※必須</span></label>
+					<div class="input_area">
+						<input placeholder="試合日を入力" class="form-control inputCal" name="match_at" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="league_label">試合会場</label>
+					<div class="input_area">
+						<input placeholder="試合会場を入力" class="form-control" name="place" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="league_label">試合へのコメント</label>
+					<div class="input_area">
+						<textarea class="form-control" rows="10" name="comment" cols="50"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="league_label">試合の画像をアップする</label>
+					<div class="input_area">
+						<input class="form-control" name="img" type="file">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="league_label">動画のURLを記入する（youtubeなど）</label>
+					<div class="input_area">
+						<input class="form-control" placeholder="動画URL" name="mov" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="league_label">ニックネーム</label>
+					<div class="input_area">
+						<input placeholder="ニックネームを入力" class="form-control" name="nickname" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="league_label">パスワード　<span class="required">※必須</span></label>
+					<div class="input_area">
+						<input class="form-control2" name="pass" type="text" value="0000"><br />※お好きな英数字を設定できます。この情報を編集する際に必要になるので必ず控えておいてください
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="submit_area">
+						<button type="submit" class="submit_btn">追加する</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		
+		
+		
+		<div class="league_sub_title">
+			<h2>参加・閲覧にあたっての注意事項</h2>
+		</div>
+		<div class="league_other_box">
+			<ul>
+				<li><span style="color:#ff0000;">皆様からの情報提供を元に結果を掲載していますのでリーグ入力がまだ途中の場合や、誤った入力がある場合もございます。公式結果ではありませんので必ず公式結果をご確認ください。</span></li>
+				<li>リーグ作成、結果の入力は誰でもご参加出来ます。</li>
+				<li>内容について運営事務局の方で変更させていただく場合もございます。</li>
+				<li>ｺﾒﾝﾄから写真、動画、感想、結果修正依頼などを投稿できます。</li>
+			</ul>
+		</div>
+
+				<div class="league_sub_title" style="margin-bottom: 20px;">
+		<h2>関連するリーグ戦（グループリーグ）</h2>
+		</div>
+				<div class="league_list_box">
+			<h2>【3部D】2024年度 第3地区リーグ ユースリーグ</h2>
+			<table>
+				<tr>
+					<th></th>
+					<th>チーム名</th>
+					<th>試合</th>
+					<th>勝点</th>
+				</tr>
+												<tr>
+					<td>1</td>
+					<td>駿台学園E</td>
+					<td>5</td>
+					<td>15</td>
+				</tr>
+																<tr>
+					<td>2</td>
+					<td>海城B</td>
+					<td>5</td>
+					<td>10</td>
+				</tr>
+																<tr>
+					<td>3</td>
+					<td>都立白鷗</td>
+					<td>5</td>
+					<td>9</td>
+				</tr>
+																<tr>
+					<td>4</td>
+					<td>武蔵野</td>
+					<td>5</td>
+					<td>4</td>
+				</tr>
+																<tr>
+					<td>5</td>
+					<td>都立板橋</td>
+					<td>5</td>
+					<td>2</td>
+				</tr>
+																			</table>
+
+			<div class="nav_box">
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/47953">全順位</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/47953">戦績表</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/47953">試　合</a></div>
+			</div>
+			<div class="bottom_box">
+				<div class="date_box">
+					最終更新：
+											2025年02月28日 23:27
+									</div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/47953">管　理</a></div>
+			</div>
+		</div>
+				<div class="league_list_box">
+			<h2>【3部C】2024年度 第3地区リーグ ユースリーグ</h2>
+			<table>
+				<tr>
+					<th></th>
+					<th>チーム名</th>
+					<th>試合</th>
+					<th>勝点</th>
+				</tr>
+												<tr>
+					<td>1</td>
+					<td>早稲田</td>
+					<td>6</td>
+					<td>18</td>
+				</tr>
+																<tr>
+					<td>2</td>
+					<td>城北D</td>
+					<td>6</td>
+					<td>11</td>
+				</tr>
+																<tr>
+					<td>3</td>
+					<td>都立第一商業</td>
+					<td>6</td>
+					<td>10</td>
+				</tr>
+																<tr>
+					<td>4</td>
+					<td>淑徳B</td>
+					<td>6</td>
+					<td>8</td>
+				</tr>
+																<tr>
+					<td>5</td>
+					<td>都立大山</td>
+					<td>6</td>
+					<td>7</td>
+				</tr>
+																											</table>
+
+			<div class="nav_box">
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/50057">全順位</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/50057">戦績表</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/50057">試　合</a></div>
+			</div>
+			<div class="bottom_box">
+				<div class="date_box">
+					最終更新：
+											2025年01月03日 23:21
+									</div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/50057">管　理</a></div>
+			</div>
+		</div>
+				<div class="league_list_box">
+			<h2>【3部B】2024年度 第3地区リーグ ユースリーグ</h2>
+			<table>
+				<tr>
+					<th></th>
+					<th>チーム名</th>
+					<th>試合</th>
+					<th>勝点</th>
+				</tr>
+												<tr>
+					<td>1</td>
+					<td>海城</td>
+					<td>6</td>
+					<td>16</td>
+				</tr>
+																<tr>
+					<td>2</td>
+					<td>城北C</td>
+					<td>6</td>
+					<td>15</td>
+				</tr>
+																<tr>
+					<td>3</td>
+					<td>大智学園</td>
+					<td>6</td>
+					<td>10</td>
+				</tr>
+																<tr>
+					<td>4</td>
+					<td>岩倉B</td>
+					<td>6</td>
+					<td>9</td>
+				</tr>
+																<tr>
+					<td>5</td>
+					<td>淑徳C</td>
+					<td>6</td>
+					<td>6</td>
+				</tr>
+																											</table>
+
+			<div class="nav_box">
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/47951">全順位</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/47951">戦績表</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/47951">試　合</a></div>
+			</div>
+			<div class="bottom_box">
+				<div class="date_box">
+					最終更新：
+											2025年01月03日 23:19
+									</div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/47951">管　理</a></div>
+			</div>
+		</div>
+				<div class="league_list_box">
+			<h2>【3部A】2024年度 第3地区リーグ ユースリーグ</h2>
+			<table>
+				<tr>
+					<th></th>
+					<th>チーム名</th>
+					<th>試合</th>
+					<th>勝点</th>
+				</tr>
+												<tr>
+					<td>1</td>
+					<td>國學院</td>
+					<td>6</td>
+					<td>16</td>
+				</tr>
+																<tr>
+					<td>2</td>
+					<td>Criacao Shinjuku</td>
+					<td>6</td>
+					<td>13</td>
+				</tr>
+																<tr>
+					<td>3</td>
+					<td>都立新宿</td>
+					<td>6</td>
+					<td>12</td>
+				</tr>
+																<tr>
+					<td>4</td>
+					<td>青山学院B</td>
+					<td>6</td>
+					<td>8</td>
+				</tr>
+																<tr>
+					<td>5</td>
+					<td>Rio B</td>
+					<td>6</td>
+					<td>8</td>
+				</tr>
+																											</table>
+
+			<div class="nav_box">
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/47950">全順位</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/47950">戦績表</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/47950">試　合</a></div>
+			</div>
+			<div class="bottom_box">
+				<div class="date_box">
+					最終更新：
+											2025年01月03日 23:16
+									</div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/47950">管　理</a></div>
+			</div>
+		</div>
+				<div class="league_list_box">
+			<h2>【2部A】2024年度 第3地区リーグ ユースリーグ</h2>
+			<table>
+				<tr>
+					<th></th>
+					<th>チーム名</th>
+					<th>試合</th>
+					<th>勝点</th>
+				</tr>
+												<tr>
+					<td>1</td>
+					<td>岩倉</td>
+					<td>6</td>
+					<td>14</td>
+				</tr>
+																<tr>
+					<td>2</td>
+					<td>淑徳</td>
+					<td>6</td>
+					<td>13</td>
+				</tr>
+																<tr>
+					<td>3</td>
+					<td>都立青山</td>
+					<td>6</td>
+					<td>10</td>
+				</tr>
+																<tr>
+					<td>4</td>
+					<td>Rio</td>
+					<td>6</td>
+					<td>9</td>
+				</tr>
+																<tr>
+					<td>5</td>
+					<td>東京成徳C</td>
+					<td>6</td>
+					<td>7</td>
+				</tr>
+																											</table>
+
+			<div class="nav_box">
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/47948">全順位</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/47948">戦績表</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/47948">試　合</a></div>
+			</div>
+			<div class="bottom_box">
+				<div class="date_box">
+					最終更新：
+											2025年01月03日 23:11
+									</div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/47948">管　理</a></div>
+			</div>
+		</div>
+				<div class="league_list_box">
+			<h2>【1部】2024年度 第3地区リーグ ユースリーグ</h2>
+			<table>
+				<tr>
+					<th></th>
+					<th>チーム名</th>
+					<th>試合</th>
+					<th>勝点</th>
+				</tr>
+												<tr>
+					<td>1</td>
+					<td>成立学園C</td>
+					<td>9</td>
+					<td>25</td>
+				</tr>
+																<tr>
+					<td>2</td>
+					<td>東京成徳B</td>
+					<td>9</td>
+					<td>25</td>
+				</tr>
+																<tr>
+					<td>3</td>
+					<td>都立高島</td>
+					<td>9</td>
+					<td>18</td>
+				</tr>
+																<tr>
+					<td>4</td>
+					<td>駿台学園C</td>
+					<td>9</td>
+					<td>15</td>
+				</tr>
+																<tr>
+					<td>5</td>
+					<td>目白研心B</td>
+					<td>9</td>
+					<td>12</td>
+				</tr>
+																																																			</table>
+
+			<div class="nav_box">
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/order/47947">全順位</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/table/47947">戦績表</a></div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/match/47947">試　合</a></div>
+			</div>
+			<div class="bottom_box">
+				<div class="date_box">
+					最終更新：
+											2024年12月31日 18:49
+									</div>
+				<div class="nbox"><a href="https://junior-soccer.jp/sp/kanto/tokyo/league/admin/47947">管　理</a></div>
+			</div>
+		</div>
+				
+	</div>
+	<!--/.league_detail-->
+
+</div>
+<!-- /#contents-->
+
+
+		<!--<div class="mb10"><a href="/sp/kanto/tokyo/contact"><img src="/sp/_images/common/support_bana.png"></a></div>-->
+
+		<!-- <div id="bottom_info">
+				<div class="mb10"><a href="http://www.san-plus.net/supple/"><img src="/sp/_images/common/js_bn.jpg"></a></div>
+		  </div>-->
+
+		
+		<!-- サイド右下バナーゾーン  -->
+		<div style="margin:0px 0px 20px 0px;">
+			<a href="https://tmix.jp/product_categories/9" target="_blank"><img class="mb10"
+					src="/sp/_images/common/taol_2020_0127.jpg"></a>
+		</div>
+		<!-- /サイド右下バナーゾーン  -->
+
+		<div id="pagetop">
+			<a href="/sp/kanto/tokyo">トップページへ</a> ｜ <a href="#header">ページの先頭へ</a>
+		</div>
+
+		<!-- #footer -->
+		<div id="footer">
+			<p class="mb20">
+				<a href="/sp/kanto/tokyo/company">会社概要</a>　<a href="/sp/kanto/tokyo/about">当サイトについて</a><br />
+			</p>
+			未来のストライカーの活躍をチェック！<br />
+			<b class="f_20">東京少年サッカー応援団</b>
+		</div>
+		<!-- /#footer -->
+
+		<p align="center" class="f_10">(C) 2015-2019 全国ジュニアサッカー応援団</p>
+
+	</div>
+	<!-- /#container -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"0fc5e99ec96e463289f84e2d4ae69bac","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a40653de0ffafca3',t:'MTc5MDMwMDQ5Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+</html>
