@@ -327,7 +327,7 @@ function renderHub() {
   }
 
   root.append(...planSections({ verdict: true }));
-  if (D.over) { for (const f of [thisYearSection, journeySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
+  if (D.over) { for (const f of [thisYearSection, squadSection, journeySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
   const gk = upsetsSection();
   if (gk) root.append(gk);
 
@@ -1114,4 +1114,60 @@ function renderSecond() {
         + "（その年の総体二次トーナメントに出た／TリーグのT1・T2に所属）のどちらにも当てはまりません。狛江は今季T3で、総体は一次トーナメントのブロック決勝で創価に0-1。"
         + "毎年1〜7校いる「条件では説明のつかない免除校」の1つで、高体連は免除の決まりを公開していません。強さの点数は1926で全体34位と高く、実力で選ばれた可能性はあります"))));
   root.append(h("div", { class: "split" }, main, side));
+}
+
+/* ---------- 3年間の全試合（この代が戦った8大会） ---------- */
+function squadSection() {
+  const S = D.squad;
+  if (!S) return null;
+  const nm = (k) => k.replace("都・", "");
+  const RES = { "勝": "○", "PK勝": "○", "PK負": "×", "負": "×", "分": "△" };
+  const won = (r) => r === "勝" || r === "PK勝";
+
+  const game = (g) => {
+    const shift = g.thenOpp != null && g.nowOpp != null ? g.nowOpp - g.thenOpp : null;
+    const grew = shift != null && shift >= 50 && !won(g.res);
+    return h("li", { class: (won(g.res) ? "w" : "l") + (grew ? " grew" : "") },
+      h("div", { class: "gl" },
+        h("b", { class: "mark" }, RES[g.res] || "−"),
+        h("span", { class: "rnd" }, g.round),
+        h("span", { class: "sc num" }, `${g.gf}-${g.ga}`, g.pk ? h("small", {}, `PK ${g.pk}`) : null),
+        h("span", { class: "opp" }, nm(g.opp)),
+        h("span", { class: "dt num small muted" }, g.date || "")),
+      h("div", { class: "gr small" },
+        g.thenMe != null
+          ? h("span", {}, "当時 ", h("b", { class: "num" }, g.thenMe), " − ", h("b", { class: "num" }, g.thenOpp),
+              g.thenProb != null ? h("span", { class: "muted" }, `（勝つ見込み ${pct(g.thenProb)}）`) : null)
+          : null,
+        h("span", { class: "now" }, "現在 ", h("b", { class: "num" }, g.nowMe), " − ", h("b", { class: "num" }, g.nowOpp),
+          shift != null && Math.abs(shift) >= 50
+            ? h("span", { class: "shift " + (shift > 0 ? "up" : "down") }, `相手 ${shift > 0 ? "+" : ""}${shift}`)
+            : null),
+        grew
+          ? h("span", { class: "grew-note" }, `${nm(g.opp)}はこの試合のあと${shift}点上げ、いまは武蔵丘より`
+              + (g.nowOpp > g.nowMe ? `${g.nowOpp - g.nowMe}点上にいる` : "下にいる"))
+          : null,
+        g.oppLeagueGames <= 2
+          ? h("span", { class: "thin-note" }, `※${nm(g.opp)}のリーグ戦は${g.oppLeagueGames}試合しか記録が無く、点数が動きにくい`)
+          : null));
+  };
+
+  const tour = (t) => {
+    const r = t.record, w = r["勝"] + r["PK勝"], l = r["負"] + r["PK負"];
+    return h("section", { class: "tour" },
+      h("div", { class: "th" },
+        h("b", { class: "num yr" }, t.year),
+        h("span", { class: "sr" }, t.series),
+        h("span", { class: "small muted" }, t.stage),
+        h("span", { class: "rec num" }, `${w}勝${l}敗`),
+        h("span", { class: "reach" }, t.reach)),
+      h("ul", { class: "glist" }, t.games.map(game)));
+  };
+
+  return h("section", { class: "sec", id: "squad" },
+    h("div", { class: "sec-head" }, h("h2", {}, "3年間の全19試合"),
+      h("p", {}, `${S.years[0]}〜${S.years[S.years.length - 1]}年度 ${S.tournaments.length}大会`)),
+    h("p", { class: "prose" }, "点数は2つ並べています。左が試合の時点、右がいまの値です。"
+      + "試合のときは下だった相手が、その後に上へ行くことがあります。片方だけでは相手の力を読み違えます。"),
+    h("div", { class: "tours" }, S.tournaments.map(tour)));
 }

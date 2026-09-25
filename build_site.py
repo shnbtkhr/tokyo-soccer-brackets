@@ -194,6 +194,7 @@ def build(links: str) -> Path:
     data = build_data("武蔵丘", ROOT / "scout/sen2026_block10.json")
     FINAL = json.loads((ROOT / "scout/final_2026.json").read_text(encoding="utf-8"))
     UPSETS = json.loads((ROOT / "out/scout/upsets_2026.json").read_text(encoding="utf-8"))
+    SQUAD = json.loads((ROOT / "out/scout/squad_2026.json").read_text(encoding="utf-8"))
     me = data["me"]
     T = data["teams"]
     block = data["block"]
@@ -312,7 +313,7 @@ def build(links: str) -> Path:
         "nTeamsRated": data["nTeamsRated"], "styleNone": data["styleNone"],
         "totalMatches": total, "ratedMatches": rated, "firstYear": first_year,
         "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
-        "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"],
+        "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"], "squad": SQUAD,
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
     js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")
