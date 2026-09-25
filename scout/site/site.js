@@ -1148,7 +1148,10 @@ function squadSection() {
               + (g.nowOpp > g.nowMe ? `${g.nowOpp - g.nowMe}点上にいる` : "下にいる"))
           : null,
         g.oppLeagueGames <= 2
-          ? h("span", { class: "thin-note" }, `※${nm(g.opp)}のリーグ戦は${g.oppLeagueGames}試合しか記録が無く、点数が動きにくい`)
+          ? h("span", { class: "thin-note" },
+              `※${nm(g.opp)}のリーグ戦は${g.oppLeagueGames}試合しか記録が無く、点数が動きにくい`,
+              (D.squad.coverageByDistrict || {})[g.oppDistrict]
+                ? `（第${g.oppDistrict}地区は${D.squad.coverageByDistrict[g.oppDistrict]}）` : "")
           : null));
   };
 
@@ -1169,5 +1172,9 @@ function squadSection() {
       h("p", {}, `${S.years[0]}〜${S.years[S.years.length - 1]}年度 ${S.tournaments.length}大会`)),
     h("p", { class: "prose" }, "点数は2つ並べています。左が試合の時点、右がいまの値です。"
       + "試合のときは下だった相手が、その後に上へ行くことがあります。片方だけでは相手の力を読み違えます。"),
+    h("p", { class: "prose small muted" }, "点数は大会の結果にリーグ戦を足して計算しています。"
+      + "ただしリーグ戦の記録がどれだけ残っているかは地区によって差があり、"
+      + "1校あたり19試合（第7地区）から69試合（第5地区）まで開きがあります。"
+      + "記録の少ない学校は点数が動きにくく、実力より低く出ることがあります。該当する相手には試合ごとに断りを入れました。"),
     h("div", { class: "tours" }, S.tournaments.map(tour)));
 }

@@ -24,6 +24,10 @@ SERIES_ORDER = {"総体": 0, "選手権": 1, "新人戦": 2}
 def main() -> int:
     rows = load_matches()
     elo, hist, n_games = compute_elo(rows)
+    # 地区ごとにリーグ戦の取れ高が違う。理由まで誌面に書けるよう、相手の地区を持たせる
+    ap = ROOT / "out/scout/member_areas.json"
+    raw = json.loads(ap.read_text(encoding="utf-8")) if ap.exists() else {}
+    areas = {k: (v.get("area") if isinstance(v, dict) else None) for k, v in raw.items()} if isinstance(raw, dict) else {}
 
     # 大会だけの試合数とリーグ戦の試合数を分ける（点数の動きやすさの目安として誌面に出す）
     tour = defaultdict(int)
@@ -66,6 +70,7 @@ def main() -> int:
             "nowMe": round(elo.get(ME, 1500)), "nowOpp": round(elo.get(opp, 1500)),
             "oppTournamentGames": tour.get(opp, 0),
             "oppLeagueGames": max(0, n_games.get(opp, 0) - tour.get(opp, 0)),
+            "oppDistrict": areas.get(opp),
             "src": r.get("出典PDF") or "",
         })
         if my_e is not None and op_e is not None:
@@ -88,8 +93,20 @@ def main() -> int:
         t["ga"] = sum(g["ga"] for g in gs)
         t["reach"] = gs[-1]["round"] + ("" if gs[-1]["res"] in ("勝", "PK勝") else " 敗退")
 
+    # 地区ごとの取れ高の事情。data/leagues/coverage.md の要約を誌面向けに1行で
+    coverage = {
+        1: "2025年度の記録が公式サイトに残っていない",
+        2: "2024〜2026年度は取れている",
+        3: "2025年度は最終順位だけで、試合ごとの結果が公開されていない",
+        4: "地区をまとめたページが無く、年度によって取れ方が違う",
+        5: "早大学院が公開している星取表が2008年度から残っており、8地区で最も厚い",
+        6: "2024・2025年度の地区をまとめた結果ページが見つかっていない",
+        7: "2024・2025年度は最終順位だけで、試合ごとの結果が載っていない",
+        8: "結果ページの多くが JavaScript で描かれており、本文を取れていない",
+    }
     out = {
         "me": ME, "years": list(YEARS), "nGames": len(games),
+        "coverageByDistrict": coverage,
         "tournaments": tours,
         "eloHistory": hist.get(ME, {}),
         "myTournamentGames": tour.get(ME, 0),
