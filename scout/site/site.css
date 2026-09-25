@@ -615,3 +615,7 @@ details.dist > summary { min-height: 40px; border-bottom: 1px solid var(--rule);
 /* 年鑑の表紙（英字は各ページ最上部に1度だけ） */
 .masthead .eyebrow { letter-spacing: .18em; }
 .sub-title { margin-top: -2px; }
+
+/* 付録（巻末のスカウティング記録） */
+.sec.appendix { border-top: 2px solid var(--ink); padding-top: var(--s4); }
+.sec.appendix > .sec-head h2 { font-size: var(--t1); }

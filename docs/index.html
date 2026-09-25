@@ -623,6 +623,10 @@ details.dist > summary { min-height: 40px; border-bottom: 1px solid var(--rule);
 .masthead .eyebrow { letter-spacing: .18em; }
 .sub-title { margin-top: -2px; }
 
+/* 付録（巻末のスカウティング記録） */
+.sec.appendix { border-top: 2px solid var(--ink); padding-top: var(--s4); }
+.sec.appendix > .sec-head h2 { font-size: var(--t1); }
+
 </style>
 <main class="page" id="app"></main>
 <script>
@@ -1175,17 +1179,24 @@ function renderTeam() {
   }
   const rv = reviewSection(k);
   if (rv) main.append(rv);
-  if (k === "城東") {
-    const pm = postmortemSection();
-    if (pm) main.append(pm);
-    main.append(...planSections({ myths: true, style: true, clock: true, keys: true, risks: true, conditions: true }));
-  }
+  // 答え合わせは本編に。戦前に書いた分析は資料なので巻末に畳む
+  const pm = k === "城東" ? postmortemSection() : null;
+  if (pm) main.append(pm);
   main.append(scout, leagueSection(t, false));
   main.append(h("section", { class: "sec" }, h("div", { class: "figure" },
     h("div", { class: "cap" }, h("h2", {}, "強さの点数の推移"), h("div", { class: "legend" }, h("span", {}, h("i", { style: "border-color:var(--us)" }), nameOf(D.me)), h("span", {}, h("i", { class: "dash", style: "border-color:var(--them)" }), t.display))),
     eloChart([{ name: nameOf(D.me), hist: D.meHistory, color: "var(--us)" }, { name: t.display, hist: t.eloHistory, color: "var(--them)", dash: true }]),
     h("p", { class: "small muted" }, "各年度の終わりの点数。部員が入れ替わるので、年度が変わるたびに平均へ少し戻して計算しています。"))));
   main.append(stagesSection(t), gamesSection(t));
+  if (k === "城東") {
+    const plan = planSections({ myths: true, style: true, clock: true, keys: true, risks: true, conditions: true });
+    main.append(h("section", { class: "sec appendix", id: "appendix" },
+      h("div", { class: "sec-head" }, h("h2", {}, "付  スカウティング記録"), h("p", {}, "試合の前に書いたもの")),
+      h("p", { class: "prose small muted" }, "ブロック決勝の前に、城東をどう読んでいたかの記録です。"
+        + "結果は上の答え合わせのとおりで、勝ち筋7つは当たりませんでした。外れた読みも残してあります。"),
+      h("details", { class: "more" }, h("summary", {}, `戦前の分析を開く（${plan.length}項目）`),
+        h("div", { class: "body" }, plan))));
+  }
 
   const side = h("aside", { class: "stack side" });
   const cmp = h("div", { class: "card" }, h("h2", {}, "武蔵丘との比較"));
@@ -1828,10 +1839,11 @@ function renderIndexBook() {
     h("p", { class: "lead small muted" }, "点数は大会の結果にリーグ戦を足したもの。リーグ戦の記録がどれだけ残っているかは地区で差があり、"
       + "記録の少ない学校は点数が動きにくく、実力より低く出ることがあります。試合数の内訳を各校に出しました。")));
 
-  const row = (s, showRank) => {
+  const numbered = (list) => list.map((s, i) => Object.assign({}, s, { __n: i + 1 }));
+  const row = (s) => {
     const thin = s.leagueGames <= 2;
     return h("li", { class: s.key === me ? "me" : null },
-      h("b", { class: "rk num" }, showRank ? s.districtRank || "" : s.eloRank || ""),
+      h("b", { class: "rk num" }, s.__n || ""),
       h("span", { class: "nm" }, nm(s.display), s.key === me ? h("span", { class: "tag first me" }, "自校") : null),
       h("b", { class: "el num" }, s.elo),
       h("span", { class: "gm num small muted" }, `大会${s.tournamentGames}・リーグ${s.leagueGames}`,
@@ -1849,7 +1861,7 @@ function renderIndexBook() {
   const mine = byD[X.myDistrict] || [];
   main.append(h("section", { class: "sec", id: "d-me" },
     h("div", { class: "sec-head" }, h("h2", {}, `第${X.myDistrict}地区`), h("p", {}, `${mine.length}校・点数の高い順`)),
-    h("ul", { class: "book" }, head, mine.map((s) => row(s, true)))));
+    h("ul", { class: "book" }, head, numbered(mine).map(row))));
 
   const others = Object.keys(byD).filter((k) => String(k) !== String(X.myDistrict))
     .sort((a, b) => (a === "?" ? 9 : +a) - (b === "?" ? 9 : +b));
@@ -1857,13 +1869,13 @@ function renderIndexBook() {
     h("div", { class: "sec-head" }, h("h2", {}, "ほかの地区"), h("p", {}, "見出しを押すと開きます")),
     ...others.map((k) => h("details", { class: "more dist" },
       h("summary", {}, k === "?" ? "地区が分かっていない学校" : `第${k}地区`, h("small", { class: "muted" }, ` ${byD[k].length}校`)),
-      h("div", { class: "body" }, h("ul", { class: "book" }, head, byD[k].map((s) => row(s, false))))))));
+      h("div", { class: "body" }, h("ul", { class: "book" }, head, numbered(byD[k]).map(row)))))));
 
   main.append(h("section", { class: "sec" },
     h("div", { class: "sec-head" }, h("h2", {}, "点数の高い順"), h("p", {}, `全${X.nSchools}校`)),
     h("details", { class: "more" }, h("summary", {}, "全校を点数の順に見る"),
       h("div", { class: "body" }, h("ul", { class: "book" }, head,
-        X.schools.slice().sort((a, b) => b.elo - a.elo).map((s) => row(s, false)))))));
+        numbered(X.schools.slice().sort((a, b) => b.elo - a.elo)).map(row))))));
 
   const side = h("aside", { class: "stack side" },
     h("div", { class: "card" }, h("h2", {}, "この名鑑の見方"),
@@ -1871,7 +1883,8 @@ function renderIndexBook() {
         h("li", {}, "点数は全校を同じ物差しで並べたもの。大会の結果にリーグ戦を足して計算している"),
         h("li", {}, h("b", {}, "▲"), " が付く学校は、リーグ戦の記録が2試合以下。点数が動きにくく、実力より低く出ることがある"),
         h("li", {}, "「大会◯・リーグ◯」は記録が残っている試合数。点数の計算に使えた数とは一致しない（日付の無いリーグ戦は時系列に置けないため）"),
-        h("li", {}, "「武蔵丘と」は2004年度以降の対戦成績"))));
+        h("li", {}, "「武蔵丘と」は2004年度以降の対戦成績"),
+        h("li", {}, "左端の番号は、その表の中で点数の高い順に振ったもの。東京都全体での順位ではない"))));
   root.append(h("div", { class: "split" }, main, side));
 }
 
