@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>武蔵丘 の歩み｜東京都高校サッカー</title>
+<title>武蔵丘の歩み｜都立武蔵丘高校サッカー部 年鑑</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
@@ -566,6 +566,73 @@ figure.bracket-img { margin: 0; display: grid; gap: var(--s2); }
 figure.bracket-img img { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--rule); border-radius: var(--r); }
 figure.bracket-img a { display: block; }
 
+/* 3年間の全試合 */
+.tours { display: grid; gap: var(--s5); }
+.tour .th { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; padding-bottom: var(--s2); border-bottom: 2px solid var(--ink); margin-bottom: var(--s3); }
+.tour .th .yr { font-size: var(--t2); font-weight: 700; }
+.tour .th .sr { font-size: var(--t1); font-weight: 700; }
+.tour .th .rec { margin-left: auto; font-weight: 600; }
+.tour .th .reach { font-size: var(--t-1); color: var(--muted); }
+ul.glist { margin: 0; padding: 0; list-style: none; display: grid; }
+ul.glist li { display: grid; gap: 3px; padding: var(--s3) 0; border-bottom: 1px solid var(--rule); }
+ul.glist li:last-child { border-bottom: 0; }
+.gl { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; }
+.gl .mark { font-size: var(--t1); width: 1.2em; text-align: center; }
+ul.glist li.w .mark { color: var(--us); }
+ul.glist li.l .mark { color: var(--muted); }
+.gl .rnd { font-size: var(--t-1); color: var(--muted); min-width: 6em; }
+.gl .sc { font-size: var(--t2); font-weight: 600; letter-spacing: .02em; }
+.gl .sc small { font-size: 11px; font-weight: 500; color: var(--muted); margin-left: 5px; }
+.gl .opp { font-size: var(--t1); font-weight: 700; }
+.gl .dt { margin-left: auto; }
+.gr { display: flex; gap: var(--s4); flex-wrap: wrap; color: var(--ink-2); padding-left: calc(1.2em + var(--s3)); }
+.gr .now b { color: var(--ink); }
+.shift { margin-left: 6px; font-weight: 600; }
+.shift.up { color: var(--them); }
+.shift.down { color: var(--muted); }
+.thin-note { color: var(--muted); font-size: 11.5px; }
+@media (max-width: 560px) {
+  .gl .rnd { min-width: 0; }
+  .gl .dt { margin-left: 0; }
+  .gr { padding-left: 0; gap: var(--s2); }
+}
+ul.glist li.grew { background: var(--them-soft); margin-inline: calc(var(--s3) * -1); padding-inline: var(--s3); border-radius: var(--r); }
+.grew-note { color: var(--link); font-weight: 600; }
+
+/* 対戦校名鑑 */
+ul.book { margin: 0; padding: 0; list-style: none; display: grid; }
+ul.book li { display: grid; grid-template-columns: 2.6em minmax(0, 1fr) 4em 10em minmax(0, 8em) minmax(0, 9em);
+  gap: var(--s3); align-items: baseline; padding: var(--s2) 0; border-bottom: 1px solid var(--rule); }
+ul.book li.hd { border-bottom: 2px solid var(--ink); padding-bottom: var(--s1); font-size: 11px; letter-spacing: .06em; }
+ul.book li.me { background: var(--us-soft); margin-inline: calc(var(--s2) * -1); padding-inline: var(--s2); }
+ul.book .rk { color: var(--muted); text-align: right; }
+ul.book li.me .rk { color: var(--us); }
+ul.book .nm { font-weight: 700; }
+ul.book .el { font-weight: 600; }
+ul.book li.me .el { color: var(--us); }
+.thin-mark { color: var(--win); margin-left: 4px; }
+details.dist { border-top: 0; padding-top: 0; }
+details.dist > summary { min-height: 40px; border-bottom: 1px solid var(--rule); }
+@media (max-width: 900px) {
+  ul.book li { grid-template-columns: 2.4em minmax(0, 1fr) 4em; row-gap: 2px; }
+  ul.book li > .gm, ul.book li > .bs, ul.book li > .vs { grid-column: 2 / -1; }
+  ul.book li.hd > .gm, ul.book li.hd > .bs, ul.book li.hd > .vs { display: none; }
+}
+
+/* 年鑑の表紙（英字は各ページ最上部に1度だけ） */
+.masthead .eyebrow { letter-spacing: .18em; }
+.sub-title { margin-top: -2px; }
+
+/* 付録（巻末のスカウティング記録） */
+.sec.appendix { border-top: 2px solid var(--ink); padding-top: var(--s4); }
+.sec.appendix > .sec-head h2 { font-size: var(--t1); }
+
+/* 歩みのページ（左パネルを持たないので、上部にページ一覧を出す） */
+nav.hist-nav { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); padding-bottom: var(--s3); margin-bottom: var(--s4); border-bottom: 1px solid var(--rule); font-size: 13.5px; }
+nav.hist-nav a { color: var(--link); text-decoration: none; }
+nav.hist-nav a:hover { text-decoration: underline; }
+nav.hist-nav b { color: var(--ink); }
+
 /* 歩みのページだけで使う部品 */
 .yr > summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; }
 .yr > summary::-webkit-details-marker { display: none; }
@@ -592,26 +659,26 @@ svg.chart .dot { fill: var(--us); stroke: var(--surface); stroke-width: 2; }
 svg.chart .mid { stroke: var(--rule-strong); stroke-width: 1; stroke-dasharray: 4 4; }
 
 </style>
-<main class="page" id="app"><div class="crumb"><a href="index.html">武蔵丘スカウト</a><span>›</span><span>武蔵丘 の歩み</span></div>
+<main class="page" id="app"><nav class="hist-nav" aria-label="ページ"><a href="index.html">2026年度の記録</a><a href="musashigaoka.html">武蔵丘の記録</a><a href="showa-daiichi.html">1回戦 昭和第一戦</a><a href="gakushuin.html">2回戦 学習院戦</a><a href="joto.html">ブロック決勝 城東戦</a><a href="seeds.html">2次予選 都大会</a><a href="book.html">対戦校名鑑</a><b>武蔵丘の歩み</b></nav>
 
 <header class="masthead">
   <span class="eyebrow">History 2004–2026</span>
-  <div class="title-row"><h1><span class="us">武蔵丘</span> の歩み</h1></div>
-  <p class="lead">2004年度から2026年度までの公式戦 204 試合。選手権・総体・新人戦・関東大会の
-  東京都予選（トーナメント 107 試合）と、地区トップリーグ・NSリーグなどのリーグ戦（97 試合）を
+  <div class="title-row"><h1><span class="us">武蔵丘</span>の歩み</h1></div>
+  <p class="lead">2004年度から2026年度までの公式戦 205 試合。選手権・総体・新人戦・関東大会の
+  東京都予選（トーナメント 107 試合）と、地区トップリーグ・NSリーグなどのリーグ戦（98 試合）を
   1本の年表にまとめました。</p>
 </header>
 
-<div class="kpis"><div class="kpi"><span class="k">公式戦</span><span class="v num">204<small>試合</small></span><span class="note">トーナメント 107・リーグ戦 97</span></div><div class="kpi"><span class="k">勝敗</span><span class="v num"><span class="us">89</span><small>勝</small> 29<small>分</small> 76<small>敗</small></span><span class="note">勝率 46%・結果の分からない試合が 10</span></div><div class="kpi"><span class="k">得失点</span><span class="v num">435<small> - 332</small></span><span class="note">差 +103</span></div><div class="kpi"><span class="k">いまの強さの点数</span><span class="v num">1688</span><span class="note">東京 538 校のうち 104 位</span></div></div>
+<div class="kpis"><div class="kpi"><span class="k">公式戦</span><span class="v num">205<small>試合</small></span><span class="note">トーナメント 107・リーグ戦 98</span></div><div class="kpi"><span class="k">勝敗</span><span class="v num"><span class="us">89</span><small>勝</small> 29<small>分</small> 77<small>敗</small></span><span class="note">勝率 46%・結果の分からない試合が 10</span></div><div class="kpi"><span class="k">得失点</span><span class="v num">436<small> - 336</small></span><span class="note">差 +100</span></div><div class="kpi"><span class="k">いまの強さの点数</span><span class="v num">1684</span><span class="note">東京 538 校のうち 104 位</span></div></div>
 
 <section class="stack">
   <div class="sec-head"><h2>歩みの要点</h2><p>このページの表と図から言えること</p></div>
-  <div class="card points"><div><h3>都大会に届いた年</h3><p>一次予選を勝ち抜いて二次予選（都大会）に進んだのは 2017・2020 年度の 2 回。東京は一次予選が支部・地区ごとのトーナメントで、そこを抜けた学校だけが都大会に進む。</p></div><div><h3>所属リーグの移り変わり</h3><p>2008〜2012年度 NSリーグ1部 → 2016年度 NSリーグ2部D → 2018年度 NSリーグ2部B → 2021〜2024年度 NSリーグ1部 → 2025〜2026年度 NSリーグ2部A。星取表が残っている年だけなので、間の年が抜けているところがある。</p></div><div><h3>点数がいちばん高かった年</h3><p>2019年度の 1795。いちばん低かったのは 2014年度の 1446 で、その差は 349。直近は 2026年度の 1688。この点数はトーナメントの結果だけから計算していて、リーグ戦は入れていない。</p></div><div><h3>3回以上あたった相手との分</h3><p>勝ち越しているのは 杉並総合（4勝0敗）、杉並FC（4勝0敗）、富士（3勝0敗）。負け越しているのは 日大鶴ヶ丘（0勝7敗）、専大附属A（0勝4敗）、佼成学園（0勝3敗）。</p></div><div><h3>記録のある最初の5年度と直近の5年度</h3><p>2004・2008・2009・2010・2011年度は 34 試合で 14 勝（勝率 41%）、2022・2023・2024・2025・2026年度は 71 試合で 31 勝（勝率 44%）。ただし古い年はスコアの読めない試合があり、母数がそろっていない。</p></div></div>
+  <div class="card points"><div><h3>都大会に届いた年</h3><p>一次予選を勝ち抜いて二次予選（都大会）に進んだのは 2017・2020 年度の 2 回。東京は一次予選が支部・地区ごとのトーナメントで、そこを抜けた学校だけが都大会に進む。</p></div><div><h3>所属リーグの移り変わり</h3><p>2008〜2012年度 NSリーグ1部 → 2016年度 NSリーグ2部D → 2018年度 NSリーグ2部B → 2021〜2024年度 NSリーグ1部 → 2025〜2026年度 NSリーグ2部A。星取表が残っている年だけなので、間の年が抜けているところがある。</p></div><div><h3>点数がいちばん高かった年</h3><p>2019年度の 1795。いちばん低かったのは 2014年度の 1446 で、その差は 349。直近は 2026年度の 1684。この点数はトーナメントの結果だけから計算していて、リーグ戦は入れていない。</p></div><div><h3>3回以上あたった相手との分</h3><p>勝ち越しているのは 杉並総合（4勝0敗）、杉並FC（4勝0敗）、富士（3勝0敗）。負け越しているのは 日大鶴ヶ丘（0勝7敗）、専大附属A（0勝4敗）、佼成学園（0勝3敗）。</p></div><div><h3>記録のある最初の5年度と直近の5年度</h3><p>2004・2008・2009・2010・2011年度は 34 試合で 14 勝（勝率 41%）、2022・2023・2024・2025・2026年度は 72 試合で 31 勝（勝率 43%）。ただし古い年はスコアの読めない試合があり、母数がそろっていない。</p></div></div>
 </section>
 
 <section class="stack">
   <div class="sec-head"><h2>強さの点数の移り変わり</h2><p>年度末の時点・2011年度から</p></div>
-  <div class="card"><svg class="chart" viewBox="0 0 880 230" role="img" aria-label="2011年度から2026年度までの強さの点数の推移"><g class="grid"><line x1="48" x2="862" y1="196.0" y2="196.0"/><line x1="48" x2="862" y1="136.0" y2="136.0"/><line x1="48" x2="862" y1="76.0" y2="76.0"/><line x1="48" x2="862" y1="16.0" y2="16.0"/></g><text x="40" y="200.0" text-anchor="end">1401</text><text x="40" y="140.0" text-anchor="end">1547</text><text x="40" y="80.0" text-anchor="end">1694</text><text x="40" y="20.0" text-anchor="end">1840</text><line class="mid" x1="48" x2="862" y1="155.4" y2="155.4"/><text x="862" y="148.4" text-anchor="end">東京の平均 1500</text><path class="elo" d="M48.0 146.0 L102.3 161.1 L156.5 149.7 L210.8 177.5 L265.1 119.7 L319.3 142.7 L373.6 121.4 L427.9 76.7 L482.1 34.5 L536.4 86.1 L590.7 37.3 L644.9 96.0 L699.2 91.4 L753.5 57.4 L807.7 109.1 L862.0 78.3"/><circle class="dot" cx="48.0" cy="146.0" r="3.5"><title>2011年度 1523</title></circle><circle class="dot" cx="102.3" cy="161.1" r="3.5"><title>2012年度 1486</title></circle><circle class="dot" cx="156.5" cy="149.7" r="3.5"><title>2013年度 1514</title></circle><circle class="dot" cx="210.8" cy="177.5" r="3.5"><title>2014年度 1446</title></circle><circle class="dot" cx="265.1" cy="119.7" r="3.5"><title>2015年度 1587</title></circle><circle class="dot" cx="319.3" cy="142.7" r="3.5"><title>2016年度 1531</title></circle><circle class="dot" cx="373.6" cy="121.4" r="3.5"><title>2017年度 1583</title></circle><circle class="dot" cx="427.9" cy="76.7" r="3.5"><title>2018年度 1692</title></circle><circle class="dot" cx="482.1" cy="34.5" r="3.5"><title>2019年度 1795</title></circle><circle class="dot" cx="536.4" cy="86.1" r="3.5"><title>2020年度 1669</title></circle><circle class="dot" cx="590.7" cy="37.3" r="3.5"><title>2021年度 1788</title></circle><circle class="dot" cx="644.9" cy="96.0" r="3.5"><title>2022年度 1645</title></circle><circle class="dot" cx="699.2" cy="91.4" r="3.5"><title>2023年度 1656</title></circle><circle class="dot" cx="753.5" cy="57.4" r="3.5"><title>2024年度 1739</title></circle><circle class="dot" cx="807.7" cy="109.1" r="3.5"><title>2025年度 1613</title></circle><circle class="dot" cx="862.0" cy="78.3" r="3.5"><title>2026年度 1688</title></circle><text x="48.0" y="222" text-anchor="middle">2011</text><text x="156.5" y="222" text-anchor="middle">2013</text><text x="265.1" y="222" text-anchor="middle">2015</text><text x="373.6" y="222" text-anchor="middle">2017</text><text x="482.1" y="222" text-anchor="middle">2019</text><text x="590.7" y="222" text-anchor="middle">2021</text><text x="699.2" y="222" text-anchor="middle">2023</text><text x="807.7" y="222" text-anchor="middle">2025</text><text x="862.0" y="222" text-anchor="middle">2026</text></svg>
+  <div class="card"><svg class="chart" viewBox="0 0 880 230" role="img" aria-label="2011年度から2026年度までの強さの点数の推移"><g class="grid"><line x1="48" x2="862" y1="196.0" y2="196.0"/><line x1="48" x2="862" y1="136.0" y2="136.0"/><line x1="48" x2="862" y1="76.0" y2="76.0"/><line x1="48" x2="862" y1="16.0" y2="16.0"/></g><text x="40" y="200.0" text-anchor="end">1401</text><text x="40" y="140.0" text-anchor="end">1547</text><text x="40" y="80.0" text-anchor="end">1694</text><text x="40" y="20.0" text-anchor="end">1840</text><line class="mid" x1="48" x2="862" y1="155.4" y2="155.4"/><text x="862" y="148.4" text-anchor="end">東京の平均 1500</text><path class="elo" d="M48.0 146.0 L102.3 161.1 L156.5 149.7 L210.8 177.5 L265.1 119.7 L319.3 142.7 L373.6 121.4 L427.9 76.7 L482.1 34.5 L536.4 86.1 L590.7 37.3 L644.9 96.0 L699.2 91.4 L753.5 64.4 L807.7 111.9 L862.0 80.0"/><circle class="dot" cx="48.0" cy="146.0" r="3.5"><title>2011年度 1523</title></circle><circle class="dot" cx="102.3" cy="161.1" r="3.5"><title>2012年度 1486</title></circle><circle class="dot" cx="156.5" cy="149.7" r="3.5"><title>2013年度 1514</title></circle><circle class="dot" cx="210.8" cy="177.5" r="3.5"><title>2014年度 1446</title></circle><circle class="dot" cx="265.1" cy="119.7" r="3.5"><title>2015年度 1587</title></circle><circle class="dot" cx="319.3" cy="142.7" r="3.5"><title>2016年度 1531</title></circle><circle class="dot" cx="373.6" cy="121.4" r="3.5"><title>2017年度 1583</title></circle><circle class="dot" cx="427.9" cy="76.7" r="3.5"><title>2018年度 1692</title></circle><circle class="dot" cx="482.1" cy="34.5" r="3.5"><title>2019年度 1795</title></circle><circle class="dot" cx="536.4" cy="86.1" r="3.5"><title>2020年度 1669</title></circle><circle class="dot" cx="590.7" cy="37.3" r="3.5"><title>2021年度 1788</title></circle><circle class="dot" cx="644.9" cy="96.0" r="3.5"><title>2022年度 1645</title></circle><circle class="dot" cx="699.2" cy="91.4" r="3.5"><title>2023年度 1656</title></circle><circle class="dot" cx="753.5" cy="64.4" r="3.5"><title>2024年度 1722</title></circle><circle class="dot" cx="807.7" cy="111.9" r="3.5"><title>2025年度 1606</title></circle><circle class="dot" cx="862.0" cy="80.0" r="3.5"><title>2026年度 1684</title></circle><text x="48.0" y="222" text-anchor="middle">2011</text><text x="156.5" y="222" text-anchor="middle">2013</text><text x="265.1" y="222" text-anchor="middle">2015</text><text x="373.6" y="222" text-anchor="middle">2017</text><text x="482.1" y="222" text-anchor="middle">2019</text><text x="590.7" y="222" text-anchor="middle">2021</text><text x="699.2" y="222" text-anchor="middle">2023</text><text x="807.7" y="222" text-anchor="middle">2025</text><text x="862.0" y="222" text-anchor="middle">2026</text></svg>
     <p class="small muted">勝てば上がり、負ければ下がる点数（Elo）。1500 が東京全体の平均で、格上に勝つほど大きく上がります。
     学年が入れ替わるたびに少しだけ平均へ戻しているので、卒業と入学をまたいだ変化もなだらかに出ます。
     東京全体を同じ物差しで並べるため、計算に使うのはトーナメントの結果だけで、リーグ戦は入れていません。</p></div>
@@ -621,14 +688,14 @@ svg.chart .mid { stroke: var(--rule-strong); stroke-width: 1; stroke-dasharray: 
   <div class="sec-head"><h2>大会・リーグ別の成績</h2><p>2004年度からの通算</p></div>
   <div class="hist-grid">
     <div class="tbl"><table><thead><tr><th>大会</th><th class="n">試合</th><th class="n">勝</th><th class="n">分</th><th class="n">敗</th><th class="n">勝率</th></tr></thead>
-    <tbody><tr><td>選手権</td><td class="n">44</td><td class="n">21</td><td class="n">7</td><td class="n">12</td><td class="n">52%</td></tr><tr><td>総体</td><td class="n">32</td><td class="n">15</td><td class="n">6</td><td class="n">10</td><td class="n">48%</td></tr><tr><td>新人戦</td><td class="n">30</td><td class="n">13</td><td class="n">4</td><td class="n">9</td><td class="n">50%</td></tr><tr><td>関東</td><td class="n">1</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">—</td></tr><tr class="lg"><td>NSリーグ</td><td class="n">97</td><td class="n">40</td><td class="n">12</td><td class="n">45</td><td class="n">41%</td></tr></tbody></table></div>
+    <tbody><tr><td>選手権</td><td class="n">44</td><td class="n">21</td><td class="n">7</td><td class="n">12</td><td class="n">52%</td></tr><tr><td>総体</td><td class="n">32</td><td class="n">15</td><td class="n">6</td><td class="n">10</td><td class="n">48%</td></tr><tr><td>新人戦</td><td class="n">30</td><td class="n">13</td><td class="n">4</td><td class="n">9</td><td class="n">50%</td></tr><tr><td>関東</td><td class="n">1</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">—</td></tr><tr class="lg"><td>NSリーグ</td><td class="n">98</td><td class="n">40</td><td class="n">12</td><td class="n">46</td><td class="n">41%</td></tr></tbody></table></div>
     <div class="card"><p><span class="eyebrow">いちばん大きな勝ち</span><br><b class="num">16-0</b> 光丘A <span class="muted small">2023年度 NSリーグ 1部</span></p><p><span class="eyebrow">いちばん大きな負け</span><br><b class="num">0-9</b> 早大学院B <span class="muted small">2022年度 NSリーグ 1部</span></p>
-      <p class="small muted">得失点差がいちばん開いた試合。スコアの読み取れた 194 試合から選んでいます。</p></div>
+      <p class="small muted">得失点差がいちばん開いた試合。スコアの読み取れた 195 試合から選んでいます。</p></div>
   </div>
 </section>
 
 <section class="stack">
-  <div class="sec-head"><h2>年度ごとの歩み</h2><p>年度をひらくと全試合が出ます</p></div>
+  <div class="sec-head"><h2>年度ごとの記録</h2><p>年度を開くと全試合が出ます</p></div>
   <p class="legend"><span><b style="background:var(--us)"></b>勝ち</span><span><b style="background:var(--rule-strong)"></b>引き分け</span>
   <span><b style="background:var(--sunk);box-shadow:inset 0 0 0 1px var(--rule)"></b>負け</span><span><b style="background:var(--rule)"></b>結果なし</span>
   <span style="margin-left:auto">左に●が付く行はリーグ戦</span></p>
@@ -642,9 +709,9 @@ svg.chart .mid { stroke: var(--rule-strong); stroke-width: 1; stroke-dasharray: 
 <div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
 <tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>八丈</td><td class="n">6-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>星槎国際八王子</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>目黒</td><td class="n">2-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 ブロック決勝</td><td>桜町</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 1回戦</td><td>大泉</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>佼成学園</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>杉並アヤックス</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>西A</td><td class="n">6-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>早大学院C</td><td class="n">1-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>日大鶴ヶ丘C</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>杉並アヤックスサッカークラブA</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>保谷B</td><td class="n">0-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>豊多摩B</td><td class="n">4-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>2部A</td><td>鷺宮B</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr></tbody></table></div></details><details class="card yr">
 <summary><span class="y">2024<span class="small muted"> 年度</span></span>
-<span class="r"><span class="bar" style="grid-template-columns:7fr 2fr 8fr" role="img" aria-label="7勝 2分 8敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">7勝 2分 8敗</span><span class="chip">新人戦 地区大会 準々決勝進出</span></span></summary>
+<span class="r"><span class="bar" style="grid-template-columns:7fr 2fr 9fr" role="img" aria-label="7勝 2分 9敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">7勝 2分 9敗</span><span class="chip">新人戦 地区大会 準々決勝進出</span></span></summary>
 <div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>
-<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>松原</td><td class="n">13-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>野津田</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>城北</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>成瀬</td><td class="n">4-3</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>駒場</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>学芸大国際</td><td class="n">3-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>中大杉並</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 準々決勝</td><td>日大鶴ヶ丘</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並ソシオA</td><td class="n">3-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大鶴ヶ丘B</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>中大杉並A</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>実践学園D</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>鷺宮A</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専大附属A</td><td class="n">1-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山E</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>豊多摩A</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
+<tbody><tr><td>選手権</td><td>一次予選 1回戦</td><td>松原</td><td class="n">13-0</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 2回戦</td><td>野津田</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>選手権</td><td>一次予選 ブロック決勝</td><td>城北</td><td class="n">0-1</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>総体</td><td>支部予選 1回戦</td><td>成瀬</td><td class="n">4-3</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>総体</td><td>支部予選 2回戦</td><td>駒場</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr><td>新人戦</td><td>地区大会 2回戦</td><td>学芸大国際</td><td class="n">3-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 3回戦</td><td>中大杉並</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr><td>新人戦</td><td>地区大会 準々決勝</td><td>日大鶴ヶ丘</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専大附属A</td><td class="n">1-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>早大学院B</td><td class="n">1-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>杉並ソシオA</td><td class="n">3-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>日大鶴ヶ丘B</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>中大杉並A</td><td class="n">2-1</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>実践学園D</td><td class="n">1-1</td><td><span class="res"><b class="g" aria-hidden="true">△</b>引き分け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>鷺宮A</td><td class="n">2-3</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>専修大附A</td><td class="n">1-4</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>国学院久我山E</td><td class="n">3-2</td><td><span class="res w"><b class="g" aria-hidden="true">○</b>勝ち</span></td></tr><tr class="lg"><td>NSリーグ</td><td>1部</td><td>豊多摩A</td><td class="n">0-2</td><td><span class="res l"><b class="g" aria-hidden="true">×</b>負け</span></td></tr></tbody></table></div></details><details class="card yr">
 <summary><span class="y">2023<span class="small muted"> 年度</span></span>
 <span class="r"><span class="bar" style="grid-template-columns:4fr 1fr 9fr" role="img" aria-label="4勝 1分 9敗"><i class="w"></i><i class="d"></i><i class="l"></i></span><span class="num">4勝 1分 9敗</span><span class="chip">新人戦 地区大会 3回戦進出</span></span></summary>
 <div class="tbl"><table><thead><tr><th>大会</th><th>段階</th><th>相手</th><th class="n">スコア</th><th>結果</th></tr></thead>

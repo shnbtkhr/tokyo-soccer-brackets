@@ -619,3 +619,9 @@ details.dist > summary { min-height: 40px; border-bottom: 1px solid var(--rule);
 /* 付録（巻末のスカウティング記録） */
 .sec.appendix { border-top: 2px solid var(--ink); padding-top: var(--s4); }
 .sec.appendix > .sec-head h2 { font-size: var(--t1); }
+
+/* 歩みのページ（左パネルを持たないので、上部にページ一覧を出す） */
+nav.hist-nav { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); padding-bottom: var(--s3); margin-bottom: var(--s4); border-bottom: 1px solid var(--rule); font-size: 13.5px; }
+nav.hist-nav a { color: var(--link); text-decoration: none; }
+nav.hist-nav a:hover { text-decoration: underline; }
+nav.hist-nav b { color: var(--ink); }

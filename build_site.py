@@ -27,7 +27,20 @@ from build_scout_page import build_data
 
 ROOT = Path(__file__).parent
 SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
-TITLE = {"index": "武蔵丘 選手権スカウティング", "musashigaoka": "武蔵丘 自己分析", "seeds": "2次予選 都大会トーナメント", "book": "対戦校名鑑"}
+# ページの呼び名はここだけで決める。タブ・左パネル・パンくずで同じ語を使うため、
+# ばらばらに書くと「武蔵丘 の歩み」「2004年からの歩み」のように同じページが別名になる
+SITE_NAME = "都立武蔵丘高校サッカー部 年鑑"
+PAGE_NAME = {
+    "index": "2026年度の記録",
+    "musashigaoka": "武蔵丘の記録",
+    "showa-daiichi": "1回戦 昭和第一戦",
+    "gakushuin": "2回戦 学習院戦",
+    "joto": "ブロック決勝 城東戦",
+    "seeds": "2次予選 都大会",
+    "book": "対戦校名鑑",
+    "history-musashigaoka": "武蔵丘の歩み",
+}
+TITLE = {k: f"{v}｜{SITE_NAME}" for k, v in PAGE_NAME.items()}
 
 
 def band_of(g: dict) -> str:
@@ -263,13 +276,13 @@ def build(links: str) -> Path:
     # 歩みのページは build_history.py が別に書き出す。ここでは行き先として繋ぐだけ
     hist = f"history-{SLUG[me]}"
     for k in opps:
-        TITLE[SLUG[k]] = f"{T[k]['display'].replace('都・', '')} スカウティング"
+        TITLE[SLUG[k]] = f"{PAGE_NAME.get(SLUG[k], T[k]['display'].replace('都・', ''))}｜{SITE_NAME}"
     def state(k: str) -> str:
         if not T[k]["alive"]:
             return f"{rounds[k][0]}・敗退"
         return f"{rounds[k][0]}" + ("の候補" if rounds[k][1] else "・次の相手" if k == nxt_opp_key else "")
 
-    titles = {"index": "ブロック全体", SLUG[me]: f"{T[me]['display']}（自チーム）", **{SLUG[k]: f"{T[k]['display']}（{state(k)}）" for k in opps}, "seeds": "2次予選 都大会", "book": "対戦校名鑑", hist: f"{T[me]['display']} の歩み"}
+    titles = {k: PAGE_NAME.get(k, k) for k in [*order, hist]}
 
     urls: dict = {}
     if links == "artifact":
@@ -289,17 +302,17 @@ def build(links: str) -> Path:
         return [{"slug": SLUG[k], "label": T[k]["display"].replace("都・", ""), "out": not T[k]["alive"]} for k in keys]
 
     keep = [k for k in opps]
+
+    def item(slug: str, **kw) -> dict:
+        return {"slug": slug, "label": PAGE_NAME.get(slug, slug), **kw}
+
+    # 左パネルは「記録 → 試合 → 資料」の3段。名前は PAGE_NAME から引くので、
+    # タブ名・パンくず・ツリーで同じ語になる
     nav = [
-        {"label": "", "items": [{"slug": "index", "label": "ブロック決勝"}, {"slug": "musashigaoka", "label": "武蔵丘", "cls": "me"}]},
-        {"label": nav_label("決勝", 208), "items": nav_items([k for k in fin if k in keep])},
-        {"label": nav_label("2回戦", 149), "items": nav_items([k for k in r2 if k in keep])},
-        {"label": nav_label("1回戦", r1_no), "items": nav_items([k for k in (r1,) if k in keep])},
-        {"label": "2次予選", "phase": 2, "items": [{"slug": "seeds", "label": "都大会 67校"}]},
-        {"label": "資料", "phase": 2, "items": [{"slug": "book", "label": "対戦校名鑑"}]},
-        # 歩みのページは別にビルドする。アーティファクト版はまだ公開URLが無いので、
-        # 行き先の無いリンクを出さないように項目ごと落とす
-        *([{"label": "記録", "items": [{"slug": hist, "label": "2004年からの歩み"}]}]
-          if links == "local" or hist in (urls if links == "artifact" else {}) else []),
+        {"label": "記録", "items": [item("index"), item(SLUG[me], cls="me"), item(hist)]},
+        {"label": "1次予選の3試合", "items": [
+            item(SLUG[k], out=not T[k]["alive"]) for k in (r1, *r2, *fin) if k in keep]},
+        {"label": "資料", "phase": 2, "items": [item("seeds"), item("book")]},
     ]
     # 収録している試合数と、点数の計算に実際に使えた試合数（結果の読めたもの）は別の数字。
     # 2004年度まで遡った結果、古い年は対戦だけ分かってスコアが無い試合が増えた

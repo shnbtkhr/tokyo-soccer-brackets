@@ -26,6 +26,19 @@ from build_outputs import normalize
 from leagues import for_school, load_all
 
 ROOT = Path(__file__).parent
+
+# ページの呼び名は build_site.py の PAGE_NAME と同じ語にする。
+# ここがずれると、同じページが2つの名前で呼ばれる
+PAGE_NAMES = [
+    ("index", "2026年度の記録"),
+    ("musashigaoka", "武蔵丘の記録"),
+    ("history-musashigaoka", "武蔵丘の歩み"),
+    ("showa-daiichi", "1回戦 昭和第一戦"),
+    ("gakushuin", "2回戦 学習院戦"),
+    ("joto", "ブロック決勝 城東戦"),
+    ("seeds", "2次予選 都大会"),
+    ("book", "対戦校名鑑"),
+]
 SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin",
         "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
 CUP_ORDER = ["選手権", "総体", "新人戦", "関東"]
@@ -359,11 +372,14 @@ def render(d: dict, css: str, shell: str) -> str:
 
     points = "".join(f'<div><h3>{e(t)}</h3><p>{e(b)}</p></div>' for t, b in d["points"])
 
-    body = f"""<div class="crumb"><a href="{e(d["indexHref"])}"{d["linkTarget"]}>武蔵丘スカウト</a><span>›</span><span>{e(d["team"])} の歩み</span></div>
+    nav_html = "".join(
+        f'<a href="{e(href)}"{d["linkTarget"]}>{e(name)}</a>' if href else f"<b>{e(name)}</b>"
+        for name, href in d["siteNav"])
+    body = f"""<nav class="hist-nav" aria-label="ページ">{nav_html}</nav>
 
 <header class="masthead">
   <span class="eyebrow">History {ys[0]}–{ys[-1]}</span>
-  <div class="title-row"><h1><span class="us">{e(d["team"])}</span> の歩み</h1></div>
+  <div class="title-row"><h1><span class="us">{e(d["team"])}</span>の歩み</h1></div>
   <p class="lead">{ys[0]}年度から{ys[-1]}年度までの公式戦 {d["n"]} 試合。選手権・総体・新人戦・関東大会の
   東京都予選（トーナメント {d["cup"]} 試合）と、地区トップリーグ・NSリーグなどのリーグ戦（{d["league"]} 試合）を
   1本の年表にまとめました。</p>
@@ -395,7 +411,7 @@ def render(d: dict, css: str, shell: str) -> str:
 </section>
 
 <section class="stack">
-  <div class="sec-head"><h2>年度ごとの歩み</h2><p>年度をひらくと全試合が出ます</p></div>
+  <div class="sec-head"><h2>年度ごとの記録</h2><p>年度を開くと全試合が出ます</p></div>
   <p class="legend"><span><b style="background:var(--us)"></b>勝ち</span><span><b style="background:var(--rule-strong)"></b>引き分け</span>
   <span><b style="background:var(--sunk);box-shadow:inset 0 0 0 1px var(--rule)"></b>負け</span><span><b style="background:var(--rule)"></b>結果なし</span>
   <span style="margin-left:auto">左に●が付く行はリーグ戦</span></p>
@@ -418,7 +434,7 @@ def render(d: dict, css: str, shell: str) -> str:
   下部チーム（B・C）の試合は含めていません。</p>
 </section>"""
 
-    return (shell.replace("__TITLE__", f'{d["team"]} の歩み｜東京都高校サッカー')
+    return (shell.replace("__TITLE__", f'{d["team"]}の歩み｜都立武蔵丘高校サッカー部 年鑑')
             .replace("/*__CSS__*/", css + EXTRA_CSS)
             .replace('<main class="page" id="app"></main>', f'<main class="page" id="app">{body}</main>')
             .replace("const D = /*__DATA__*/null;", "")
@@ -472,9 +488,11 @@ def main() -> int:
     if args.links == "artifact":
         urls = json.loads((ROOT / "scout/site_urls.json").read_text(encoding="utf-8"))
         payload["indexHref"], payload["linkTarget"] = urls["index"], ' target="_blank" rel="noopener"'
+        payload["siteNav"] = [(n, urls.get(k)) for k, n in PAGE_NAMES if k != "history-musashigaoka"] + [("武蔵丘の歩み", None)]
         default_out = ROOT / f"out/site_artifact/history-{slug}.html"
     else:
         payload["indexHref"], payload["linkTarget"] = "index.html", ""
+        payload["siteNav"] = [(n, f"{k}.html") for k, n in PAGE_NAMES if k != "history-musashigaoka"] + [("武蔵丘の歩み", None)]
         default_out = ROOT / f"out/site/history-{slug}.html"
     out = Path(args.out) if args.out else default_out
     out.parent.mkdir(parents=True, exist_ok=True)
