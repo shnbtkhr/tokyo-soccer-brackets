@@ -37,7 +37,7 @@ PAGE_NAMES = [
     ("gakushuin", "2回戦 学習院戦"),
     ("joto", "ブロック決勝 城東戦"),
     ("seeds", "2次予選 都大会"),
-    ("book", "対戦校名鑑"),
+    ("book", "都内全校データベース"),
 ]
 SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin",
         "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
@@ -396,8 +396,8 @@ def render(d: dict, css: str, shell: str) -> str:
   <div class="sec-head"><h2>強さの点数の移り変わり</h2><p>年度末の時点・{min(d["eloHistory"], default=ys[0])}年度から</p></div>
   <div class="card">{elo_chart(d["eloHistory"])}
     <p class="small muted">勝てば上がり、負ければ下がる点数（Elo）。1500 が東京全体の平均で、格上に勝つほど大きく上がります。
-    学年が入れ替わるたびに少しだけ平均へ戻しているので、卒業と入学をまたいだ変化もなだらかに出ます。
-    東京全体を同じ物差しで並べるため、計算に使うのはトーナメントの結果だけで、リーグ戦は入れていません。</p></div>
+    年度をまたいでも点数は戻さず、そのまま次の代へ引き継ぎます。前の代が積み上げた点数が出発点になる、という見方です。
+    トーナメントとリーグ戦の両方を使い、リーグ戦は動く幅を半分にしています（一発勝負ではないため）。</p></div>
 </section>
 
 <section class="stack">

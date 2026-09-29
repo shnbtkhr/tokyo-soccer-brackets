@@ -209,6 +209,7 @@ def build(links: str) -> Path:
     UPSETS = json.loads((ROOT / "out/scout/upsets_2026.json").read_text(encoding="utf-8"))
     SQUAD = json.loads((ROOT / "out/scout/squad_2026.json").read_text(encoding="utf-8"))
     BOOK = json.loads((ROOT / "out/scout/index_2026.json").read_text(encoding="utf-8"))
+    GENS = json.loads((ROOT / "out/scout/generations.json").read_text(encoding="utf-8"))
     me = data["me"]
     T = data["teams"]
     block = data["block"]
@@ -328,7 +329,7 @@ def build(links: str) -> Path:
         "nTeamsRated": data["nTeamsRated"], "styleNone": data["styleNone"],
         "totalMatches": total, "ratedMatches": rated, "firstYear": first_year,
         "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
-        "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"], "squad": SQUAD,
+        "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"], "squad": SQUAD, "gens": GENS,
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
     js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")

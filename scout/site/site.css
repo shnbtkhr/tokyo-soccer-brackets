@@ -671,3 +671,8 @@ ol.rank-list li { display: grid; grid-template-columns: 3em minmax(0, 1fr) 4.2em
 ol.rank-list li.me { background: var(--us-soft); font-weight: 700; }
 ol.rank-list .rk { color: var(--muted); text-align: right; }
 ol.rank-list .el { font-weight: 600; }
+
+/* 大会ごとの総評・年度の増減 */
+.tour-note { background: var(--sunk); border-left: 3px solid var(--rule-strong); padding: var(--s2) var(--s3); margin-bottom: var(--s3); max-width: none; font-size: 13.5px; }
+td.n.up { color: var(--us); }
+td.n.down { color: var(--muted); }

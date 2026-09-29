@@ -332,7 +332,7 @@ function renderHub() {
   root.append(...planSections({ verdict: true }));
   // 並びは「2026年度 → 武蔵丘というチーム → 東京都のなかで」の順。
   // 時間軸を行き来させない（2026-09-25）
-  if (D.over) { for (const f of [thisYearSection, squadSection]) { const s = f(); if (s) root.append(s); } }
+  if (D.over) { for (const f of [thisYearSection, squadSection, leagueReviewSection]) { const s = f(); if (s) root.append(s); } }
   const gk = upsetsSection();
   if (gk) root.append(gk);
 
@@ -383,7 +383,7 @@ function renderHub() {
     D.over ? null : h("p", { class: "small muted prose" }, "「当たる確率」は、武蔵丘と相手の両方がその試合まで勝ち上がる見込みです。武蔵丘がその前に負けるとどちらとも当たらないため、候補2校を足すと「武蔵丘がその回戦まで進む見込み」になり、100%にはなりません。帯グラフの斜線がその差（武蔵丘がその前に負ける場合）です。")));
 
   // 武蔵丘というチーム編（5年間の推移・報道と記録）は、今季の3試合を見せたあとに置く
-  if (D.over) { for (const f of [journeySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
+  if (D.over) { for (const f of [journeySection, historySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
 
   const left = h("div", { class: "stack" },
     h("div", { class: "card" }, h("div", { class: "sec-head" }, h("h2", {}, "トーナメント表"), h("p", {}, "赤線は勝ち上がり。点線は武蔵丘の道")), bracketSVG()),
@@ -1181,6 +1181,9 @@ function squadSection() {
         h("span", { class: "small muted" }, t.stage),
         h("span", { class: "rec num" }, `${w}勝${l}敗`),
         h("span", { class: "reach" }, t.reach)),
+      (D.final && D.final.tournamentReviews || {})[`${t.year}-${t.series}`]
+        ? h("p", { class: "tour-note prose" }, D.final.tournamentReviews[`${t.year}-${t.series}`])
+        : null,
       h("ul", { class: "glist" }, t.games.map(game)));
   };
 
@@ -1321,4 +1324,43 @@ function numberSections() {
 }
 function h2num(n) {
   return h("span", { class: "secno num", "aria-hidden": "true" }, String(n).padStart(2, "0") + " ");
+}
+
+
+/* ---------- リーグ戦の総評 ---------- */
+function leagueReviewSection() {
+  const L = D.final && D.final.leagueReview;
+  if (!L) return null;
+  return h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, L.title), h("p", {}, "一発勝負ではない場所での数字")),
+    h("p", { class: "prose" }, L.body),
+    h("ul", { class: "points" }, L.points.map((x) => h("li", {}, x))),
+    L.note ? h("p", { class: "small muted prose" }, L.note) : null);
+}
+
+/* ---------- 年度ごとの全史 ---------- */
+function historySection() {
+  const G = D.gens;
+  if (!G) return null;
+  const cur = Math.max(...G.years);
+  return h("section", { class: "sec", id: "allyears" },
+    h("div", { class: "sec-head" }, h("h2", {}, "年度ごとの順位"),
+      h("p", {}, `${G.years[0]}〜${cur}年度の${G.nYears}年・点数の高い順`)),
+    h("p", { class: "prose" }, "記録の残っている全年度を、その年度末の強さの点数で並べました。"
+      + "部員は3年で入れ替わりますが、点数は前の年度から持ち越して計算しています。"),
+    h("div", { class: "tbl" }, h("table", {},
+      h("thead", {}, h("tr", {}, h("th", { class: "n" }, "順"), h("th", { class: "n" }, "年度"),
+        h("th", { class: "n" }, "点数"), h("th", { class: "n" }, "増減"), h("th", { class: "n" }, "成績"),
+        h("th", {}, "到達"))),
+      h("tbody", {}, G.seasons.slice().sort((a, b) => (a.eloRank || 99) - (b.eloRank || 99)).map((s) =>
+        h("tr", { class: s.year === cur ? "hl us" : null },
+          h("td", { class: "n" }, s.eloRank || "―"),
+          h("td", { class: "n" }, s.year),
+          h("td", { class: "n" }, s.endElo ?? "―"),
+          h("td", { class: "n " + (s.delta > 0 ? "up" : s.delta < 0 ? "down" : "") },
+            s.delta == null ? "―" : `${s.delta > 0 ? "+" : ""}${s.delta}`),
+          h("td", { class: "n" }, `${s.w + s.pkw}勝${s.l + s.pkl}敗`
+            + (s.pkw || s.pkl ? `（PK ${s.pkw}勝${s.pkl}敗）` : "")),
+          h("td", { class: "small" }, Object.entries(s.reach).map(([k, v]) => `${k} ${v}`).join("／"))))))),
+    h("p", { class: "small muted prose" }, G.note));
 }
