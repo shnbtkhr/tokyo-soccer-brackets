@@ -54,6 +54,11 @@ def load_matches() -> list[dict]:
     return rows
 
 
+def active_in(rows: list[dict], year: int) -> set:
+    """その年度に大会の試合（結果の分かるもの）をした学校。順位の母数に使う。"""
+    return {k for r in rows if r["年度"] == year and played(r) for k in (r["kA"], r["kB"]) if k}
+
+
 def played(r: dict) -> bool:
     return r["状態"] in ("終了", "スコアのみ記載（赤線未反映）", "赤線が両側（スコアで判定）") and r["得点A"] != "" and r["得点B"] != ""
 
@@ -187,7 +192,10 @@ def main() -> int:
 
     teams = {}
     ranked = sorted(elo.items(), key=lambda kv: -kv[1])
-    rank_of = {k: i + 1 for i, (k, _) in enumerate((k, v) for k, v in ranked if n_games.get(k, 0) >= 5)}
+    # 順位は「今年度に大会の試合をした学校」の中で数える。点数は年度をまたいで持ち越すので、
+    # 休部・統合した学校まで並べると母数が年々ふくらみ、ページごとに違う母数が出ていた（2026-09-29）
+    act = active_in(rows, max(r["年度"] for r in rows))
+    rank_of = {k: i + 1 for i, (k, _) in enumerate((k, v) for k, v in ranked if k in act)}
     for key in args.block:
         gs = games[key]
         by_year = defaultdict(list)

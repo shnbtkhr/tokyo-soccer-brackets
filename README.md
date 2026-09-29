@@ -57,6 +57,25 @@ uv run python build_outputs.py
 
 Windows のコンソールでは `$env:PYTHONIOENCODING = "utf-8"` を付けないと日本語の出力が化けて見える（データは壊れていない）。
 
+### 戦績録（docs/）を作り直す順番
+
+後ろのものは前のものの出力を読むので、この順に回す。
+
+```powershell
+uv run python build_outputs.py      # 試合の表（同じ表の別版で重なった試合はここで落とす）
+uv run python rating_backtest.py    # 点数の当たり具合 → out/scout/backtest.json
+uv run python analyze_team.py       # 武蔵丘と同じ山の学校
+uv run python league_coverage.py    # 地区ごとのリーグ戦の取れ高 → out/scout/coverage.json
+uv run python build_squad.py; uv run python build_upsets.py; uv run python build_index.py
+uv run python build_seeds.py; uv run python build_second.py; uv run python draw_second.py
+uv run python build_generations.py; uv run python build_years.py
+uv run python build_site.py --links local; uv run python check_pages.py
+```
+
+本文（`scout/final_2026.json`・`scout/years_prose.json`）の点数・見込み・順位は、手で数字を書かず
+`{{式}}` で書く。`prose_tokens.py` が書き出しのときにデータから計算し、解けない式があれば止まる。
+手で書いた数字は、データを直すたびに古くなった（2026-09 に3度）。
+
 ## 出力
 
 | ファイル | 中身 |

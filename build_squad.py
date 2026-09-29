@@ -107,6 +107,7 @@ def main() -> int:
     out = {
         "me": ME, "years": list(YEARS), "nGames": len(games),
         "coverageByDistrict": coverage,
+        "coveragePerSchool": json.loads((ROOT / "out/scout/coverage.json").read_text(encoding="utf-8"))["perSchool"],
         "tournaments": tours,
         "eloHistory": hist.get(ME, {}),
         "myTournamentGames": tour.get(ME, 0),

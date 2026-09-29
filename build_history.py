@@ -21,7 +21,7 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from analyze_team import compute_elo, load_matches
+from analyze_team import active_in, compute_elo, load_matches
 from build_outputs import normalize
 from leagues import for_school, load_all
 
@@ -55,8 +55,14 @@ def parse_score(s: str) -> tuple[int, int] | None:
 
 
 def tier_of(stage: str) -> int:
-    """一次（支部・地区）なら 1、二次（都大会）なら 2。"""
-    return 2 if ("二次" in stage or "都予選" in stage or "東京都" in stage) else 1
+    """一次（支部・地区）なら 1、都大会なら 2。
+
+    総体の都大会は「一次トーナメント」「二次トーナメント」と呼ぶので、「一次」の字だけで
+    1次の段階と決めてはいけない（2015・2021年度の総体の都大会進出を落としていた。2026-09-29）。
+    """
+    if "トーナメント" in stage or "二次" in stage or "都予選" in stage or "東京都" in stage:
+        return 2
+    return 1
 
 
 def cup_games(rows: list[dict], me: str) -> list[dict]:
@@ -147,13 +153,15 @@ def highlights(c: dict, elo_hist: dict, me: str) -> list[tuple[str, str]]:
     years = c["years"]
 
     # 都大会（二次予選）に届いた年
-    top = [y for y, v in years.items()
-           if any(not g["リーグ戦"] and tier_of(g["段階"]) == 2 for g in v["games"])]
+    top = {y: list(dict.fromkeys(g["大会"] for g in v["games"] if not g["リーグ戦"] and tier_of(g["段階"]) == 2))
+           for y, v in years.items()}
+    top = {y: s for y, s in top.items() if s}
     if top:
         out.append(("都大会に届いた年",
-                    f'一次予選を勝ち抜いて二次予選（都大会）に進んだのは {"・".join(top)} 年度の '
-                    f'{len(top)} 回。東京は一次予選が支部・地区ごとのトーナメントで、'
-                    f'そこを抜けた学校だけが都大会に進む。'))
+                    "支部・地区の予選を抜けて都大会に進んだのは "
+                    + "・".join(f'{y}年度（{"・".join(s)}）' for y, s in top.items())
+                    + f"の{len(top)}回。東京は1次の予選が支部・地区ごとのトーナメントで、"
+                    "そこを抜けた学校だけが都大会（総体の1次・2次トーナメント、選手権の2次予選、関東大会の東京都予選）に進む。"))
 
     # 所属リーグの上がり下がり
     div: dict[str, str] = {}
@@ -181,7 +189,7 @@ def highlights(c: dict, elo_hist: dict, me: str) -> list[tuple[str, str]]:
         out.append(("点数がいちばん高かった年",
                     f'{hi[0]}年度の {round(hi[1])}。いちばん低かったのは {lo[0]}年度の {round(lo[1])} で、'
                     f'その差は {round(hi[1] - lo[1])}。直近は {last[0]}年度の {round(last[1])}。'
-                    f'この点数はトーナメントの結果だけから計算していて、リーグ戦は入れていない。'))
+                    f'この点数はトーナメントとリーグ戦（重みは半分）から計算している。'))
 
     # 相性
     good = [(n, c["beat"][n], c["lost"][n]) for n in c["opponents"]
@@ -441,31 +449,26 @@ def render(d: dict, css: str, shell: str) -> str:
             .replace("/*__JS__*/", ""))
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--team", default="武蔵丘")
-    ap.add_argument("--out", default="")
-    ap.add_argument("--links", choices=["local", "artifact"], default="local",
-                    help="artifact … 戻り先のリンクを claude.ai の公開URLにして out/site_artifact/ に書く")
-    args = ap.parse_args()
-    me = normalize(args.team)
+def payload_for(team: str = "武蔵丘") -> dict | None:
+    """歩みのページに載せる数字をまとめる。build_site.py の「全年度の通算」もこれを使う。"""
+    me = normalize(team)
 
     rows = load_matches()
     elo, hist, _ = compute_elo(rows)
     cups = cup_games(rows, me)
     lg = for_school(load_all(), me)
     if not cups and not lg:
-        print(f"{args.team} の試合が見つかりません")
-        return 1
+        return None
 
     c = collect(cups + lg)
     tot = {k: sum(y[k] for y in c["years"].values()) for k in ("win", "lose", "draw", "unknown")}
-    ranked = sorted(elo.items(), key=lambda x: -x[1])
+    act = active_in(rows, max(r["年度"] for r in rows))  # 順位の母数は今年度に大会へ出た学校（analyze_team と同じ）
+    ranked = sorted(((k, v) for k, v in elo.items() if k in act), key=lambda x: -x[1])
     latest = max(c["years"])
     elo_hist = hist.get(me, {})
 
     payload = {
-        "team": args.team, "n": c["n"], "cup": len(cups), "league": len(lg),
+        "team": team, "n": c["n"], "cup": len(cups), "league": len(lg),
         "league_years": len({g["年度"] for g in lg}), **tot,
         "gf": sum(g["得点"] or 0 for y in c["years"].values() for g in y["games"]),
         "ga": sum(g["失点"] or 0 for y in c["years"].values() for g in y["games"]),
@@ -481,25 +484,23 @@ def main() -> int:
         "points": highlights(c, elo_hist, me),
     }
 
-    css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
-    shell = (ROOT / "scout/site/page.html").read_text(encoding="utf-8")
-    slug = SLUG.get(me, re.sub(r"\W+", "-", me))
-    # アーティファクト版は1ファイルずつ別のURLに置かれるので、戻り先を公開URLにする
-    if args.links == "artifact":
-        urls = json.loads((ROOT / "scout/site_urls.json").read_text(encoding="utf-8"))
-        payload["indexHref"], payload["linkTarget"] = urls["index"], ' target="_blank" rel="noopener"'
-        payload["siteNav"] = [(n, urls.get(k)) for k, n in PAGE_NAMES if k != "history-musashigaoka"] + [("武蔵丘の歩み", None)]
-        default_out = ROOT / f"out/site_artifact/history-{slug}.html"
-    else:
-        payload["indexHref"], payload["linkTarget"] = "index.html", ""
-        payload["siteNav"] = [(n, f"{k}.html") for k, n in PAGE_NAMES if k != "history-musashigaoka"] + [("武蔵丘の歩み", None)]
-        default_out = ROOT / f"out/site/history-{slug}.html"
-    out = Path(args.out) if args.out else default_out
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(render(payload, css, shell), encoding="utf-8")
-    print(f'{args.team}: {c["n"]} 試合（トーナメント {len(cups)} / リーグ {len(lg)}）'
-          f' {tot["win"]}勝 {tot["draw"]}分 {tot["lose"]}敗・結果不明 {tot["unknown"]}'
-          f' → {out.relative_to(ROOT)}  {out.stat().st_size // 1024} KB')
+    return payload
+
+
+def main() -> int:
+    """数字だけを out/scout/history_<slug>.json に書く。ページは build_site.py が
+    ほかのページと同じ形（左のツリー・章番号つき）で書き出す（2026-09-29 に移した）。"""
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--team", default="武蔵丘")
+    args = ap.parse_args()
+    payload = payload_for(args.team)
+    if payload is None:
+        print(f"{args.team} の試合が見つかりません")
+        return 1
+    slug = SLUG.get(normalize(args.team), re.sub(r"\W+", "-", args.team))
+    out = ROOT / f"out/scout/history_{slug}.json"
+    out.write_text(json.dumps(payload, ensure_ascii=False, default=str), encoding="utf-8")
+    print(f'{args.team}: {payload["n"]} 試合（トーナメント {payload["cup"]} / リーグ {payload["league"]}） → {out.name}')
     return 0
 
 

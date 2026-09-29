@@ -19,28 +19,37 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
 from analyze_team import BASE, CARRY, K, LEAGUE_WEIGHT, win_prob
 from build_scout_page import build_data
 from prose_tokens import resolve
+from build_history import payload_for
 
 ROOT = Path(__file__).parent
 SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
 # ページの呼び名はここだけで決める。タブ・左パネル・パンくずで同じ語を使うため、
 # ばらばらに書くと「武蔵丘 の歩み」「2004年からの歩み」のように同じページが別名になる
-SITE_NAME = "都立武蔵丘高校サッカー部 年鑑"
+SITE_NAME = "武蔵丘サッカー部 戦績録"
+# 年代記のページは「年度の記録」という同じ言い回しにそろえる。粒度（どこまで細かく載せるか）は
+# 遠い年ほど粗くし、その違いは左パネルのグループ名（この代の3年間・その前の3年間・前史）で示す
 PAGE_NAME = {
     "index": "2026年度の記録",
-    "musashigaoka": "武蔵丘の記録",
+    "year-2025": "2025年度の記録",
+    "year-2024": "2024年度の記録",
+    "musashigaoka": "3年間の通算",
+    "era-2021": "2021〜2023年度の記録",
+    "pre-2004": "2004〜2020年度の記録",
+    "history-musashigaoka": "全年度の通算",
     "showa-daiichi": "1回戦 昭和第一戦",
     "gakushuin": "2回戦 学習院戦",
     "joto": "ブロック決勝 城東戦",
     "seeds": "2次予選 都大会",
     "book": "都内全校データベース",
-    "history-musashigaoka": "武蔵丘の歩み",
 }
+CHRONICLE = ["index", "year-2025", "year-2024", "musashigaoka", "era-2021", "pre-2004", "history-musashigaoka"]
 TITLE = {k: f"{v}｜{SITE_NAME}" for k, v in PAGE_NAME.items()}
 
 
@@ -216,6 +225,8 @@ def build(links: str) -> Path:
     SQUAD = json.loads((ROOT / "out/scout/squad_2026.json").read_text(encoding="utf-8"))
     BOOK = json.loads((ROOT / "out/scout/index_2026.json").read_text(encoding="utf-8"))
     GENS = json.loads((ROOT / "out/scout/generations.json").read_text(encoding="utf-8"))
+    YEARS = json.loads((ROOT / "out/scout/years.json").read_text(encoding="utf-8"))
+    YPROSE = resolve(json.loads((ROOT / "scout/years_prose.json").read_text(encoding="utf-8")))
     me = data["me"]
     T = data["teams"]
     block = data["block"]
@@ -279,8 +290,7 @@ def build(links: str) -> Path:
     # 当たらなかった学校のカードは出さない。ページを作らないのでリンクが切れる
     for st in road:
         st["teams"] = [k for k in st["teams"] if k in opps]
-    order = ["index", SLUG[me], *[SLUG[k] for k in opps], "seeds", "book"]
-    # 歩みのページは build_history.py が別に書き出す。ここでは行き先として繋ぐだけ
+    order = [*CHRONICLE, *[SLUG[k] for k in opps], "seeds", "book"]
     hist = f"history-{SLUG[me]}"
     for k in opps:
         TITLE[SLUG[k]] = f"{PAGE_NAME.get(SLUG[k], T[k]['display'].replace('都・', ''))}｜{SITE_NAME}"
@@ -289,15 +299,15 @@ def build(links: str) -> Path:
             return f"{rounds[k][0]}・敗退"
         return f"{rounds[k][0]}" + ("の候補" if rounds[k][1] else "・次の相手" if k == nxt_opp_key else "")
 
-    titles = {k: PAGE_NAME.get(k, k) for k in [*order, hist]}
+    titles = {k: PAGE_NAME.get(k, k) for k in order}
 
     urls: dict = {}
     if links == "artifact":
         urls = json.loads((ROOT / "scout/site_urls.json").read_text(encoding="utf-8"))
-        hrefs = {s: urls.get(s, urls["index"]) for s in [*order, hist]}
+        hrefs = {s: urls.get(s, urls["index"]) for s in order}
         target, out_dir = "_blank", ROOT / "out/site_artifact"
     else:
-        hrefs = {s: ("index.html" if s == "index" else f"{s}.html") for s in [*order, hist]}
+        hrefs = {s: ("index.html" if s == "index" else f"{s}.html") for s in order}
         target, out_dir = None, ROOT / "out/site"
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -313,13 +323,16 @@ def build(links: str) -> Path:
     def item(slug: str, **kw) -> dict:
         return {"slug": slug, "label": PAGE_NAME.get(slug, slug), **kw}
 
-    # 左パネルは「記録 → 試合 → 資料」の3段。名前は PAGE_NAME から引くので、
-    # タブ名・パンくず・ツリーで同じ語になる
+    # 左パネルは、新しい年度から遠い年度へさかのぼる年代記 → 2026年度の試合 → 資料。
+    # 名前は PAGE_NAME から引くので、タブ名・パンくず・ツリーで同じ語になる
     nav = [
-        {"label": "記録", "items": [item("index"), item(SLUG[me], cls="me"), item(hist)]},
-        {"label": "1次予選の3試合", "items": [
+        {"label": "この代の3年間", "items": [item("index"), item("year-2025"), item("year-2024"), item("musashigaoka")]},
+        {"label": "その前の3年間", "items": [item("era-2021")]},
+        {"label": "前史", "items": [item("pre-2004")]},
+        {"label": "通算", "items": [item("history-musashigaoka")]},
+        {"label": "2026年度 選手権1次予選", "items": [
             item(SLUG[k], out=not T[k]["alive"]) for k in (r1, *r2, *fin) if k in keep]},
-        {"label": "資料", "phase": 2, "items": [item("seeds"), item("book")]},
+        {"label": "資料", "items": [item("seeds"), item("book")]},
     ]
     # 収録している試合数と、点数の計算に実際に使えた試合数（結果の読めたもの）は別の数字。
     # 2004年度まで遡った結果、古い年は対戦だけ分かってスコアが無い試合が増えた
@@ -336,6 +349,8 @@ def build(links: str) -> Path:
         "totalMatches": total, "ratedMatches": rated, "firstYear": first_year,
         "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
         "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"], "squad": SQUAD, "gens": GENS,
+        "siteName": SITE_NAME, "tourReviews": FINAL.get("tournamentReviews", {}),
+        "journeyGames": sum(YEARS["years"][str(y)]["known"] for y in range(2022, 2027) if str(y) in YEARS["years"]),
         "backtest": {"years": BT["evalYears"], "n": f"{BT['adopted']['nDec']:,}", "acc": f"{BT['adopted']['acc']:.1%}"},
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
@@ -353,17 +368,24 @@ def build(links: str) -> Path:
     nxt_opp = (nm["a"] if nm["b"] == me else nm["b"]) if nm else None
     write("index", {"page": "hub", "next": {**nm, "opp": nxt_opp} if nm else None, "road": road, "formNote": data["formNote"], "pyramid": data["pyramid"],
                     "pyramidNote": data["pyramidNote"], "method": data["method"], "totalMatches": total, "ratedMatches": rated, "firstYear": first_year,
-                    "elo": elo_explainer(T, me, nxt_opp or r1, opps)})
+                    "elo": elo_explainer(T, me, nxt_opp or r1, opps), "season": YEARS["years"]["2026"]})
     me_t = {**T[me], "key": me}
-    ins, bands, note = self_insights(me_t, block, {T[k]["display"]: T[k]["elo"] for k in opps})
-    mine = brief[me].get("outcomes") or []
-    done = "、".join(f"{o['round']}で{o['opp'].replace('都・', '')}に{o['score']}" for o in mine)
-    all_won = mine and all(o["won"] for o in mine)
-    lead = (f"第{T[me]['area']['area']}地区（{T[me]['area']['city']}）の{T[me]['area']['kind']}高校。"
-            + (f"1次予選は{done}{'と勝ち上がりました' if all_won else 'という結果です'}。" if done else "")
-            + (f"次は{nxt_sched['date']}({nxt_sched['dow']}) {nxt_sched['time']}の{T[nxt_opp_key]['display'].replace('都・', '')}戦です。" if nxt_sched and nxt_opp_key else "")
-            + f"過去5年の公式戦{T[me]['summary']['n']}試合と今季のNSリーグから、強みと課題を整理しました。")
-    write("musashigaoka", {"page": "self", "self": me_t, "insights": ins, "bands": bands, "bandNote": note, "selfLead": lead, "road": road})
+    Y = YEARS["years"]
+    slug_of = {2026: "index", 2025: "year-2025", 2024: "year-2024"}
+    write("musashigaoka", {"page": "squad3", "seasons": [{**Y[str(y)], "slug": slug_of[y]} for y in (2024, 2025, 2026)]})
+    for y in (2025, 2024):
+        write(f"year-{y}", {"page": "year", "season": Y[str(y)], "yprose": YPROSE.get(str(y), {})})
+    write("era-2021", {"page": "era", "seasons": [Y[str(y)] for y in (2023, 2022, 2021)],
+                       "yprose": {y: YPROSE[str(y)] for y in (2023, 2022, 2021) if str(y) in YPROSE}})
+    pre = sorted((int(k) for k in Y if int(k) <= 2020), reverse=True)
+    write("pre-2004", {"page": "pre", "seasons": [Y[str(y)] for y in pre], "yprose": YPROSE.get("prehistory", {})})
+    A = payload_for(me)
+    # 要点の文は build_history.py の書き方（「一次予選」「2 回」）なので、サイトの表記（1次・数字に空白なし）にそろえる
+    tidy = lambda x: re.sub(r"(?<=[^ -~→]) (?=\d)|(?<=\d) (?=[^ -~→])", "", x.replace("一次", "1次").replace("二次", "2次"))
+    A["points"] = [[tidy(t), tidy(b)] for t, b in A["points"]]
+    A = {**{k: v for k, v in A.items() if k != "years"}, "years": [y["year"] for y in A["years"]],
+         "eloHistory": {y: round(v) for y, v in A["eloHistory"].items()}, "elo": round(A["elo"])}
+    write("history-musashigaoka", {"page": "alltime", "alltime": A})
     for k in opps:
         t = {**T[k], "key": k}
         t["autoPoints"] = team_points(t, me_t, T[me]["games"], brief[k])

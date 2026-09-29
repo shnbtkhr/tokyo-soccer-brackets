@@ -59,6 +59,7 @@ def main() -> int:
              "| 地区 | 校数 | 1校あたり | 0件の学校 | 地区コレクタ | 星取表 | Tリーグ |",
              "|---|---|---|---|---|---|---|"]
     kinds = ("goalnote", "Tリーグ公式", "星取表", "Tリーグ過去", "プリンス")
+    per_district: dict[int, float] = {}
     for d in sorted(by_district):
         ks = by_district[d]
         tot = collections.Counter()
@@ -71,6 +72,7 @@ def main() -> int:
         coll = tot["goalnote"]
         star = tot["星取表"]
         tl = tot["Tリーグ公式"] + tot["Tリーグ過去"] + tot["プリンス"]
+        per_district[d] = round(n / len(ks), 1)
         lines.append(f"| 第{d}地区 | {len(ks)} | {n / len(ks):.1f} | {zero}校 "
                      f"({zero / len(ks) * 100:.0f}%) | {coll} | {star} | {tl} |")
 
@@ -136,6 +138,9 @@ def main() -> int:
               "8件しか登録されていない。この経路はこれ以上伸びない",
               ]
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    # ページの本文が引く数字（地区ごとの1校あたりのリーグ戦数）。本文に手で書くと古くなる
+    (ROOT / "out/scout/coverage.json").write_text(
+        json.dumps({"perSchool": {str(k): v for k, v in per_district.items()}}, ensure_ascii=False), encoding="utf-8")
     print("\n".join(lines[:26]))
     print(f"...\n→ {OUT.relative_to(ROOT)}")
     return 0

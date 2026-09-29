@@ -21,6 +21,7 @@
   UPW(始め, 終わり)                   その年度の範囲で、90分で格上に勝った試合（古い順）
   idx(一覧, 年度, 大会, 回戦)          一覧の中での順位（1から）
   above(一覧, 年度, 大会, 回戦)        一覧でその試合より上にある試合を文にしたもの
+  Y(年度)                             その年度のまとめ（years.json）。.rankEnd .nRatedEnd .n .w .l .gf .ga など
   GAMES                               武蔵丘の全試合（古い順。.i は並び順）
   at(年度, 大会, 回戦)                その試合の並び順（GAMES の .i）
   rec(一覧)                           勝敗を「10勝2PK勝4敗」の形にしたもの
@@ -57,6 +58,8 @@ class Context:
         self.upn = len(solo)
         self.uprank = next((i + 1 for i, x in enumerate(solo) if x.get("winner") == ME), None)
         self.bt = json.loads((ROOT / "out/scout/backtest.json").read_text(encoding="utf-8"))
+        yp = ROOT / "out/scout/years.json"
+        self.years = json.loads(yp.read_text(encoding="utf-8"))["years"] if yp.exists() else {}
 
     def team(self, name: str) -> dict:
         if name not in self.teams:
@@ -121,9 +124,10 @@ class Context:
             "BT": SimpleNamespace(acc=f"{a['acc']:.1%}", n=f"{a['nDec']:,}", logloss=a["logloss"],
                                   base_acc=f"{b['acc']:.1%}", years=self.bt["evalYears"]),
             "GAMES": games, "at": at, "rec": rec,
+            "Y": lambda y: SimpleNamespace(**{k: v for k, v in self.years[str(y)].items() if not isinstance(v, (list, dict))}),
             "PW": _p, "CS": cs, "CSW": csw, "UPW": upw, "idx": idx, "above": above, "len": len,
             "avg": lambda *xs: round(sum(xs) / len(xs)),
-            "abs": abs, "round": round, "max": max, "min": min,
+            "abs": abs, "round": round, "max": max, "min": min, "range": range, "sum": sum,
         }
 
 
@@ -145,7 +149,8 @@ def resolve(obj, ns: dict | None = None):
         return TOKEN.sub(sub, s)
 
     if isinstance(obj, dict):
-        return {k: resolve(v, ns) for k, v in obj.items()}
+        # _note などの「_」で始まる欄は説明書きなので、式を解かない
+        return {k: (v if k.startswith("_") else resolve(v, ns)) for k, v in obj.items()}
     if isinstance(obj, list):
         return [resolve(v, ns) for v in obj]
     if isinstance(obj, str):

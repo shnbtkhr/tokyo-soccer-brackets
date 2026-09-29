@@ -40,7 +40,7 @@ function renderTopbar() {
     nav.append(grp);
   }
   document.body.prepend(h("header", { class: "topbar" }, h("div", { class: "in" },
-    h("a", { class: "brand", ...linkAttrs("index") }, h("i", { class: "dot", "aria-hidden": "true" }), h("b", {}, "武蔵丘 年鑑"), h("span", {}, "2026")),
+    h("a", { class: "brand", ...linkAttrs("index") }, h("i", { class: "dot", "aria-hidden": "true" }), h("b", {}, D.siteName)),
     nav)));
 }
 
@@ -48,23 +48,23 @@ function renderTopbar() {
 const slugKey = Object.fromEntries(Object.entries(D.keyToSlug || {}).map(([k, v]) => [v, k]));
 function renderSidenav() {
   const side = h("aside", { class: "sidenav", "aria-label": "サイトの地図" });
-  side.append(h("a", { class: "sn-brand", ...linkAttrs("index") }, h("i", { class: "dot", "aria-hidden": "true" }), h("span", {}, h("b", {}, "武蔵丘 年鑑"), h("small", {}, "都立武蔵丘高校サッカー部"))));
+  side.append(h("a", { class: "sn-brand", ...linkAttrs("index") }, h("i", { class: "dot", "aria-hidden": "true" }), h("span", {}, h("b", {}, ...D.siteName.split(" ").map((w) => h("span", { class: "nw" }, w + " "))), h("small", {}, "都立武蔵丘高校サッカー部"))));
   const item = (it) => {
     const k = slugKey[it.slug], br = k && B[k];
-    const meta = it.slug === "seeds" ? null : br && k !== D.me && br.alive === false ? "敗退" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
-    return h("li", {}, h("a", { ...linkAttrs(it.slug), class: "sn-link" + (it.cls === "me" ? " me" : ""), "aria-current": it.slug === D.slug ? "page" : null, title: meta && it.slug !== "seeds" ? `武蔵丘が勝つ見込み ${meta}` : null },
+    // 大会が終わったあとは、武蔵丘から見たスコアを出す（見込みの%は試合前にしか意味がない）
+    const played = k && k !== D.me && (D.decided || []).find((d) => (d.a === D.me && d.b === k) || (d.b === D.me && d.a === k));
+    const score = played ? (played.a === D.me ? played.score : played.score.split("-").reverse().join("-")) : null;
+    const meta = it.slug === "seeds" ? null : score ? score : br && k !== D.me && br.alive === false ? "敗退" : br && k !== D.me && br.vsMe != null ? pct(br.vsMe) : null;
+    return h("li", {}, h("a", { ...linkAttrs(it.slug), class: "sn-link" + (it.cls === "me" ? " me" : ""), "aria-current": it.slug === D.slug ? "page" : null, title: score ? `武蔵丘から見たスコア ${score}` : meta && it.slug !== "seeds" ? `武蔵丘が勝つ見込み ${meta}` : null },
       h("span", { class: "sn-t" }, it.label), meta ? h("span", { class: "sn-m num" }, meta) : null));
   };
   const tree = h("nav", { class: "sn-tree" });
-  // 振り分けは phase で決める。ラベルの文字列で判定すると、文言を変えたときに
-  // 片方が空のグループになって展開できなくなる（2026-09-24）
-  const first = D.nav.filter((g) => g.phase !== 2), second = D.nav.filter((g) => g.phase === 2).map((g) => ({ ...g, label: "" }));
-  const grp = (title, sub, groups) => h("details", { class: "sn-grp", open: "" }, h("summary", {}, h("span", {}, title), sub ? h("small", {}, sub) : null),
-    h("ul", {}, groups.flatMap((g) => g.label
-      ? [h("li", { class: "sn-round" }, h("span", { class: "sn-lab" }, g.label === "決勝" ? "ブロック決勝" : g.label), h("ul", {}, g.items.map(item)))]
-      : g.items.map(item))));
-  tree.append(grp("1次予選", D.blockLabel ? D.blockLabel.replace(/^.*?(【\d+】).*$/, "$1ブロック") : "", first));
-  if (second.some((g) => g.items.length)) tree.append(grp("2次予選", "10/3〜", second));
+  // グループは build_site.py の nav をそのまま並べる。ここで振り分けや言い換えをすると、
+  // タブ・パンくず・ツリーで同じページが別の名前になる（2026-09-29 に単純化）
+  for (const g of D.nav) {
+    tree.append(h("details", { class: "sn-grp", open: "" }, h("summary", {}, h("span", {}, g.label), g.sub ? h("small", {}, g.sub) : null),
+      h("ul", {}, g.items.map(item))));
+  }
   side.append(tree);
   const toc = h("nav", { class: "sn-toc", "aria-label": "このページの見出し" }, h("div", { class: "sn-h" }, "このページ"), h("ol", {}));
   side.append(toc, h("div", { class: "sn-foot" }, h("span", {}, "強さの点数は目安です。"), h("a", { href: hrefOf("index") + "#elo", target: D.linkTarget || null }, "点数のしくみ")));
@@ -332,7 +332,7 @@ function renderHub() {
   root.append(...planSections({ verdict: true }));
   // 並びは「2026年度 → 武蔵丘というチーム → 東京都のなかで」の順。
   // 時間軸を行き来させない（2026-09-25）
-  if (D.over) { for (const f of [thisYearSection, squadSection, leagueReviewSection]) { const s = f(); if (s) root.append(s); } }
+  if (D.over) { const s = thisYearSection(); if (s) root.append(s); }
   const gk = upsetsSection();
   if (gk) root.append(gk);
 
@@ -383,7 +383,11 @@ function renderHub() {
     D.over ? null : h("p", { class: "small muted prose" }, "「当たる確率」は、武蔵丘と相手の両方がその試合まで勝ち上がる見込みです。武蔵丘がその前に負けるとどちらとも当たらないため、候補2校を足すと「武蔵丘がその回戦まで進む見込み」になり、100%にはなりません。帯グラフの斜線がその差（武蔵丘がその前に負ける場合）です。")));
 
   // 武蔵丘というチーム編（5年間の推移・報道と記録）は、今季の3試合を見せたあとに置く
-  if (D.over) { for (const f of [journeySection, historySection, outsideSection]) { const s = f(); if (s) root.append(s); } }
+  // 2026年度の総体とリーグ戦も、ほかの年度のページと同じ部品で載せる。3年間・通算はそれぞれのページへ
+  if (D.over) {
+    const soutai = D.season && D.season.tournaments.find((t) => t.series === "総体");
+    for (const f of [() => soutai && tournamentSection(2026, soutai), leagueReviewSection, outsideSection]) { const s = f(); if (s) root.append(s); }
+  }
 
   const left = h("div", { class: "stack" },
     h("div", { class: "card" }, h("div", { class: "sec-head" }, h("h2", {}, "トーナメント表"), h("p", {}, "赤線は勝ち上がり。点線は武蔵丘の道")), bracketSVG()),
@@ -858,15 +862,6 @@ function goalsChartSection(t) {
     svg, h("p", { class: "small muted" }, "2026年度は総体の2試合だけです。")));
 }
 
-/* ---------- 起動 ---------- */
-renderTopbar();
-renderSidenav();
-if (D.page === "hub") renderHub(); else if (D.page === "team") renderTeam(); else if (D.page === "seeds") renderSeeds(); else if (D.page === "second") renderSecond(); else if (D.page === "book") renderIndexBook(); else renderSelf();
-numberSections();
-$("#app").prepend(pager());  // 前後のページはページの上に置く（下まで読まないと次へ進めない、という指摘を受けて）
-fillToc();
-document.body.append(h("footer", { class: "foot" }, `データ: ${D.asOf}。強さの点数と見込みは過去の公式戦から計算した目安です。`));
-
 /* ---------- ブロック決勝の分析（城東戦） ---------- */
 function planSections(opts) {
   const F = D.final, out = [];
@@ -1008,7 +1003,7 @@ function journeySection() {
   if (!J) return null;
   const W = J.walls;
   return h("section", { class: "sec", id: "journey" },
-    h("div", { class: "sec-head" }, h("h2", {}, J.title), h("p", {}, "2022年度からの公式戦31試合")),
+    h("div", { class: "sec-head" }, h("h2", {}, J.title), h("p", {}, `2022年度からの公式戦${D.journeyGames}試合`)),
     h("p", { class: "prose" }, J.lead),
     h("ol", { class: "years" }, J.years.map((y) => h("li", {},
       h("b", { class: "num yr2" }, y.y),
@@ -1194,7 +1189,10 @@ function squadSection() {
       + "試合のときは下だった相手が、その後に上へ行くことがあります。片方だけでは相手の力を読み違えます。"),
     h("p", { class: "prose small muted" }, "点数は大会の結果にリーグ戦を足して計算しています。"
       + "ただしリーグ戦の記録がどれだけ残っているかは地区によって差があり、"
-      + "1校あたり19試合（第7地区）から69試合（第5地区）まで開きがあります。"
+      + (() => {
+        const c = Object.entries(S.coveragePerSchool || {}).sort((a, b) => a[1] - b[1]);
+        return c.length ? `1校あたり${Math.round(c[0][1])}試合（第${c[0][0]}地区）から${Math.round(c[c.length - 1][1])}試合（第${c[c.length - 1][0]}地区）まで開きがあります。` : "";
+      })()
       + "記録の少ない学校は点数が動きにくく、実力より低く出ることがあります。該当する相手には試合ごとに断りを入れました。"),
     h("div", { class: "tours" }, S.tournaments.map(tour)));
 }
@@ -1335,6 +1333,7 @@ function leagueReviewSection() {
     h("div", { class: "sec-head" }, h("h2", {}, L.title), h("p", {}, "一発勝負ではない場所での数字")),
     h("p", { class: "prose" }, L.body),
     h("ul", { class: "points" }, L.points.map((x) => h("li", {}, x))),
+    D.season && D.page === "hub" ? leagueTable(D.season) : null,
     L.note ? h("p", { class: "small muted prose" }, L.note) : null);
 }
 
@@ -1364,3 +1363,306 @@ function historySection() {
           h("td", { class: "small" }, Object.entries(s.reach).map(([k, v]) => `${k} ${v}`).join("／"))))))),
     h("p", { class: "small muted prose" }, G.note));
 }
+
+
+/* ======================================================================
+   年代記のページ（年度・その前の3年間・前史・3年間の通算・全年度の通算）
+   データは build_years.py（out/scout/years.json）と build_history.py の payload_for。
+   本文の数字は prose_tokens.py が書き出しのときに埋めてある
+   ====================================================================== */
+const cleanName = (n) => String(n || "").replace(/^(都・|国・|私・)/, "");
+const RESMARK = { "勝": "○", "PK勝": "○", "不戦勝": "○", "PK負": "×", "負": "×", "不戦敗": "×" };
+const isWin = (r) => r === "勝" || r === "PK勝" || r === "不戦勝";
+function recText(s) {
+  return `${s.w}勝` + (s.pkw ? `${s.pkw}PK勝` : "") + (s.pkl ? `${s.pkl}PK負` : "") + `${s.l}敗`;
+}
+function signedInt(n) { return n == null ? "―" : (n > 0 ? "+" : "") + n; }
+
+/* トーナメント表（部分木）。左に学校、右へ勝ち上がる。赤は勝ち上がり、太い線は武蔵丘の道 */
+function treeSVG(tree) {
+  const leaves = [];
+  const depthOf = (n) => ("t" in n ? 0 : 1 + Math.max(...n.c.map(depthOf)));
+  const D0 = depthOf(tree);
+  const ROW = 30, LABEL = 132, COL = 58, TOP = 18;
+  const STUB = 84, W = LABEL + D0 * COL + STUB + 100, x = (d) => LABEL + (D0 - d) * COL;  // d は根からの深さ
+  const svg = s("svg", { class: "bracket tree", role: "img" });
+  const lines = [], texts = [];
+  const winnerOf = (n) => ("t" in n ? n.k : n.m.w);
+  const place = (n, d) => {
+    if ("t" in n) {
+      const y = TOP + leaves.length * ROW;
+      leaves.push(n);
+      texts.push(s("text", { class: "nm" + (n.k === D.me ? " me-t" : ""), x: LABEL - 8, y: y + 4.5, "text-anchor": "end" }, cleanName(n.t)));
+      return { y, x: LABEL - 4 };
+    }
+    const kids = n.c.map((c) => place(c, d + 1));
+    const xm = x(d), ym = (kids[0].y + kids[1].y) / 2;
+    n.c.forEach((c, i) => {
+      const won = n.m.w && winnerOf(c) === n.m.w;
+      const mine = winnerOf(c) === D.me;
+      lines.push(s("path", { class: "ln" + (won ? " win" : "") + (mine ? " mine" : ""), d: `M${kids[i].x},${kids[i].y} H${xm} V${ym}` }));
+    });
+    const m = n.m, pk = m.pa !== "" && m.pa != null ? `(${m.pa}-${m.pb})` : "";
+    if (m.sa !== "" && m.sa != null) texts.push(s("text", { class: "score", x: xm + 5, y: ym - 5 }, `${m.sa}-${m.sb}${pk}`));
+    texts.push(s("text", { class: "mlab", x: xm + 5, y: ym + 13 }, m.round));
+    return { y: ym, x: xm };
+  };
+  const root = place(tree, 0);
+  const champ = tree.m && tree.m.w;
+  lines.push(s("path", { class: "ln win" + (champ === D.me ? " mine" : ""), d: `M${root.x},${root.y} H${root.x + STUB}` }));
+  if (champ) texts.push(s("text", { class: "dest", x: root.x + STUB + 6, y: root.y + 4.5 }, cleanName(champ)));
+  svg.setAttribute("viewBox", `0 0 ${W} ${TOP + leaves.length * ROW}`);
+  svg.setAttribute("aria-label", `トーナメント表（${leaves.length}校）`);
+  lines.forEach((l) => svg.append(l));
+  texts.forEach((t) => svg.append(t));
+  return svg;
+}
+
+/* 1試合の行。当時の点数・見込みと、相手のいまの点数を並べる */
+function yearGameRow(g, review) {
+  const known = g.gf != null;
+  const cls = g.res ? (isWin(g.res) ? "w" : "l") : "u";
+  return h("li", { class: cls },
+    h("div", { class: "gl" },
+      h("b", { class: "mark" }, RESMARK[g.res] || "−"),
+      h("span", { class: "rnd" }, g.round),
+      h("span", { class: "sc num" }, known ? `${g.gf}-${g.ga}` : g.res || "結果不明", g.pk ? h("small", {}, `PK ${g.pk}`) : null),
+      h("span", { class: "opp" }, cleanName(g.opp)),
+      h("span", { class: "dt num small muted" }, g.date || "")),
+    g.me != null
+      ? h("div", { class: "gr small" },
+          h("span", {}, "当時 ", h("b", { class: "num" }, g.me), " − ", h("b", { class: "num" }, g.oppElo),
+            h("span", { class: "muted" }, `（勝つ見込み ${pct(g.p)}）`)),
+          g.nowOpp != null ? h("span", { class: "now" }, "相手のいま ", h("b", { class: "num" }, g.nowOpp)) : null)
+      : null,
+    review ? h("p", { class: "rv prose" }, review) : null);
+}
+
+const isFirstStage = (label) => /1次|支部|地区/.test(label);
+
+function tournamentSection(y, t, opts = {}) {
+  // 試合ごとの総評がある年度ページでは、大会の総評を重ねて出さない（同じ事実が2度並ぶため）
+  const note = !opts.reviews && isFirstStage(t.label) ? (D.tourReviews || {})[`${y}-${t.series}`] : null;
+  const where = [t.block ? `${t.block}ブロック` : "", t.area || ""].filter(Boolean).join("・");
+  return h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, t.label), h("p", {}, [where, `到達 ${t.reach}`].filter(Boolean).join("　"))),
+    note ? h("p", { class: "tour-note prose" }, note) : null,
+    t.tree ? h("div", { class: "card treebox" }, treeSVG(t.tree)) : null,
+    h("ul", { class: "glist" }, t.games.map((g) => yearGameRow(g, opts.reviews ? opts.reviews[`${t.series}/${g.round}`] : null))));
+}
+
+function yearStatsSection(S, title) {
+  const rows = [
+    ["戦績", `${S.known}試合 ${recText(S)}`, `得点${S.gf}・失点${S.ga}` + (S.n > S.known ? `。ほかに結果の分からない試合が${S.n - S.known}` : "")],
+    ["強さの点数", `${S.start ?? "―"} → ${S.end ?? "―"}`, S.peak != null ? `年度の初め → 年度末。年度中の最高は${S.peak}` : "年度の初め → 年度末"],
+    ["年度末の順位", S.rankEnd ? `${S.nRatedEnd}校中${S.rankEnd}位` : "―", "その年度に大会の試合をした学校のなかで"],
+    ["相手の強さ", S.avgOpp != null ? `平均${S.avgOpp}` : "―", "対戦した相手の、試合の時点の点数"],
+    ["完封", `${S.cleanSheets}試合`, ""],
+    ["90分で格上に勝った試合", `${S.upWins.length}試合`, S.upWins.map((g) => `${g.series}の${cleanName(g.opp)}（${g.oppElo - g.me}点上）`).join("・")],
+  ];
+  return h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, title), h("p", {}, "総体・選手権・新人戦")),
+    h("div", { class: "tbl" }, h("table", {}, h("tbody", {}, rows.map((r) => h("tr", {},
+      h("td", {}, h("b", {}, r[0])), h("td", { class: "n big2" }, r[1]), h("td", { class: "small muted" }, r[2])))))));
+}
+
+function yearUpsetsSection(S) {
+  const U = S.upsets;
+  if (!U || !U.n) return null;
+  const row = (x, rank) => h("li", { class: x.winner === D.me || x.loser === D.me ? "mine" : null },
+    h("b", { class: "rk num" }, rank),
+    h("span", { class: "p num" }, pct(x.p, 1)),
+    h("span", { class: "vs" }, h("b", {}, cleanName(x.winner)), h("small", { class: "num" }, x.winnerElo),
+      h("i", { class: "sc num" }, x.score), h("span", {}, cleanName(x.loser)), h("small", { class: "num" }, x.loserElo)),
+    h("span", { class: "small muted" }, `${x.series} ${x.round}・点差 ${x.gap}`));
+  const items = U.top.map((x, i) => row(x, i + 1));
+  const extra = U.mine.filter((m) => m.rank > U.top.length);
+  if (extra.length) items.push(h("li", { class: "gapline" }, "…"), ...extra.map((m) => row(m, m.rank)));
+  const mineText = U.mine.map((m) => m.winner === D.me
+    ? `武蔵丘が勝った${cleanName(m.loser)}戦は${m.rank}位`
+    : `武蔵丘が敗れた${cleanName(m.winner)}戦は${m.rank}位`).join("、");
+  return h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "番狂わせランキング"), h("p", {}, `${S.year}年度 総体・選手権・新人戦の1次`)),
+    h("p", { class: "prose" }, `試合前の見込みが低かった側が90分で勝った試合を、見込みの低い順に並べました。両校とも5試合以上の記録がある${U.n}件から。`
+      + (mineText ? `${mineText}です。` : "武蔵丘の試合は入っていません。")),
+    h("ol", { class: "gk" }, items));
+}
+
+function leagueTable(S) {
+  const L = S.league;
+  if (!L || !(L.standings || []).length) return null;
+  return h("div", { class: "stack" },
+    h("div", { class: "tbl" }, h("table", {},
+      h("thead", {}, h("tr", {}, ["チーム", "リーグ", "順位", "試合", "勝", "分", "敗", "得点", "失点", "勝点"].map((c, i) => h("th", { class: i > 1 ? "n" : null }, c)))),
+      h("tbody", {}, L.standings.map((r) => h("tr", { class: r.team === "A" ? "hl us" : null },
+        h("td", {}, `武蔵丘${r.team}`), h("td", {}, `${r.league} ${r.div}`),
+        ...[r.rank, r.n, r.w, r.d, r.l, r.gf, r.ga, r.pts].map((v) => h("td", { class: "n" }, v))))))),
+    h("p", { class: "small muted" }, `${S.year}年度の順位表。出典: `,
+      ...[...new Set(L.standings.map((r) => r.src.split("（")[0]))].map((u) => h("a", { href: u, target: "_blank", rel: "noopener" }, "goalnote"))));
+}
+
+function yearLeagueSection(S) {
+  const tb = leagueTable(S);
+  if (!tb) return null;
+  return h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "リーグ戦"), h("p", {}, `${S.year}年度`)), tb);
+}
+
+function sourcesDetails(tours) {
+  const urls = [...new Set(tours.flatMap((t) => t.games.map((g) => g.src)).filter(Boolean))];
+  if (!urls.length) return null;
+  return h("details", { class: "more" }, h("summary", {}, `この年度の出典（トーナメント表 ${urls.length}件）`),
+    h("div", { class: "body" }, h("ul", { class: "small" }, urls.map((u) => h("li", {}, h("a", { href: u, target: "_blank", rel: "noopener" }, u.replace(/^https?:\/\/(web\.archive\.org\/web\/\*\/)?/, "")))))));
+}
+
+function masthead(eyebrow, title, lead) {
+  return h("div", { class: "masthead" }, h("div", { class: "eyebrow" }, eyebrow), h("h1", {}, title), lead ? h("p", { class: "lead" }, lead) : null);
+}
+
+/* ---------- 年度のページ（2024・2025年度） ---------- */
+function renderYear() {
+  const S = D.season, P = D.yprose || {};
+  const root = $("#app");
+  root.append(masthead(`SEASON ${S.year}`, D.titles[D.slug],
+    `${S.year}年度の公式戦${S.known}試合を、大会ごとに振り返ります。点数は試合の時点の値と、いまの値を並べています。`));
+  if (P.verdict) root.append(h("section", { class: "sec" }, h("div", { class: "sec-head" }, h("h2", {}, "結論から")), h("p", { class: "prose" }, P.verdict)));
+  root.append(yearStatsSection(S, `数字で見る${S.year}年度`));
+  for (const t of S.tournaments) root.append(tournamentSection(S.year, t, { reviews: P.matches }));
+  for (const f of [() => yearUpsetsSection(S), () => yearLeagueSection(S), () => sourcesDetails(S.tournaments)]) { const x = f(); if (x) root.append(x); }
+}
+
+/* ---------- その前の3年間（2021〜2023年度）。トーナメント表は載せない ---------- */
+function renderEra() {
+  const root = $("#app");
+  const ys = D.seasons;
+  root.append(masthead(`SEASONS ${ys[ys.length - 1].year}–${ys[0].year}`, D.titles[D.slug],
+    `${ys[ys.length - 1].year}〜${ys[0].year}年度の3年間。大会ごとの全試合と、試合の時点・いまの点数までを載せています。トーナメント表は省きました。`));
+  for (const S of ys) {
+    const P = (D.yprose || {})[S.year] || {};
+    const sec = h("section", { class: "sec" },
+      h("div", { class: "sec-head" }, h("h2", {}, `${S.year}年度`), h("p", {}, `${S.known}試合 ${recText(S)}・年度末 ${S.end ?? "―"}（${S.nRatedEnd}校中${S.rankEnd}位）`)),
+      P.verdict ? h("p", { class: "prose" }, P.verdict) : null);
+    for (const t of S.tournaments) {
+      const one = isFirstStage(t.label) ? (P.tournaments || {})[t.series] : null;
+      sec.append(h("div", { class: "tour" },
+        h("div", { class: "th" }, h("span", { class: "sr" }, t.label), h("span", { class: "reach" }, `到達 ${t.reach}`)),
+        one ? h("p", { class: "tour-note prose" }, one) : null,
+        h("ul", { class: "glist" }, t.games.map((g) => yearGameRow(g)))));
+    }
+    if (S.league) sec.append(h("p", { class: "small muted" }, `リーグ戦（NSリーグ）: ${S.league.w}勝${S.league.d}分${S.league.l}敗・${S.league.gf}得点${S.league.ga}失点（記録の残っている試合）`));
+    root.append(sec);
+  }
+}
+
+/* ---------- 前史（2004〜2020年度）。1年度を1行に ---------- */
+function renderPre() {
+  const root = $("#app");
+  const ys = D.seasons, P = D.yprose || {};
+  root.append(masthead(`PREHISTORY ${ys[ys.length - 1].year}–${ys[0].year}`, D.titles[D.slug], P.lead));
+  const reachLine = (S) => ["総体", "選手権", "新人戦", "関東"].filter((k) => S.reach[k]).map((k) => `${k} ${S.reach[k]}`).join("／");
+  root.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "年度ごとの記録"), h("p", {}, "新しい年度から")),
+    h("ol", { class: "years" }, ys.map((S) => h("li", {},
+      h("b", { class: "num yr2" }, S.year),
+      h("div", {},
+        h("div", { class: "yhead" },
+          S.end != null ? h("span", { class: "num elo" }, S.end) : null,
+          h("span", { class: "small muted" }, S.known ? `${S.known}試合 ${recText(S)}` : `${S.n}試合（結果は不明）`),
+          S.league ? h("span", { class: "small muted" }, `リーグ戦 ${S.league.w}勝${S.league.d}分${S.league.l}敗`) : null),
+        h("p", { class: "small" }, reachLine(S)),
+        (P.notes || {})[S.year] ? h("p", { class: "small" }, P.notes[S.year]) : null)))),
+    h("p", { class: "small muted prose" }, "左の数字はその年度末の強さの点数。点数は2011年度から出しています。")));
+}
+
+/* ---------- 3年間の通算（2024〜2026年度） ---------- */
+function renderSquad3() {
+  const root = $("#app");
+  const ys = D.seasons;
+  const tot = ys.reduce((a, S) => ({ n: a.n + S.known, w: a.w + S.w, pkw: a.pkw + S.pkw, pkl: a.pkl + S.pkl, l: a.l + S.l, gf: a.gf + S.gf, ga: a.ga + S.ga }),
+    { n: 0, w: 0, pkw: 0, pkl: 0, l: 0, gf: 0, ga: 0 });
+  root.append(masthead(`${ys[0].year}–${ys[ys.length - 1].year}`, D.titles[D.slug],
+    `この代が戦った${ys[0].year}〜${ys[ys.length - 1].year}年度の公式戦${tot.n}試合（${recText(tot)}・${tot.gf}得点${tot.ga}失点）を、3年間まとめて見ます。`));
+  root.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "3年間を年度で並べる"), h("p", {}, "点数は年度の初め → 年度末")),
+    h("div", { class: "tbl" }, h("table", {},
+      h("thead", {}, h("tr", {}, ["年度", "試合", "勝敗", "得点", "失点", "強さの点数", "年度末の順位"].map((c, i) => h("th", { class: i && i !== 2 ? "n" : null }, c)))),
+      h("tbody", {}, ys.map((S) => h("tr", {},
+        h("td", {}, h("a", { ...linkAttrs(S.slug) }, `${S.year}年度`)),
+        h("td", { class: "n" }, S.known), h("td", {}, recText(S)), h("td", { class: "n" }, S.gf), h("td", { class: "n" }, S.ga),
+        h("td", { class: "n" }, `${S.start} → ${S.end}`), h("td", { class: "n" }, `${S.nRatedEnd}校中${S.rankEnd}位`))))))));
+  for (const f of [journeySection, squadSection]) { const x = f(); if (x) root.append(x); }
+}
+
+/* ---------- 全年度の通算 ---------- */
+function eloLineSVG(hist) {
+  const ys = Object.keys(hist).map(Number).sort((a, b) => a - b);
+  const vs = ys.map((y) => hist[y]);
+  const W = 640, H = 220, L = 44, R = 16, T = 18, Bm = 28;
+  const lo = Math.floor((Math.min(...vs) - 40) / 100) * 100, hi = Math.ceil((Math.max(...vs) + 40) / 100) * 100;
+  const X = (y) => L + (y - ys[0]) / (ys[ys.length - 1] - ys[0]) * (W - L - R);
+  const Y = (v) => T + (hi - v) / (hi - lo) * (H - T - Bm);
+  const svg = s("svg", { class: "chart eloline", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "年度末の強さの点数の推移" });
+  for (let v = lo; v <= hi; v += 100) {
+    svg.append(s("line", { class: v === 1500 ? "base" : "grid", x1: L, x2: W - R, y1: Y(v), y2: Y(v) }));
+    svg.append(s("text", { class: "ax", x: L - 6, y: Y(v) + 4, "text-anchor": "end" }, v));
+  }
+  svg.append(s("path", { class: "line", d: ys.map((y, i) => `${i ? "L" : "M"}${X(y)},${Y(hist[y])}`).join(" ") }));
+  const peak = ys[vs.indexOf(Math.max(...vs))], low = ys[vs.indexOf(Math.min(...vs))], last = ys[ys.length - 1];
+  ys.forEach((y) => {
+    const c = s("circle", { class: "dot" + (y === last ? " last" : ""), cx: X(y), cy: Y(hist[y]), r: y === last ? 5 : 3.5 });
+    c.append(s("title", {}, `${y}年度末 ${hist[y]}`));
+    svg.append(c);
+    if (y % 2 === 0 || y === last) svg.append(s("text", { class: "ax", x: X(y), y: H - 8, "text-anchor": "middle" }, String(y)));
+    if (y === peak || y === low || y === last) svg.append(s("text", { class: "lab", x: X(y), y: Y(hist[y]) - 9, "text-anchor": "middle" }, hist[y]));
+  });
+  return svg;
+}
+
+function renderAllTime() {
+  const A = D.alltime, root = $("#app");
+  const ys = A.years;
+  const played = A.win + A.draw + A.lose;
+  root.append(masthead("ALL-TIME", D.titles[D.slug],
+    `${ys[0]}年度から${ys[ys.length - 1]}年度までの公式戦${A.n}試合（大会${A.cup}・リーグ戦${A.league}）の通算です。`));
+  root.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "数字で見る通算"), h("p", {}, `${ys[0]}〜${ys[ys.length - 1]}年度`)),
+    h("div", { class: "tbl" }, h("table", {}, h("tbody", {}, [
+      ["公式戦", `${A.n}試合`, `大会${A.cup}・リーグ戦${A.league}`],
+      ["勝敗", `${A.win}勝${A.draw}分${A.lose}敗`, `勝率${Math.round(A.win / played * 100)}%` + (A.unknown ? `・結果の分からない試合が${A.unknown}` : "")],
+      ["得失点", `${A.gf} - ${A.ga}`, `差 ${signedInt(A.gf - A.ga)}`],
+      ["いまの強さの点数", Math.round(A.elo), `今年度に大会へ出た${A.teams}校中${A.place}位`],
+    ].map((r) => h("tr", {}, h("td", {}, h("b", {}, r[0])), h("td", { class: "n big2" }, r[1]), h("td", { class: "small muted" }, r[2]))))))));
+  root.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "通算の要点"), h("p", {}, "表と図から言えること")),
+    h("ul", { class: "points" }, A.points.map(([t, b]) => h("li", {}, h("b", {}, t), "　", b)))));
+  root.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "強さの点数の推移"), h("p", {}, "年度末の値")),
+    h("div", { class: "card" }, eloLineSVG(A.eloHistory),
+      h("p", { class: "small muted" }, "1500が東京全体の平均。点数は大会とリーグ戦（重みは半分）から計算し、年度をまたいでも平均へ戻さずに持ち越しています。"))));
+  const hs = historySection(); if (hs) root.append(hs);
+  const order = (kv) => [kv[1].league ? 1 : 0, ["総体", "選手権", "新人戦", "関東"].indexOf(kv[0]), -kv[1].n];
+  root.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "大会・リーグ別の成績"), h("p", {}, "通算")),
+    h("div", { class: "tbl" }, h("table", {},
+      h("thead", {}, h("tr", {}, ["大会", "試合", "勝", "分", "敗", "勝率"].map((c, i) => h("th", { class: i ? "n" : null }, c)))),
+      h("tbody", {}, Object.entries(A.series).sort((a, b) => { const x = order(a), y = order(b); return x[0] - y[0] || x[1] - y[1] || x[2] - y[2]; }).map(([k, v]) => h("tr", {},
+        h("td", {}, k), h("td", { class: "n" }, v.n), h("td", { class: "n" }, v.win), h("td", { class: "n" }, v.draw), h("td", { class: "n" }, v.lose),
+        h("td", { class: "n" }, v.win + v.draw + v.lose ? `${Math.round(v.win / (v.win + v.draw + v.lose) * 100)}%` : "―"))))))));
+  root.append(h("section", { class: "sec" },
+    h("div", { class: "sec-head" }, h("h2", {}, "よく当たる相手"), h("p", {}, `対戦の多い順に${A.opponents.length}校`)),
+    h("div", { class: "tbl" }, h("table", {},
+      h("thead", {}, h("tr", {}, ["相手", "試合", "勝", "分", "敗", "不明"].map((c, i) => h("th", { class: i ? "n" : null }, c)))),
+      h("tbody", {}, A.opponents.map(([n, c]) => {
+        const w = A.beat[n] || 0, d = A.drew[n] || 0, l = A.lost[n] || 0;
+        return h("tr", {}, h("td", {}, n), ...[c, w, d, l, c - w - d - l || ""].map((v) => h("td", { class: "n" }, v)));
+      }))))));
+}
+
+/* ---------- 起動（ファイルの最後に置く。上の const が全部決まってから描く） ---------- */
+renderTopbar();
+renderSidenav();
+({ hub: renderHub, team: renderTeam, seeds: renderSeeds, second: renderSecond, book: renderIndexBook, self: renderSelf,
+   year: renderYear, era: renderEra, pre: renderPre, squad3: renderSquad3, alltime: renderAllTime }[D.page] || renderSelf)();
+numberSections();
+$("#app").prepend(pager());  // 前後のページはページの上に置く（下まで読まないと次へ進めない、という指摘を受けて）
+fillToc();
+document.body.append(h("footer", { class: "foot" }, `データ: ${D.asOf}。強さの点数と見込みは過去の公式戦から計算した目安です。`));
