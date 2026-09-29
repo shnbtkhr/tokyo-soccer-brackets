@@ -327,6 +327,38 @@ def score_text(m: dict, for_slot: int = 1) -> str:
     return t
 
 
+def drop_version_duplicates(rows: list[dict]) -> list[dict]:
+    """同じトーナメント表が別のファイル名で2度保存されているとき、2つ目以降の同じ試合を落とす。
+
+    アーカイブには、同じ表の途中版と最終版が別名で残っていることがある
+    （sen15_1j と sen15_1j_k、SEN18_1j と SEN18_1jk、SEN19_1ja と SEN19_1jt、
+    sen13_1j と sen13_1j_B/_C）。両方を読むと同じ試合が2回数えられ、強さの点数に
+    2度効いていた（2026-09-29 に結果の入った331試合を確認）。
+    勝ち上がりの表では、同じ大会・同じ段階・同じ回戦で同じ2校が当たるのは1度きりなので、
+    それを同じ試合とみなす。結果の入った行を優先して残す。
+    """
+    def played(r: dict) -> bool:
+        return r["得点A"] != "" and r["得点B"] != ""
+
+    def key(r: dict) -> tuple:
+        return (r["年度"], r["大会"], r["段階"], r["ラウンド"],
+                frozenset((r["チームA_正規化"], r["チームB_正規化"])))
+
+    named = lambda r: bool(r["チームA_正規化"] and r["チームB_正規化"])
+    best: dict[tuple, dict] = {}
+    for r in rows:
+        if not named(r):
+            continue
+        k = key(r)
+        if k not in best or (played(r) and not played(best[k])):
+            best[k] = r
+    keep = {id(r) for r in best.values()}
+    out = [r for r in rows if not named(r) or id(r) in keep]
+    if len(out) < len(rows):
+        print(f"  同じ表の別版と重なった試合 {len(rows) - len(out)} 件を除いた")
+    return out
+
+
 def build() -> None:
     fixes = load_corrections()
     rows = []
@@ -438,6 +470,7 @@ def build() -> None:
                     }
                 )
     rows.sort(key=lambda r: r["_order"])
+    rows = drop_version_duplicates(rows)
     out = ROOT / "out"
     cols = [k for k in rows[0] if not k.startswith("_")]
     with (out / "matches.csv").open("w", encoding="utf-8-sig", newline="") as f:

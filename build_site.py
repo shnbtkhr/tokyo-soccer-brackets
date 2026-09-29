@@ -24,6 +24,7 @@ from pathlib import Path
 
 from analyze_team import BASE, CARRY, K, LEAGUE_WEIGHT, win_prob
 from build_scout_page import build_data
+from prose_tokens import resolve
 
 ROOT = Path(__file__).parent
 SLUG = {"武蔵丘": "musashigaoka", "昭和第一": "showa-daiichi", "学習院": "gakushuin", "板橋有徳": "itabashi-yutoku", "城東": "joto", "東村山": "higashimurayama"}
@@ -41,6 +42,9 @@ PAGE_NAME = {
     "history-musashigaoka": "武蔵丘の歩み",
 }
 TITLE = {k: f"{v}｜{SITE_NAME}" for k, v in PAGE_NAME.items()}
+
+
+BT = json.loads((ROOT / "out/scout/backtest.json").read_text(encoding="utf-8"))
 
 
 def band_of(g: dict) -> str:
@@ -145,7 +149,8 @@ def elo_explainer(T: dict, me: str, r1: str, opps: list) -> dict:
             "「格上・格下」は、試合の時点で点数の差が 50 点を超える相手。",
         ],
         "caveats": [
-            "2022〜2026年度の大会の試合を、試合前の点数で当てられたかで設定を選んだ。2025・26年度の大会1,314試合で、見込みの高い側が勝った割合は80.3%（旧方式は76.9%）。",
+            f"試合前の点数でどれだけ当てられたかで設定を選んだ。{BT['evalYears']}の大会{BT['adopted']['nDec']:,}試合で、"
+            f"見込みの高い側が勝った割合は{BT['adopted']['acc']:.1%}（旧方式は{BT['base']['acc']:.1%}）。",
             "リーグ戦をそのまま入れると当たり具合は悪くなった。控え（B・C）やクラブは点数が分からないまま始まるため。控えは学校のAから差し引いた点数で始め、試合数の少ないチームとの結果では学校の点数を動かさないようにして、はじめて良くなった。",
             "地区リーグは地区ごとに取れた量が違う（第8地区は学校の試合記録だけ）。取れた量の多い地区の学校ほど点数がよく動く。",
             "いちばん古い 2004年度の序盤は全校が 1500 点から始まるため、その時期の点数はあてにならない。ホームかどうか、延長かどうかは考えていない。",
@@ -205,7 +210,8 @@ def meet_breakdown(T: dict, block: list, me: str, decided: list) -> dict:
 
 def build(links: str) -> Path:
     data = build_data("武蔵丘", ROOT / "scout/sen2026_block10.json")
-    FINAL = json.loads((ROOT / "scout/final_2026.json").read_text(encoding="utf-8"))
+    # 本文の {{式}} はここで数字に置き換える（手書きの数字はデータを直すたびに古くなるため）
+    FINAL = resolve(json.loads((ROOT / "scout/final_2026.json").read_text(encoding="utf-8")))
     UPSETS = json.loads((ROOT / "out/scout/upsets_2026.json").read_text(encoding="utf-8"))
     SQUAD = json.loads((ROOT / "out/scout/squad_2026.json").read_text(encoding="utf-8"))
     BOOK = json.loads((ROOT / "out/scout/index_2026.json").read_text(encoding="utf-8"))
@@ -330,6 +336,7 @@ def build(links: str) -> Path:
         "totalMatches": total, "ratedMatches": rated, "firstYear": first_year,
         "doneNote": "・".join(dict.fromkeys(d.get("round", "1回戦") for d in data["decided"])) + "は終了",
         "final": FINAL, "nextOpp": nxt_opp_key, "upsets": UPSETS, "over": not T[me]["alive"], "squad": SQUAD, "gens": GENS,
+        "backtest": {"years": BT["evalYears"], "n": f"{BT['adopted']['nDec']:,}", "acc": f"{BT['adopted']['acc']:.1%}"},
     }
     css = (ROOT / "scout/site/site.css").read_text(encoding="utf-8")
     js = (ROOT / "scout/site/site.js").read_text(encoding="utf-8")

@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import math
 from itertools import product
 from pathlib import Path
@@ -86,7 +87,28 @@ def main() -> int:
         results.append(res)
         print(f"{cfg.name:52s} 25-26 ll={res['2025-26']['logloss']} acc={res['2025-26']['acc']} | 2024 ll={res['2024']['logloss']}")
     write_md(results)
+    write_json(results)
     return 0
+
+
+def same_cfg(a, b) -> bool:
+    keys = ("k", "carry", "league_weight", "use_tleague", "use_district", "use_prince",
+            "level_prior", "reserve_prior", "provisional")
+    return all(getattr(a, k) == getattr(b, k) for k in keys)
+
+
+def write_json(results: list) -> None:
+    """ページの本文が引く数字。的中率を本文に手で書くと、データを直すたびに古くなる（2026-09-29）。"""
+    def pick(r: dict) -> dict:
+        a = r["2025-26"]
+        return {"name": r["cfg"].name, "n": a["n"], "nDec": a["nDec"], "acc": a["acc"],
+                "logloss": a["logloss"], "brier": a["brier"], "logloss2024": r["2024"]["logloss"]}
+    adopted = next(r for r in results if same_cfg(r["cfg"], rating.ADOPTED))
+    best = min(results[1:], key=lambda r: r["2025-26"]["logloss"])
+    out = {"evalYears": "2025・26年度", "adopted": pick(adopted), "base": pick(results[0]), "best": pick(best)}
+    path = Path(__file__).parent / "out/scout/backtest.json"
+    path.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"wrote {path.name}: 採用 的中率 {adopted['2025-26']['acc']:.1%}（{adopted['2025-26']['nDec']}試合）")
 
 
 def write_md(results: list) -> None:
@@ -118,7 +140,9 @@ def write_md(results: list) -> None:
           "2. 直し方: ①控えは、その学校の A の点数から B は100点・C は200点…引いた値で始める ②試合数10未満のチームとの試合では、学校の点数を動かさない（仮の期間）"
           " ③リーグで初めて出てくるチームは、リーグの階層（プリンス +300 … T5 ±0 … 地区3部 −150）で最初の点数を決める。リーグの重みも大会の半分にした",
           "3. **K を大きく・年度をまたいでも点数を平均へ戻さない（持ち越し1.0）ほうが当たった**。高校サッカーでは、学校ごとの強さ（指導・部員の集まり方）が年度をまたいでも続くためとみられる",
-          "4. K と持ち越しは、比べた範囲の端（K88・持ち越し1.0）が一番良かった。K をさらに大きくするとまだ少し良くなる可能性があるが、1試合で点数が大きく動きすぎるので、ここで止めた",
+          f"4. 採用した K88 と、対数損失が一番小さかった設定（{best['cfg'].name}）との差は "
+          f"{abs(next(r for r in results if same_cfg(r['cfg'], rating.ADOPTED))['2025-26']['logloss'] - best['2025-26']['logloss']):.4f}。"
+          "K72〜88 の範囲ではほぼ差が無く、K をさらに大きくすると1試合で点数が大きく動きすぎるので、ここで止めた",
           "5. 採用した設定（rating.py の ADOPTED）: K88・持ち越し1.0・全リーグを重み0.5で入れる・控えの最初の点数・仮の期間10試合・階層で最初の点数", "",
           "## 全設定（2025・26年度の対数損失の小さい順）", "",
           "| 設定 | 対数損失 25-26 | ブライア 25-26 | 的中率 25-26 | 対数損失 2024 | 対数損失 25-26（両校とも5試合以上） |", "|---|---|---|---|---|---|"]
