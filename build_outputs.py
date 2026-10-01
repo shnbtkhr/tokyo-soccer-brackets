@@ -354,8 +354,14 @@ def drop_version_duplicates(rows: list[dict]) -> list[dict]:
             best[k] = r
     keep = {id(r) for r in best.values()}
     out = [r for r in rows if not named(r) or id(r) in keep]
-    if len(out) < len(rows):
-        print(f"  同じ表の別版と重なった試合 {len(rows) - len(out)} 件を除いた")
+    dropped = [r for r in rows if named(r) and id(r) not in keep]
+    if dropped:
+        cols = [k for k in rows[0] if not k.startswith("_")]
+        with (ROOT / "out/dropped_duplicates.csv").open("w", encoding="utf-8-sig", newline="") as f:
+            wr = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
+            wr.writeheader()
+            wr.writerows(dropped)
+        print(f"  同じ表の別版と重なった試合 {len(dropped)} 件を除いた（out/dropped_duplicates.csv に記録）")
     return out
 
 
