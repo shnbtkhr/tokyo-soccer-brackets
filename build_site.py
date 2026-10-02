@@ -219,6 +219,9 @@ def meet_breakdown(T: dict, block: list, me: str, decided: list) -> dict:
 
 def build(links: str) -> Path:
     data = build_data("武蔵丘", ROOT / "scout/sen2026_block10.json")
+    # 試合の山の本文（今季の位置づけ・点数の算出）も、数字は {{式}} で書いてここで埋める
+    data["formNote"] = resolve(data["formNote"])
+    data["method"] = resolve(data["method"])
     # 本文の {{式}} はここで数字に置き換える（手書きの数字はデータを直すたびに古くなるため）
     FINAL = resolve(json.loads((ROOT / "scout/final_2026.json").read_text(encoding="utf-8")))
     UPSETS = json.loads((ROOT / "out/scout/upsets_2026.json").read_text(encoding="utf-8"))

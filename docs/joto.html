@@ -815,17 +815,22 @@ function fillToc() {
 function bracketSVG() {
   const svg = s("svg", { class: "bracket", viewBox: "0 0 380 400", role: "group", "aria-label": `${D.blockLabel}のトーナメント表` });
   const K = D.block, Y = (i) => 32 + i * 46, X0 = 142, X1 = 188, X2 = 252, X3 = 318, X4 = 366;
-  const decided = {};
-  for (const d of D.decided) { decided[d.a] = d; decided[d.b] = d; }
+  // 決着した試合は「その2校の試合」で引く。学校ごとに最後の試合を引くと、2回戦の結果が
+  // 1回戦の枠に出ていた（2026-10-02 に学習院・板橋有徳の枠が 0-1 になっていた）
+  const game = (x, y) => x && y ? (D.decided || []).find((d) => (d.a === x && d.b === y) || (d.a === y && d.b === x)) : null;
   const sch = Object.fromEntries(D.schedule.filter((m) => m.no).map((m) => [m.no, m]));
   const line = (x1, y1, x2, y2, cls) => svg.append(s("line", { x1, y1, x2, y2, class: "ln" + (cls ? " " + cls : "") }));
+  const decided = {};
+  for (const [a, b] of [[0, 1], [2, 3], [4, 5], [6, 7]]) { const d = game(K[a], K[b]); if (d) { decided[K[a]] = d; decided[K[b]] = d; } }
   K.forEach((k, i) => {
     const t = B[k], y = Y(i), slug = D.keyToSlug[k];
     const g = s(slug ? "a" : "g", slug ? { href: hrefOf(slug), target: D.linkTarget || null, class: (k === D.me ? "me" : "") + (!t.alive ? " out" : ""), "aria-label": `${t.display}のページを開く` } : { class: "out" });
     g.append(s("rect", { class: "hit", x: 0, y: y - 21, width: X0 - 6, height: 42, rx: 6 }));
     g.append(s("text", { class: "slot", x: 8, y: y + 4 }, String(D.slots[k])));
     g.append(s("text", { class: "nm", x: 32, y: y - 2 }, t.display));
-    g.append(s("text", { class: "pct", x: 32, y: y + 14 }, t.alive ? `山を勝ち抜く ${pct(t.blockWin)}` : `${t.outcome ? t.outcome.round : ""}で敗退`));
+    const bk = (D.decided || []).find((d) => d.round === "ブロック決勝");
+    g.append(s("text", { class: "pct", x: 32, y: y + 14 },
+      bk && bk.winner === k ? "ブロックを勝ち抜き2次予選へ" : t.alive ? `山を勝ち抜く ${pct(t.blockWin)}` : `${t.outcome ? t.outcome.round : ""}で敗退`));
     svg.append(g);
     line(X0, y, X1, y, decided[k] && decided[k].winner === k ? "win" : k === D.me ? "path" : "");
   });
@@ -844,22 +849,43 @@ function bracketSVG() {
       svg.append(s("text", { class: "mlab", x: X1 + 7, y: ym + 15 }, "終了"));
     }
   });
-  const mids2 = [];
+  // 2回戦とブロック決勝も、決着していれば結果で描く（以前は試合前の形のまま固定していた）
+  const r1w = [[0, 1], [2, 3], [4, 5], [6, 7]].map(([a, b]) => { const d = game(K[a], K[b]); return d ? d.winner : null; });
+  const onMyPath = (k) => k === D.me;
+  const mids2 = [], r2w = [];
   [[0, 1, 149], [2, 3, 150]].forEach(([a, b, no]) => {
     const ya = mids[a], yb = mids[b], ym = (ya + yb) / 2; mids2.push(ym);
-    const mine = no === 149;
-    line(X2, ya, X2, yb, ""); line(X2, ym, X3, ym, mine ? "path" : "");
-    if (mine) line(X2, yb, X2, ym, "path");
-    svg.append(s("text", { class: "mno", x: X2 + 7, y: ym - 7 }, `【${no}】`));
-    svg.append(s("text", { class: "mlab", x: X2 + 7, y: ym + 15 }, `${sch[no].date} ${sch[no].time}`));
+    const d = game(r1w[a], r1w[b]);
+    r2w.push(d ? d.winner : null);
+    const wa = d && d.winner === r1w[a], wb = d && d.winner === r1w[b];
+    const pa = !d && onMyPath(r1w[a]), pb = !d && onMyPath(r1w[b]);
+    line(X2, ya, X2, ym, wa ? "win" : pa ? "path" : ""); line(X2, ym, X2, yb, wb ? "win" : pb ? "path" : "");
+    line(X2, ym, X3, ym, d ? "win" : pa || pb ? "path" : "");
+    if (d) {
+      svg.append(s("text", { class: "score", x: X2 + 7, y: ym - 7 }, d.score));
+      svg.append(s("text", { class: "mlab", x: X2 + 7, y: ym + 15 }, "終了"));
+    } else {
+      svg.append(s("text", { class: "mno", x: X2 + 7, y: ym - 7 }, `【${no}】`));
+      svg.append(s("text", { class: "mlab", x: X2 + 7, y: ym + 15 }, `${sch[no].date} ${sch[no].time}`));
+    }
   });
   const yf = (mids2[0] + mids2[1]) / 2;
-  line(X3, mids2[0], X3, mids2[1], ""); line(X3, mids2[0], X3, yf, "path"); line(X3, yf, X4, yf, "path");
-  svg.append(s("text", { class: "mno", x: X3 + 7, y: yf - 24 }, "【208】"));
-  svg.append(s("text", { class: "mlab", x: X3 + 7, y: yf - 9 }, sch[208].date));
-  svg.append(s("text", { class: "mlab", x: X3 + 7, y: yf + 17 }, sch[208].time));
-  line(X4, yf, X4, 24, "path");
-  svg.append(s("text", { class: "dest", x: X4, y: 16, "text-anchor": "end" }, "→ 2次予選【10】"));
+  const fin = game(r2w[0], r2w[1]);
+  const fa = fin && fin.winner === r2w[0], fb = fin && fin.winner === r2w[1];
+  const fpa = !fin && onMyPath(r2w[0]), fpb = !fin && onMyPath(r2w[1]);
+  line(X3, mids2[0], X3, yf, fa ? "win" : fpa ? "path" : ""); line(X3, yf, X3, mids2[1], fb ? "win" : fpb ? "path" : "");
+  line(X3, yf, X4, yf, fin ? "win" : fpa || fpb ? "path" : "");
+  if (fin) {
+    svg.append(s("text", { class: "score", x: X3 + 7, y: yf - 9 }, fin.score));
+    svg.append(s("text", { class: "mlab", x: X3 + 7, y: yf + 17 }, "終了"));
+  } else {
+    svg.append(s("text", { class: "mno", x: X3 + 7, y: yf - 24 }, "【208】"));
+    svg.append(s("text", { class: "mlab", x: X3 + 7, y: yf - 9 }, sch[208].date));
+    svg.append(s("text", { class: "mlab", x: X3 + 7, y: yf + 17 }, sch[208].time));
+  }
+  line(X4, yf, X4, 24, fin ? "win" : fpa || fpb ? "path" : "");
+  svg.append(s("text", { class: "dest", x: X4, y: 16, "text-anchor": "end" },
+    fin ? `→ 2次予選【10】 ${B[fin.winner] ? B[fin.winner].display.replace("都・", "") : fin.winner}` : "→ 2次予選【10】"));
   return svg;
 }
 
