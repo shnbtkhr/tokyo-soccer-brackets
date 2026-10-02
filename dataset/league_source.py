@@ -67,8 +67,12 @@ def _rows_enum(fname: str) -> list[tuple[int, dict]]:
     return list(enumerate(_rows(fname), start=1))
 
 
-def load_all_enriched() -> tuple[list[dict], list[dict]]:
-    """(残った行, 落ちた行)。フィールドは load_all() と同じ + 節・生ホーム・生アウェイ・src_row・src_seq。"""
+def load_all_enriched(canon=None) -> tuple[list[dict], list[dict]]:
+    """(残った行, 落ちた行)。フィールドは load_all() と同じ + 節・生ホーム・生アウェイ・src_row・src_seq。
+
+    canon: 学校の legacy_key -> まとめ先の legacy_key を返す関数（名寄せ後の重なり整理用。
+    行の中身は書き換えず、重なりを数える鍵だけに使う。None なら学校名そのまま）。"""
+    _c = canon or (lambda k: k)
     groups: dict[str, list[dict]] = defaultdict(list)
 
     def add(kind: str, rows: list[dict]) -> None:
@@ -99,7 +103,7 @@ def load_all_enriched() -> tuple[list[dict], list[dict]]:
                  for i, r in _rows_enum("prince_kanto1_2026_matches.csv") if r.get("実施") == "済"])
 
     def key(r: dict) -> tuple:
-        pair = sorted([(r["ホーム学校"], r["得点H"]), (r["アウェイ学校"], r["得点A"])])
+        pair = sorted([(_c(r["ホーム学校"]), r["得点H"]), (_c(r["アウェイ学校"]), r["得点A"])])
         return (r["年度"], *[x for p in pair for x in p])
 
     counts: dict[tuple, Counter] = defaultdict(Counter)

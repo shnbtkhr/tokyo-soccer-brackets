@@ -89,8 +89,34 @@ def materialize_tournament(a: legacy.Adapter) -> list[dict]:
     for r in rows:
         del r["_src_row"]
 
+    rewrite_merged_raw_names(rows)
     common.write_csv(OUT / "out/matches.csv", OUT_MATCHES_COLS, rows)
     return rows
+
+
+def rewrite_merged_raw_names(rows: list[dict]) -> None:
+    """名寄せ（school_merges.csv）でまとめた学校の生の校名を、まとめ先の legacy_key に書き換える。
+
+    読む側（rating.py・analyze_team.py・build_*.py）は「チームA」「チームB」「勝者」の生の校名を
+    自分で normalize() し直す（「チームA_正規化」の列は見ない）。そのため「正規化」の列だけをまとめ先に
+    しても、点数の計算は variant の学校を別の学校として数え続ける。ここで生の校名そのものを
+    まとめ先のキーに置き換えれば、読む側のコードを変えずに1校として扱われる。
+    原文の書き方は Vault の表（matches.csv の raw_a・raw_b）に残っている。実体化したファイルだけの書き換え。
+    """
+    merges = common.read_csv(paths.dataset_dir() / "school_merges.csv")
+    variants = {m["variant_key"] for m in merges}
+    if not variants:
+        return
+    n = 0
+    for r in rows:
+        for side, key_col in (("A", "チームA_正規化"), ("B", "チームB_正規化")):
+            raw = r[f"チーム{side}"]
+            if build_outputs.normalize(raw) in variants and r[key_col]:
+                if r["勝者"] == raw:
+                    r["勝者"] = r[key_col]
+                r[f"チーム{side}"] = r[key_col]
+                n += 1
+    note(f"名寄せ：大会の生の校名 {n}件をまとめ先のキーに置き換えた")
 
 
 def materialize_teams(tournament_rows: list[dict]) -> None:

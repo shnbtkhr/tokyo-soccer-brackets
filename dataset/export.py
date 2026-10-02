@@ -33,8 +33,60 @@ class StopForReview(Exception):
 # ---------------------------------------------------------------------------
 
 
+class Merger:
+    """school_merges.csv（名寄せの判断）。variant の legacy_key をまとめ先の学校（と区分）へ付け替える。
+
+    apply_merges=False のときは空（付け替えなし）。段階1の往復テスト T2〜T5 は、名寄せ前の旧データとの
+    一致を確かめるものなので、この空の状態で書き出した表に対して走らせる。
+    """
+
+    def __init__(self, rows: list[dict] | None = None) -> None:
+        self.map: dict[str, dict] = {r["variant_key"]: r for r in (rows or [])}
+
+    def __bool__(self) -> bool:
+        return bool(self.map)
+
+    def canon(self, key: str) -> str:
+        m = self.map.get(key)
+        return m["canonical_key"] if m else key
+
+    def remap(self, key: str, squad: str) -> tuple[str, str]:
+        """(legacy_key, 区分) -> まとめ先の (legacy_key, 区分)。squad 列が空なら元の区分のまま。"""
+        m = self.map.get(key)
+        if not m:
+            return key, squad
+        return m["canonical_key"], (m.get("squad") or squad)
+
+    def validate(self, known_keys: set[str]) -> None:
+        bad = []
+        for vk, m in self.map.items():
+            for col in ("variant_key", "canonical_key"):
+                if m[col] not in known_keys:
+                    bad.append((col, m[col]))
+            if m["canonical_key"] in self.map:
+                bad.append(("まとめ先がさらに別の学校にまとめられている", m["canonical_key"]))
+            if vk == m["canonical_key"]:
+                bad.append(("自分自身にまとめている", vk))
+        if bad:
+            raise StopForReview(f"school_merges.csv に実在しない・矛盾したキーがある: {bad}")
+
+
+class RemappedTeamIds(dict):
+    """(legacy_key, 区分) -> team_id の辞書。get() のとき名寄せの付け替えを通す。"""
+
+    def __init__(self, base: dict, merger: Merger) -> None:
+        super().__init__(base)
+        self._merger = merger
+
+    def get(self, key, default=None):  # type: ignore[override]
+        if self._merger:
+            key = self._merger.remap(*key)
+        return super().get(key, default)
+
+
 class SchoolRegistry:
-    def __init__(self) -> None:
+    def __init__(self, merger: Merger | None = None) -> None:
+        self.merger = merger or Merger()
         self.seen: dict[str, dict] = {}
         self.names: dict[str, dict] = {}
         self.conflicts: list[tuple[str, str, str]] = []
@@ -54,14 +106,22 @@ class SchoolRegistry:
     def touch_name(self, name: str, key: str, season: int, feed: str = "", row: dict | None = None) -> None:
         if not name or not key:
             return
+        # 名寄せ：まとめられる側の学校の書き方は、まとめ先の学校の書き方として登録する。
+        # 改称（kind=改称）の学校から来た書き方だけが「旧校名」になる
+        via_rename = False
+        vm = self.merger.map.get(key)
+        if vm:
+            via_rename = vm["kind"] == "改称"
+            key = vm["canonical_key"]
         n = self.names.get(name)
         if n is None:
-            self.names[name] = {"school_key": key, "first": season, "last": season}
+            self.names[name] = {"school_key": key, "first": season, "last": season, "rename": via_rename}
         elif n["school_key"] != key:
             self.conflicts.append((name, n["school_key"], key))
         else:
             n["first"] = min(n["first"], season)
             n["last"] = max(n["last"], season)
+            n["rename"] = n["rename"] and via_rename
         ex = self.name_examples.setdefault(name, {})
         if key not in ex:
             ex[key] = {"feed": feed, "row": row or {}}
@@ -162,7 +222,7 @@ def assign_school_ids(reg: SchoolRegistry, existing_rows: list[dict], roster_onl
 
 
 def build_schools(reg: SchoolRegistry, id_of: dict[str, str], member_areas: dict,
-                   partner_map: dict[str, list[str]], roster_only_keys=()) -> tuple[list[dict], dict]:
+                   partner_map: dict[str, list[str]], roster_only_keys=(), merger: Merger | None = None) -> tuple[list[dict], dict]:
     rows = []
     tally = {"member_areas": 0, "unknown_tournament": 0, "unknown_league": 0, "club": 0,
              "ambiguous_pair": 0, "roster_only": 0}
@@ -192,7 +252,7 @@ def build_schools(reg: SchoolRegistry, id_of: dict[str, str], member_areas: dict
             tally["ambiguous_pair"] += 1
         rows.append({
             "school_id": sid, "name": key, "official_name": "", "roster_name": roster_name, "kind": kind,
-            "district": district, "city": city, "legacy_key": key, "note": note,
+            "district": district, "city": city, "legacy_key": key, "note": note, "merged_into": "",
         })
     # 加盟校一覧にあるが試合・順位表の記録が1つも無い学校（2026-10-01 追加。地区ごとの加盟校数を
     # 正しく数えるため、試合が無くてもここに1行持つ）
@@ -201,9 +261,29 @@ def build_schools(reg: SchoolRegistry, id_of: dict[str, str], member_areas: dict
         rows.append({
             "school_id": id_of[key], "name": key, "official_name": "", "roster_name": ma.get("name", ""),
             "kind": ma.get("kind", ""), "district": ma.get("area", ""), "city": ma.get("city", ""),
-            "legacy_key": key, "note": "加盟校一覧のみ（試合記録なし）",
+            "legacy_key": key, "note": "加盟校一覧のみ（試合記録なし）", "merged_into": "",
         })
         tally["roster_only"] += 1
+    tally["merged"] = 0
+    if merger:
+        by_key = {r["legacy_key"]: r for r in rows}
+        for vk, m in merger.map.items():
+            v, c = by_key[vk], by_key[m["canonical_key"]]
+            v["merged_into"] = c["school_id"]
+            # 加盟校一覧の情報（名前・地区・区分）は学校ごとに1つ。まとめ先に無ければ移し、
+            # まとめられた側からは外す（外さないと地区ごとの加盟校数を二重に数える）
+            lost = ""
+            if v["roster_name"]:
+                if not c["roster_name"]:
+                    for col in ("roster_name", "kind", "district", "city"):
+                        c[col] = v[col]
+                    if c["note"].startswith("区分未確認"):
+                        c["note"] = ""
+                else:
+                    lost = f"加盟校一覧の名前「{v['roster_name']}」は、まとめ先にも別の行があるためまとめ先の値を使う。"
+                v["roster_name"], v["district"], v["city"] = "", "", ""
+            v["note"] = f"名寄せ（{m['kind']}）：{c['name']}にまとめた。{m['note']}" + (f" {lost}" if lost else "")
+            tally["merged"] += 1
     rows.sort(key=lambda r: r["school_id"])
     return rows, tally
 
@@ -217,7 +297,7 @@ def build_school_names(reg: SchoolRegistry, id_of: dict[str, str], ambiguous_nam
         if key not in id_of:
             continue
         rows.append({
-            "name": name, "school_id": id_of[key], "kind": "表記",
+            "name": name, "school_id": id_of[key], "kind": "旧校名" if info.get("rename") else "表記",
             "first_season": info["first"], "last_season": info["last"],
         })
     rows.sort(key=lambda r: r["name"])
@@ -266,7 +346,8 @@ def find_bracket_anomaly_school_ids(schools_rows: list[dict]) -> dict[str, tuple
 
 
 def write_known_issues_doc(reg: SchoolRegistry, ambiguous_names: set[str], partner_map: dict[str, list[str]],
-                            nihongakuen_rows: list[dict], bracket_anomalies: dict[str, tuple[str, str]]) -> int:
+                            nihongakuen_rows: list[dict], bracket_anomalies: dict[str, tuple[str, str]],
+                            n_merges: int = 0) -> int:
     path = ROOT / "notes/dataset-known-issues.md"
     lines = [
         "# データ移行で見つかった既知の問題（school_names.csv 未登録の名寄せ）",
@@ -280,6 +361,9 @@ def write_known_issues_doc(reg: SchoolRegistry, ambiguous_names: set[str], partn
         "Vault の `school_names.csv` には**登録しない**（登録すると1つの書き方が2つの学校を指すことになるため）。"
         "各 legacy_key の `schools.csv` の `note` に「移行時点では別ID」と記録してある。"
         "統合（名寄せ）は段階1の外、別作業で行う。",
+        "",
+        (f"**2026-10-02：名寄せ（Vault の `school_merges.csv`・{n_merges}件）を適用済み。** 下の表は、名寄せしてもなお"
+         "同じ書き方が2つの学校を指すものだけが残る。" if n_merges else "（名寄せ未適用の書き出し）"),
         "",
         "| 生の書き方 | 出典→学校（legacy_key） | 参考行（年度） | 原因 |",
         "|---|---|---|---|",
@@ -340,13 +424,16 @@ def write_known_issues_doc(reg: SchoolRegistry, ambiguous_names: set[str], partn
 # ---------------------------------------------------------------------------
 
 
-def scan_teams(old_matches, dropped_rows, league_kept, league_dropped, scheduled_raw, standings_raw=()):
+def scan_teams(old_matches, dropped_rows, league_kept, league_dropped, scheduled_raw, standings_raw=(),
+               merger: Merger | None = None):
     seen: dict[tuple, dict] = {}
 
     def touch(key, squad, season):
         if not key:
             return
         squad = squad or "A"
+        if merger:
+            key, squad = merger.remap(key, squad)
         t = seen.setdefault((key, squad), {"first": season, "last": season})
         t["first"] = min(t["first"], season)
         t["last"] = max(t["last"], season)
@@ -481,10 +568,18 @@ def md_to_iso(season: int, m: int, d: int) -> str:
     return f"{year:04d}-{m:02d}-{d:02d}"
 
 
-def build_tournament_matches(rows, team_id_of, src_reg):
+def build_tournament_matches(rows, team_id_of, src_reg, collisions: list | None = None, resolved: list | None = None):
+    """名寄せで2試合が同じ match_id になったとき（空欄の枠どうしの重なりは除く）：
+    スコア・勝者が一致すれば、試合番号のある行（無ければ out/matches.csv の行番号が小さいほう）を試合として残し、
+    もう一方は match_sources の role=重複 にする（resolved に記録）。食い違えば collisions に入れる（呼び出し側が止める）。
+
+    戻り値の4つ目 aligned は rows と1対1（重複にした行は、残した試合の match_id を持つ）。"""
     matches, msrc = [], []
     key_to_matchid: dict[tuple, tuple] = {}
     id_counts: dict[str, int] = {}
+    members: dict[str, list[int]] = {}   # base_id -> 試合リストの添字（空欄の枠は含めない）
+    msrc_of: list[list[int]] = []        # 試合リストの添字 -> msrc の添字
+    row_of: list[int] = []               # 試合リストの添字 -> rows の添字（0始まり）
     for row_idx, r in enumerate(rows, start=1):
         season, series, old_stage = int(r["年度"]), r["大会"], r["段階"]
         _, _, new_stage, _ = common.split_stage(series, old_stage)
@@ -524,6 +619,8 @@ def build_tournament_matches(rows, team_id_of, src_reg):
         ta, tb = sorted([ta_key, tb_key])
         base_id = f"{comp_id}|{area}/{block}|{rnd}|{ta}|{tb}"
         id_counts[base_id] = id_counts.get(base_id, 0) + 1
+        if not (ta.startswith("∅") or tb.startswith("∅")):
+            members.setdefault(base_id, []).append(len(matches))
         match_id = base_id if id_counts[base_id] == 1 else f"{base_id}#{id_counts[base_id]}"
         matches.append({
             "match_id": match_id, "comp_id": comp_id, "area": area, "block": block,
@@ -534,6 +631,8 @@ def build_tournament_matches(rows, team_id_of, src_reg):
             "status": STATUS_OLD_TO_NEW.get(r["状態"], ""),
             "winner": winner, "winner_basis": winner_basis, "source_id": source_id, "note": note,
         })
+        msrc_of.append([len(msrc)])
+        row_of.append(row_idx - 1)
         msrc.append({
             "match_id": match_id, "source_id": source_id, "seq": 1, "role": "主",
             "raw_a": raw_a, "raw_b": raw_b, "flipped": 0, "date_text": date_text, "round": rnd,
@@ -546,17 +645,75 @@ def build_tournament_matches(rows, team_id_of, src_reg):
         if "結果は高校サッカードットコム" in note:
             koko_url = f"{common.KOKO_URL}#{comp_id}"
             koko_sid = src_reg.get_or_create(koko_url, "Webページ", common.KOKO_FEED, title="高校サッカードットコム")
+            msrc_of[-1].append(len(msrc))
             msrc.append({
                 "match_id": match_id, "source_id": koko_sid, "seq": 1, "role": "補完",
                 "raw_a": raw_a, "raw_b": raw_b, "flipped": 0, "date_text": "", "round": "",
                 "src_row": "", "src_seq": "",
             })
-    return matches, msrc, key_to_matchid
+    # --- 名寄せで同じ match_id になった行の整理 -------------------------------------
+    def oriented(m, ref_a):
+        """スコア・PK・勝者・状態を、ref_a（基準の team_a）から見た向きにそろえた組。"""
+        sa, sb, pa, pb = m["score_a"], m["score_b"], m["pk_a"], m["pk_b"]
+        if m["team_a"] != ref_a:
+            sa, sb, pa, pb = sb, sa, pb, pa
+        return (sa, sb, pa, pb, m["winner"], m["status"])
+
+    removed: set[int] = set()
+    for base_id, idxs in members.items():
+        if len(idxs) < 2:
+            continue
+        ref = matches[idxs[0]]
+        want = oriented(ref, ref["team_a"])
+        if any(oriented(matches[i], ref["team_a"]) != want for i in idxs[1:]):
+            if collisions is not None:
+                for i in idxs:
+                    r = rows[row_of[i]]
+                    collisions.append({"match_id": base_id, "row": row_of[i] + 1, "raw_a": r["チームA"], "raw_b": r["チームB"],
+                                       "date": r["日付"], "score": r["スコア"], "winner": r["勝者"], "source": r["出典PDF"]})
+            continue
+        with_no = [i for i in idxs if matches[i]["match_no"]]
+        surv = with_no[0] if with_no else idxs[0]
+        sm = matches[surv]
+        sm["match_id"] = base_id
+        for k in msrc_of[surv]:
+            msrc[k]["match_id"] = base_id
+        for i in idxs:
+            if i == surv:
+                continue
+            removed.add(i)
+            r, rs = rows[row_of[i]], rows[row_of[surv]]
+            if resolved is not None:
+                resolved.append({"match_id": base_id, "kept_row": row_of[surv] + 1, "dup_row": row_of[i] + 1,
+                                 "comp_id": sm["comp_id"], "round": sm["round"],
+                                 "kept": f"{rs['チームA']} 対 {rs['チームB']} {rs['スコア']}（{rs['出典PDF']}）",
+                                 "dup": f"{r['チームA']} 対 {r['チームB']} {r['スコア']}（{r['出典PDF']}）"})
+            first_k = msrc_of[i][0]
+            same_src = sum(1 for x in msrc if x["match_id"] == base_id and x["source_id"] == msrc[first_k]["source_id"])
+            msrc[first_k].update({"match_id": base_id, "role": "重複", "seq": same_src + 1,
+                                  "flipped": 1 if matches[i]["team_a"] != sm["team_a"] else 0})
+            for k in msrc_of[i][1:]:
+                msrc[k]["match_id"] = base_id
+            matches[i]["match_id"] = base_id
+    aligned = [None] * len(rows)
+    for i, m in enumerate(matches):
+        aligned[row_of[i]] = (m["match_id"], m["team_a"], m["team_b"])
+    survivors = [m for i, m in enumerate(matches) if i not in removed]
+    # 重複にした行の突き合わせ用の鍵（build_outputs が落とした別版が使う）を、残した試合へ向ける
+    for i in removed:
+        r = rows[row_of[i]]
+        dkey = (r["年度"], r["大会"], r["段階"], r["ラウンド"], frozenset((r["チームA_正規化"], r["チームB_正規化"])))
+        if dkey in key_to_matchid:
+            key_to_matchid[dkey] = (matches[i]["match_id"], r["チームA_正規化"], r["チームB_正規化"])
+    return survivors, msrc, key_to_matchid, aligned
 
 
-def attach_dropped_duplicates(dropped_rows, key_to_matchid, src_reg):
+def attach_dropped_duplicates(dropped_rows, key_to_matchid, src_reg, seed_msrc=()):
     extra_msrc, unmatched = [], []
     seq_counter: dict[tuple, int] = {}
+    for x in seed_msrc:
+        k = (x["match_id"], x["source_id"])
+        seq_counter[k] = max(seq_counter.get(k, 1), int(x["seq"]))
     for r in dropped_rows:
         key_a, key_b = r["チームA_正規化"], r["チームB_正規化"]
         dkey = (r["年度"], r["大会"], r["段階"], r["ラウンド"], frozenset((key_a, key_b)))
@@ -672,13 +829,14 @@ def build_scheduled_matches(comps, team_id_of, src_reg, n_counter):
     return matches, msrc, raw_touch
 
 
-def attach_league_dropped(dropped_rows, kept_index, src_reg):
+def attach_league_dropped(dropped_rows, kept_index, src_reg, canon=None):
     """load_all_enriched() の落ちた行を、同じ key() の生き残り試合の match_sources（role=重複）にする。"""
     extra_msrc, unmatched = [], []
     seq_counter: dict[tuple, int] = {}
+    _c = canon or (lambda k: k)
 
     def key(r):
-        pair = sorted([(r["ホーム学校"], r["得点H"]), (r["アウェイ学校"], r["得点A"])])
+        pair = sorted([(_c(r["ホーム学校"]), r["得点H"]), (_c(r["アウェイ学校"]), r["得点A"])])
         return (r["年度"], *[x for p in pair for x in p])
 
     for r in dropped_rows:
@@ -687,7 +845,7 @@ def attach_league_dropped(dropped_rows, kept_index, src_reg):
             unmatched.append(r)
             continue
         match_id, surv_home = hit
-        flipped = 1 if r["ホーム学校"] != surv_home else 0
+        flipped = 1 if _c(r["ホーム学校"]) != _c(surv_home) else 0
         source_id = src_reg.get_or_create(r["出典"], common.source_kind_of_url(r["出典"]), common.FEED_OF_KIND[r["出どころ"]])
         seq_counter[(match_id, source_id)] = seq_counter.get((match_id, source_id), 1) + 1
         extra_msrc.append({
@@ -816,18 +974,32 @@ def stem_url_maps():
     return stem_to_url, url_to_stem
 
 
-def run(verbose: bool = True) -> dict:
-    out_dir = paths.dataset_dir()
+def run(verbose: bool = True, out_dir: Path | None = None, apply_merges: bool = True,
+        id_dir: Path | None = None, write_notes: bool | None = None) -> dict:
+    """9表（＋入力の school_merges.csv）を書き出す。
+
+    out_dir: 書き出し先（既定は Vault）。apply_merges=False は名寄せを当てない書き出しで、往復テスト
+    T2〜T5 が旧データとの一致を確かめるのに使う（テスト用の一時フォルダへ書く）。
+    id_dir: school_id・source_id を引き継ぐ元（既定は Vault。ID は一度振ったら変えない）。
+    write_notes: notes/dataset-known-issues.md を書くか（既定は apply_merges と同じ）。
+    school_merges.csv は人が確かめた判断（入力）なので、この関数は書き換えない。
+    """
+    vault_dir = paths.dataset_dir()
+    out_dir = out_dir or vault_dir
+    id_dir = id_dir or vault_dir
+    if write_notes is None:
+        write_notes = apply_merges
+    merger = Merger(common.read_csv(vault_dir / "school_merges.csv") if apply_merges else [])
 
     old_matches = common.read_csv(ROOT / "out/matches.csv")
     dropped_rows = common.read_csv(ROOT / "out/dropped_duplicates.csv")
     stem_to_url, url_to_stem = stem_url_maps()
     member_areas = json.loads((ROOT / "out/scout/member_areas.json").read_text(encoding="utf-8"))
 
-    league_kept, league_dropped = league_source.load_all_enriched()
+    league_kept, league_dropped = league_source.load_all_enriched(merger.canon if merger else None)
 
     # --- 学校・校名 --------------------------------------------------------
-    reg = SchoolRegistry()
+    reg = SchoolRegistry(merger)
     scan_tournament(reg, old_matches)
     scan_tournament(reg, dropped_rows)
     scan_league_raw(reg)
@@ -841,15 +1013,18 @@ def run(verbose: bool = True) -> dict:
         r for r in common.read_csv(ROOT / "data/leagues/district_matches.csv")
         if r.get("年度") == "2026" and (r.get("ホーム") == "日本学園B" or r.get("アウェイ") == "日本学園B")
     ]
-    existing_schools = common.read_csv(out_dir / "schools.csv")
+    existing_schools = common.read_csv(id_dir / "schools.csv")
     # 加盟校一覧にあるが試合・順位表の記録が1つも無い学校（2026-10-01 追加。足立工科・園芸など）
     roster_only_keys = sorted(k for k in member_areas if k not in reg.seen)
     id_of = assign_school_ids(reg, existing_schools, roster_only_keys)
-    schools, kind_tally = build_schools(reg, id_of, member_areas, partner_map, roster_only_keys)
+    merger.validate(set(id_of))
+    schools, kind_tally = build_schools(reg, id_of, member_areas, partner_map, roster_only_keys, merger)
     school_names = build_school_names(reg, id_of, ambiguous_names)
 
     bracket_anomalies = find_bracket_anomaly_school_ids(schools)
-    known_issues_count = write_known_issues_doc(reg, ambiguous_names, partner_map, nihongakuen_rows, bracket_anomalies)
+    known_issues_count = len(ambiguous_names)
+    if write_notes:
+        write_known_issues_doc(reg, ambiguous_names, partner_map, nihongakuen_rows, bracket_anomalies, len(merger.map))
 
     # --- チーム --------------------------------------------------------
     # 予定（未実施）のリーグ戦もチームの初出・最終に反映させるため、先に生の未実施行を集める
@@ -880,37 +1055,47 @@ def run(verbose: bool = True) -> dict:
             squad = (r.get(squadcol) or "A") if squadcol else "A"
             standings_touch.append((key, squad, int(y)))
 
-    teams_seen = scan_teams(old_matches, dropped_rows, league_kept, league_dropped, scheduled_touch, standings_touch)
+    teams_seen = scan_teams(old_matches, dropped_rows, league_kept, league_dropped, scheduled_touch, standings_touch, merger)
     teams, team_id_of = build_teams(teams_seen, id_of)
+    team_id_of = RemappedTeamIds(team_id_of, merger)
 
     # --- 出典レジストリ --------------------------------------------------
-    existing_sources = common.read_csv(out_dir / "sources.csv")
+    existing_sources = common.read_csv(id_dir / "sources.csv")
     src_reg = SourceRegistry(existing_sources)
 
     # --- 大会・試合（大会） -------------------------------------------
     comps = build_competitions(old_matches)
-    t_matches, t_msrc, key_to_matchid = build_tournament_matches(old_matches, team_id_of, src_reg)
+    collisions: list[dict] = []
+    resolved_collisions: list[dict] = []
+    t_matches, t_msrc, key_to_matchid, aligned = build_tournament_matches(
+        old_matches, team_id_of, src_reg, collisions, resolved_collisions)
+    if collisions:
+        raise StopForReview("名寄せで同じ match_id になった2試合のスコア・勝者が食い違う: " + json.dumps(collisions[:20], ensure_ascii=False))
+    if merger:
+        for r, (mid_, ta_, tb_) in zip(old_matches, aligned):
+            if r["チームA_正規化"] != r["チームB_正規化"] and ta_ and ta_ == tb_:
+                raise StopForReview(f"名寄せで同じチームどうしの試合になった: {mid_}（{r['チームA']} 対 {r['チームB']}）")
 
     # 訂正の突き合わせ用に、each old_matches 行へ新 match_id / team_id を埋め込む
-    for r, m in zip(old_matches, t_matches):
-        r["_match_id"] = m["match_id"]
-        r["_team_a_id"] = m["team_a"]
-        r["_team_b_id"] = m["team_b"]
+    for r, (mid_, ta_, tb_) in zip(old_matches, aligned):
+        r["_match_id"] = mid_
+        r["_team_a_id"] = ta_
+        r["_team_b_id"] = tb_
 
-    dup_msrc, dup_unmatched = attach_dropped_duplicates(dropped_rows, key_to_matchid, src_reg)
+    dup_msrc, dup_unmatched = attach_dropped_duplicates(dropped_rows, key_to_matchid, src_reg, t_msrc)
 
     # --- 試合（リーグ） --------------------------------------------------
     l_matches, l_msrc, n_counter = build_league_matches(league_kept, comps, team_id_of, src_reg)
     sched_matches, sched_msrc, _ = build_scheduled_matches(comps, team_id_of, src_reg, n_counter)
 
     def kept_key(r):
-        pair = sorted([(r["ホーム学校"], r["得点H"]), (r["アウェイ学校"], r["得点A"])])
+        pair = sorted([(merger.canon(r["ホーム学校"]), r["得点H"]), (merger.canon(r["アウェイ学校"]), r["得点A"])])
         return (r["年度"], *[x for p in pair for x in p])
 
     kept_index = {}
     for r, m in zip(league_kept, l_matches):
         kept_index.setdefault(kept_key(r), (m["match_id"], r["ホーム学校"]))
-    ldup_msrc, ldup_unmatched = attach_league_dropped(league_dropped, kept_index, src_reg)
+    ldup_msrc, ldup_unmatched = attach_league_dropped(league_dropped, kept_index, src_reg, merger.canon if merger else None)
 
     # --- 訂正 --------------------------------------------------------
     corrections, corr_unmatched = build_corrections(old_matches, stem_to_url)
@@ -932,7 +1117,8 @@ def run(verbose: bool = True) -> dict:
 
     tables = {
         "schools.csv": (
-            ["school_id", "name", "official_name", "roster_name", "kind", "district", "city", "legacy_key", "note"], schools),
+            ["school_id", "name", "official_name", "roster_name", "kind", "district", "city", "legacy_key", "note",
+             "merged_into"], schools),
         "school_names.csv": (
             ["name", "school_id", "kind", "first_season", "last_season"], school_names),
         "teams.csv": (
@@ -965,6 +1151,8 @@ def run(verbose: bool = True) -> dict:
         "dup_unmatched_tournament": dup_unmatched,
         "dup_unmatched_league": ldup_unmatched,
         "standings_unresolved": standings_unresolved,
+        "merges_applied": len(merger.map),
+        "tournament_collapsed": resolved_collisions,
         "ambiguous_names": sorted(ambiguous_names),
         "ambiguous_schools_noted": kind_tally.get("ambiguous_pair", 0),
         "known_issues_count": known_issues_count,

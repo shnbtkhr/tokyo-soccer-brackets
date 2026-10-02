@@ -20,6 +20,7 @@ TABLES = [
     "sources.csv",
     "match_sources.csv",
     "corrections.csv",
+    "school_merges.csv",
 ]
 
 

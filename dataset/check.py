@@ -1,4 +1,4 @@
-"""SCHEMA.md の「検査」6項目。
+"""SCHEMA.md の「検査」7項目。
 
   uv run python -m dataset.check
 
@@ -244,6 +244,60 @@ def check_known_names(tables: dict[str, list[dict]]) -> list[str]:
     return problems
 
 
+def check_merges(tables: dict[str, list[dict]]) -> list[str]:
+    """検査7：名寄せでまとめた学校（merged_into のある行）をほかの表が参照していない。
+    school_merges.csv の両端が実在し、まとめ先がさらに別の学校にまとめられていない。"""
+    problems = []
+    schools = tables["schools.csv"]
+    by_id = {r["school_id"]: r for r in schools}
+    by_key = {r["legacy_key"]: r for r in schools}
+    merged_ids = {r["school_id"] for r in schools if r.get("merged_into")}
+    for r in schools:
+        tgt = r.get("merged_into")
+        if not tgt:
+            continue
+        if tgt not in by_id:
+            problems.append(f"schools.csv: {r['school_id']} の merged_into={tgt} が schools.csv に無い")
+        elif tgt in merged_ids:
+            problems.append(f"schools.csv: {r['school_id']} のまとめ先 {tgt} がさらに別の学校にまとめられている")
+    team_school = {r["team_id"]: r["school_id"] for r in tables["teams.csv"]}
+    for r in tables["teams.csv"]:
+        if r["school_id"] in merged_ids:
+            problems.append(f"teams.csv: {r['team_id']} がまとめられた学校 {r['school_id']} を参照している")
+    for r in tables["school_names.csv"]:
+        if r["school_id"] in merged_ids:
+            problems.append(f"school_names.csv: 「{r['name']}」がまとめられた学校 {r['school_id']} を参照している")
+    for r in tables["matches.csv"]:
+        for side in ("team_a", "team_b"):
+            if r[side] and team_school.get(r[side]) in merged_ids:
+                problems.append(f"matches.csv: {side}={r[side]} がまとめられた学校を参照している（match_id={r['match_id']}）")
+    for r in tables["standings.csv"]:
+        if team_school.get(r["team_id"]) in merged_ids:
+            problems.append(f"standings.csv: {r['team_id']} がまとめられた学校を参照している")
+    merges = tables.get("school_merges.csv", [])
+    seen_variants = set()
+    for m in merges:
+        vk, ck = m["variant_key"], m["canonical_key"]
+        if vk in seen_variants:
+            problems.append(f"school_merges.csv: variant_key {vk} が重複している")
+        seen_variants.add(vk)
+        v, c = by_key.get(vk), by_key.get(ck)
+        if v is None:
+            problems.append(f"school_merges.csv: variant_key {vk} が schools.csv に無い")
+        if c is None:
+            problems.append(f"school_merges.csv: canonical_key {ck} が schools.csv に無い")
+        if v is None or c is None:
+            continue
+        if c.get("merged_into"):
+            problems.append(f"school_merges.csv: まとめ先 {ck} がさらに別の学校にまとめられている")
+        if v.get("merged_into") != c["school_id"]:
+            problems.append(f"schools.csv: {vk} の merged_into が school_merges.csv（{ck}={c['school_id']}）と合わない")
+    for r in schools:
+        if r.get("merged_into") and r["legacy_key"] not in seen_variants:
+            problems.append(f"schools.csv: {r['school_id']} に merged_into があるが school_merges.csv に判断が無い")
+    return problems
+
+
 CHECKS = [
     ("1. 主キーの重複", check_unique_keys),
     ("2. 参照先の実在", check_references),
@@ -251,6 +305,7 @@ CHECKS = [
     ("4. トーナメントの試合数 <= チーム数-1", check_tournament_bracket_size),
     ("5. 同じ大会・回戦に同じチームが2度出ていないか", check_no_duplicate_team_in_round),
     ("6. school_names.csv に無い書き方が無いか（既知の問題は除く）", check_known_names),
+    ("7. 名寄せでまとめた学校が参照されていない・school_merges.csv が整合", check_merges),
 ]
 
 
@@ -259,6 +314,7 @@ def run(base: Path | None = None, verbose: bool = True) -> list[str]:
     tables = {name: common.read_csv(d / name) for name in [
         "schools.csv", "school_names.csv", "teams.csv", "competitions.csv",
         "matches.csv", "standings.csv", "sources.csv", "match_sources.csv", "corrections.csv",
+        "school_merges.csv",
     ]}
     all_problems = []
     for label, fn in CHECKS:
