@@ -133,7 +133,12 @@ def compute_ambiguous(reg: SchoolRegistry) -> tuple[set[str], dict[str, list[str
     return set(ambiguous_names), {k: sorted(v) for k, v in partner_map.items()}
 
 
-def assign_school_ids(reg: SchoolRegistry, existing_rows: list[dict]) -> dict[str, str]:
+def assign_school_ids(reg: SchoolRegistry, existing_rows: list[dict], roster_only_keys=()) -> dict[str, str]:
+    """`roster_only_keys`：加盟校一覧にあるが試合・順位表の記録が1つも無い学校（2026-10-01 追加）。
+
+    既存の `school_id` は何があっても変えない。新規は「reg.seen の新規分」を振り切ってから
+    「roster_only の新規分」を振る（roster_only は既存の続き番号）。
+    """
     existing_map = {r["legacy_key"]: r["school_id"] for r in existing_rows if r.get("legacy_key")}
     used_nums = [int(mm[1]) for r in existing_rows if (mm := re.fullmatch(r"S(\d+)", r["school_id"] or ""))]
     next_num = (max(used_nums) + 1) if used_nums else 1
@@ -145,18 +150,32 @@ def assign_school_ids(reg: SchoolRegistry, existing_rows: list[dict]) -> dict[st
         else:
             id_of[k] = f"S{next_num:04d}"
             next_num += 1
+    for k in sorted(roster_only_keys):
+        if k in id_of:
+            continue
+        if k in existing_map:
+            id_of[k] = existing_map[k]
+        else:
+            id_of[k] = f"S{next_num:04d}"
+            next_num += 1
     return id_of
 
 
 def build_schools(reg: SchoolRegistry, id_of: dict[str, str], member_areas: dict,
-                   partner_map: dict[str, list[str]]) -> tuple[list[dict], dict]:
+                   partner_map: dict[str, list[str]], roster_only_keys=()) -> tuple[list[dict], dict]:
     rows = []
-    tally = {"member_areas": 0, "unknown_tournament": 0, "unknown_league": 0, "club": 0, "ambiguous_pair": 0}
+    tally = {"member_areas": 0, "unknown_tournament": 0, "unknown_league": 0, "club": 0,
+             "ambiguous_pair": 0, "roster_only": 0}
     for key, info in reg.seen.items():
         sid = id_of[key]
+        roster_name = ""
         if key in member_areas:
             ma = member_areas[key]
-            kind, district, city, note = ma.get("kind", ""), ma.get("area", ""), ma.get("city", ""), ""
+            # 加盟校一覧の生データに付いていた注意書き（例: 狛江＝「加盟校一覧に載っていないため
+            # 手で補った」）を schools.csv の note へ引き継ぐ。build_seeds.py 等は areas.get(key) を
+            # そのまま出力に渡すため、ここで落とすと再現できない（2026-10-01、段階2の比較で発覚）
+            kind, district, city, note = ma.get("kind", ""), ma.get("area", ""), ma.get("city", ""), ma.get("note", "")
+            roster_name = ma.get("name", "")
             tally["member_areas"] += 1
         elif info["in_tournament"]:
             kind, district, city, note = "不明", "", "", "区分未確認"
@@ -172,9 +191,19 @@ def build_schools(reg: SchoolRegistry, id_of: dict[str, str], member_areas: dict
             note = f"移行時点では別ID。{'、'.join(partners)}と同じ学校の可能性（修正は移行後）"
             tally["ambiguous_pair"] += 1
         rows.append({
-            "school_id": sid, "name": key, "official_name": "", "kind": kind,
+            "school_id": sid, "name": key, "official_name": "", "roster_name": roster_name, "kind": kind,
             "district": district, "city": city, "legacy_key": key, "note": note,
         })
+    # 加盟校一覧にあるが試合・順位表の記録が1つも無い学校（2026-10-01 追加。地区ごとの加盟校数を
+    # 正しく数えるため、試合が無くてもここに1行持つ）
+    for key in sorted(roster_only_keys):
+        ma = member_areas[key]
+        rows.append({
+            "school_id": id_of[key], "name": key, "official_name": "", "roster_name": ma.get("name", ""),
+            "kind": ma.get("kind", ""), "district": ma.get("area", ""), "city": ma.get("city", ""),
+            "legacy_key": key, "note": "加盟校一覧のみ（試合記録なし）",
+        })
+        tally["roster_only"] += 1
     rows.sort(key=lambda r: r["school_id"])
     return rows, tally
 
@@ -456,7 +485,7 @@ def build_tournament_matches(rows, team_id_of, src_reg):
     matches, msrc = [], []
     key_to_matchid: dict[tuple, tuple] = {}
     id_counts: dict[str, int] = {}
-    for r in rows:
+    for row_idx, r in enumerate(rows, start=1):
         season, series, old_stage = int(r["年度"]), r["大会"], r["段階"]
         _, _, new_stage, _ = common.split_stage(series, old_stage)
         comp_id = f"{season}-{series}-{new_stage}"
@@ -508,7 +537,9 @@ def build_tournament_matches(rows, team_id_of, src_reg):
         msrc.append({
             "match_id": match_id, "source_id": source_id, "seq": 1, "role": "主",
             "raw_a": raw_a, "raw_b": raw_b, "flipped": 0, "date_text": date_text, "round": rnd,
-            "src_row": "", "src_seq": "",  # 大会（トーナメント）には該当しない
+            # src_row: out/matches.csv（build_outputs の並び順）での1始まりの行番号（2026-10-01 追加）。
+            # src_seq はリーグ戦専用のまま（大会は空欄）
+            "src_row": row_idx, "src_seq": "",
         })
         dkey = (r["年度"], r["大会"], r["段階"], r["ラウンド"], frozenset((key_a, key_b)))
         key_to_matchid[dkey] = (match_id, key_a, key_b)
@@ -762,7 +793,7 @@ def build_standings(team_id_of, comps, src_reg):
                  "tleague_history_standings.csv": "Tリーグ過去", "prince_kanto1_2026_standings.csv": "プリンス"}[fname], "Webページ"))
             gf, ga = r.get("得点", ""), r.get("失点", "")
             rows.append({
-                "comp_id": comp_id, "block": block, "team_id": team_id,
+                "comp_id": comp_id, "block": block, "team_id": team_id, "raw_team": r["チーム"],
                 "rank": r["順位"], "played": r["試合"], "won": r["勝"],
                 "drawn": r["分"], "lost": r["敗"], "goals_for": gf, "goals_against": ga,
                 "points": r["勝点"], "basis": basis, "as_of": "", "source_id": source_id,
@@ -811,8 +842,10 @@ def run(verbose: bool = True) -> dict:
         if r.get("年度") == "2026" and (r.get("ホーム") == "日本学園B" or r.get("アウェイ") == "日本学園B")
     ]
     existing_schools = common.read_csv(out_dir / "schools.csv")
-    id_of = assign_school_ids(reg, existing_schools)
-    schools, kind_tally = build_schools(reg, id_of, member_areas, partner_map)
+    # 加盟校一覧にあるが試合・順位表の記録が1つも無い学校（2026-10-01 追加。足立工科・園芸など）
+    roster_only_keys = sorted(k for k in member_areas if k not in reg.seen)
+    id_of = assign_school_ids(reg, existing_schools, roster_only_keys)
+    schools, kind_tally = build_schools(reg, id_of, member_areas, partner_map, roster_only_keys)
     school_names = build_school_names(reg, id_of, ambiguous_names)
 
     bracket_anomalies = find_bracket_anomaly_school_ids(schools)
@@ -899,7 +932,7 @@ def run(verbose: bool = True) -> dict:
 
     tables = {
         "schools.csv": (
-            ["school_id", "name", "official_name", "kind", "district", "city", "legacy_key", "note"], schools),
+            ["school_id", "name", "official_name", "roster_name", "kind", "district", "city", "legacy_key", "note"], schools),
         "school_names.csv": (
             ["name", "school_id", "kind", "first_season", "last_season"], school_names),
         "teams.csv": (
@@ -911,7 +944,7 @@ def run(verbose: bool = True) -> dict:
              "team_a", "team_b", "raw_a", "raw_b", "score_a", "score_b", "pk_a", "pk_b", "extra_time",
              "halves", "status", "winner", "winner_basis", "source_id", "note"], all_matches),
         "standings.csv": (
-            ["comp_id", "block", "team_id", "rank", "played", "won", "drawn", "lost",
+            ["comp_id", "block", "team_id", "raw_team", "rank", "played", "won", "drawn", "lost",
              "goals_for", "goals_against", "points", "basis", "as_of", "source_id"], standings),
         "sources.csv": (
             ["source_id", "kind", "feed", "url", "archive_url", "title", "sha256", "note"], sources_rows),

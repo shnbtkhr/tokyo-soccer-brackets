@@ -20,6 +20,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from analyze_team import compute_elo, load_matches, normalize, played, result_for, win_prob
+from dataset import source
 from leagues import for_school, load_all
 
 ROOT = Path(__file__).parent
@@ -217,7 +218,7 @@ def main() -> int:
     rows = load_matches()
     elo, hist, n_games = compute_elo(rows)
     lg = for_school(load_all(), ME)
-    standings = list(csv.DictReader((ROOT / "data/leagues/district_standings.csv").open(encoding="utf-8-sig")))
+    standings = list(csv.DictReader(source.path("data/leagues/district_standings.csv").open(encoding="utf-8-sig")))
     first = min(r["年度"] for r in rows if ME in (r["kA"], r["kB"]))
 
     years = {}

@@ -21,6 +21,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from build_outputs import normalize
+from dataset import source
 
 ROOT = Path(__file__).parent
 import rating
@@ -45,7 +46,7 @@ def round_rank(r: dict) -> int:
 
 
 def load_matches() -> list[dict]:
-    rows = list(csv.DictReader((ROOT / "out/matches.csv").open(encoding="utf-8-sig")))
+    rows = list(csv.DictReader(source.path("out/matches.csv").open(encoding="utf-8-sig")))
     for r in rows:
         r["年度"] = int(r["年度"])
         r["kA"], r["kB"] = normalize(r["チームA"]), normalize(r["チームB"])

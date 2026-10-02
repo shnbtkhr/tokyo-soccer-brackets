@@ -22,6 +22,7 @@ import json
 from pathlib import Path
 
 from build_outputs import normalize
+from dataset import source
 from leagues import load_all
 
 ROOT = Path(__file__).parent
@@ -29,6 +30,8 @@ OUT = ROOT / "data/leagues/coverage.md"
 
 
 def rows(name: str) -> list[dict]:
+    # 取れ高の表（地区×年度の試合数・sources.csv の確認状況）は、取得したままのファイルについての報告なので
+    # Vault の表ではなく data/leagues/ を直接読む。Vault の表には「地区」列も sources.csv も無い（2026-10-02）
     p = ROOT / "data/leagues" / name
     if not p.exists():
         return []
@@ -38,7 +41,7 @@ def rows(name: str) -> list[dict]:
 
 def main() -> int:
     areas = {normalize(k): v for k, v in
-             json.loads((ROOT / "out/scout/member_areas.json").read_text(encoding="utf-8")).items()}
+             json.loads(source.path("out/scout/member_areas.json").read_text(encoding="utf-8")).items()}
     lg = load_all()
 
     # 学校ごとのリーグ戦数（トップチームのみ）を、出どころ別に数える

@@ -16,6 +16,7 @@ from itertools import product
 from pathlib import Path
 
 import rating
+from dataset import source
 from rating import Config
 
 ROOT = Path(__file__).parent
@@ -59,7 +60,7 @@ def calib_rows(old: list, new: list) -> list:
 
 
 def main() -> int:
-    rows = list(csv.DictReader((ROOT / "out/matches.csv").open(encoding="utf-8-sig")))
+    rows = list(csv.DictReader(source.path("out/matches.csv").open(encoding="utf-8-sig")))
     for r in rows:
         r["年度"] = int(r["年度"])
     configs = [Config(k=32, carry=0.75, league_weight=0.0, name="今の方式（大会だけ・K32・持ち越し0.75）")]

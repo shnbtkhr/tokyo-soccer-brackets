@@ -13,13 +13,15 @@ import json
 import re
 from pathlib import Path
 
+from dataset import source
+
 ROOT = Path(__file__).parent
 SEASON = 2026
 LEVEL = {"プリンス": 0, "T": 1, "地区": 2}
 
 
 def rows(path: str) -> list[dict]:
-    p = ROOT / path
+    p = source.path(path)
     return list(csv.DictReader(p.open(encoding="utf-8-sig"))) if p.exists() else []
 
 

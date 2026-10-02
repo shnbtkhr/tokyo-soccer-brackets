@@ -14,6 +14,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from analyze_team import compute_elo, load_matches, normalize, played, win_prob
+from dataset import source
 
 ROOT = Path(__file__).parent
 ME = "武蔵丘"
@@ -25,7 +26,7 @@ def main() -> int:
     rows = load_matches()
     elo, hist, n_games = compute_elo(rows)
     # 地区ごとにリーグ戦の取れ高が違う。理由まで誌面に書けるよう、相手の地区を持たせる
-    ap = ROOT / "out/scout/member_areas.json"
+    ap = source.path("out/scout/member_areas.json")
     raw = json.loads(ap.read_text(encoding="utf-8")) if ap.exists() else {}
     areas = {k: (v.get("area") if isinstance(v, dict) else None) for k, v in raw.items()} if isinstance(raw, dict) else {}
 

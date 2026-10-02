@@ -108,7 +108,19 @@ def _restore_score_text(score_a: str, score_b: str, pk_a: str, pk_b: str, extra_
     return t
 
 
-STATUS_NEW_TO_OLD_STATE = {"済": "終了"}  # played() の判定に足りるだけの最小対応（他は "" でよい）
+STATUS_NEW_TO_OLD_STATE = {
+    "済": "終了", "勝者のみ": "スコア記載なし", "不戦": "不戦勝・棄権",
+}  # 段階2（materialize.py）が build_teams()・connections.py・build_years.py の文字列一致判定に使うため
+# "結果不明" だけは別処理（_restore_result_unknown）。STATUS_OLD_TO_NEW（export.py）は
+# "未実施"（スコア無し）と "勝者不明"（スコアはあるが勝者が決まらない）の両方をここへ合流させており、
+# 合流前の区別はスコアの有無だけで一意に戻せる（実測：未実施はスコア無しが5261件、勝者不明は
+# スコア有りが21件で、ぶれは無い）。build_outputs.build_teams() は "未実施" の行だけをスキップするため、
+# 一律 "未実施" に戻すと "勝者不明"（結果は分からないが試合は行われた）の21試合が誤って消える
+# （2026-10-01、段階2の比較で2016年度選手権・城東×専大附属戦が消えて発覚）
+
+
+def _restore_result_unknown(score_a: str, score_b: str) -> str:
+    return "勝者不明" if (score_a != "" and score_b != "") else "未実施"
 
 
 def tournament_rows(base: Path | None = None) -> list[dict]:
@@ -138,7 +150,8 @@ def tournament_rows(base: Path | None = None) -> list[dict]:
             "スコア": _restore_score_text(m["score_a"], m["score_b"], m["pk_a"], m["pk_b"], m["extra_time"]),
             "得点A": m["score_a"], "得点B": m["score_b"], "PK_A": m["pk_a"], "PK_B": m["pk_b"],
             "前後半": m["halves"], "勝者": winner_raw,
-            "状態": STATUS_NEW_TO_OLD_STATE.get(m["status"], ""),
+            "状態": (_restore_result_unknown(m["score_a"], m["score_b"]) if m["status"] == "結果不明"
+                    else STATUS_NEW_TO_OLD_STATE.get(m["status"], "")),
             "備考": m["note"],
             "チームA_正規化": a.legacy_key_of_team(m["team_a"]), "チームB_正規化": a.legacy_key_of_team(m["team_b"]),
             "出典PDF": src.get("url", ""),

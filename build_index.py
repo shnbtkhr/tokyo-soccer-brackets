@@ -34,6 +34,7 @@ from pathlib import Path
 from analyze_team import compute_elo, load_matches
 from build_history import CUP_ORDER, ROUND_RANK, tier_of
 from build_outputs import normalize
+from dataset import source
 from leagues import for_school, load_all
 
 ROOT = Path(__file__).parent
@@ -72,7 +73,7 @@ def load_standings() -> dict:
            ("data/leagues/tleague_standings.csv", "ブロック", 1),
            ("data/leagues/district_standings.csv", "部", 2)]
     for path, div_key, pri in src:
-        p = ROOT / path
+        p = source.path(path)
         if not p.exists():
             continue
         with p.open(encoding="utf-8-sig") as f:
@@ -248,7 +249,10 @@ def common_opponents(mine: list[dict], theirs: list[dict], limit: int) -> list[d
         return by
 
     a, b = latest(mine), latest(theirs)
-    shared = sorted(set(a) & set(b), key=lambda k: -max(int(a[k]["year"]), int(b[k]["year"])))
+    # 2026-10-01: 同率（同じ最大年度）のタイブレークを set() の反復順（PYTHONHASHSEED 依存）に
+    # 任せていたため、実行のたびに並びが変わっていた（commonOpponents の順序だけが変わる、
+    # 内容は同じ）。学校名を第2キーに足して決定的にする（中身の変更ではない）
+    shared = sorted(set(a) & set(b), key=lambda k: (-max(int(a[k]["year"]), int(b[k]["year"])), k))
     out = []
     for k in shared[:limit]:
         x, y = a[k], b[k]
@@ -306,7 +310,7 @@ def main() -> int:
     standings = load_standings()
     # 加盟校一覧は正式名で書かれている。大会の表と繋ぐため、同じ名寄せを通す
     areas = {normalize(k): v for k, v in
-             json.loads((ROOT / "out/scout/member_areas.json").read_text(encoding="utf-8")).items()}
+             json.loads(source.path("out/scout/member_areas.json").read_text(encoding="utf-8")).items()}
 
     roster = sorted({k for k in areas} |
                     {k for k in elo if ngames.get(k, 0) >= MIN_GAMES and not broken(k)})

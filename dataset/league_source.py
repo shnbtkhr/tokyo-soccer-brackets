@@ -1,9 +1,15 @@
 """leagues.load_all() と同じ選別を、出典・節・生表記・並び順つきで複製する。
 
-leagues.py 自体は変えない。`leagues._rows`/`_num`（内部ヘルパー）を再利用し、
+leagues.py 自体は変えない。`_num`（内部ヘルパー）を再利用し、
 `_mk`・`key`・選別ループだけを、あとで出典や生表記・並び順を辿れるように余分なフィールドを
 残す形で複製する。選別の結果（残った行の集合）は leagues.load_all() と一致するはずで、
 それは tests/test_dataset_roundtrip.py の T3 が確かめる。
+
+`_rows` は leagues.py からは再利用しない（独自に持つ）。段階2で leagues.py の `_rows` が
+`dataset.source.path()` 経由（既定では Vault から実体化した out/legacy/ 配下）を読むようになった
+ため、書く側である本モジュール（dataset.export が使う）は常に本物の data/leagues/ を読む必要が
+ある。読む側の切り替えに巻き込まれると、export が自分の作った実体化ファイルを読み返す循環になり、
+T3・T6 が壊れる（2026-10-01、段階2 switch で実際に発生）。
 
 並び順を復元するために2つの整数を残す（dataset.export が match_sources.csv の
 src_row・src_seq 列に書く。2026-09-30、コーディネーターの指示で SCHEMA.md に追加）：
@@ -18,10 +24,27 @@ src_row・src_seq 列に書く。2026-09-30、コーディネーターの指示�
 
 from __future__ import annotations
 
+import csv
 import re
+import sys
 from collections import Counter, defaultdict
+from pathlib import Path
 
-from leagues import _num, _rows
+from leagues import _num
+
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+_DIR = ROOT / "data/leagues"
+
+
+def _rows(name: str) -> list[dict]:
+    p = _DIR / name
+    if not p.exists():
+        return []
+    with p.open(encoding="utf-8-sig") as f:
+        return list(csv.DictReader(f))
 
 
 def _mk2(year, league, div, date, h, hd, a, ad, gh, ga, src, kind, sec="", raw_h="", raw_a_="", src_row=0) -> dict | None:

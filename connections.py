@@ -24,6 +24,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from build_outputs import normalize
+from dataset import source
 
 ROOT = Path(__file__).parent
 DECAY, CAP = 0.7, 5
@@ -33,7 +34,7 @@ HOP_W = {1: 1.0, 2: 0.5, 3: 0.25}
 def load(season: int) -> tuple[dict, dict]:
     adj: dict[str, list] = defaultdict(list)
     disp: dict[str, str] = {}
-    for r in csv.DictReader((ROOT / "out/matches.csv").open(encoding="utf-8-sig")):
+    for r in csv.DictReader(source.path("out/matches.csv").open(encoding="utf-8-sig")):
         if r["得点A"] == "" or r["得点B"] == "" or r["状態"] == "不戦勝・棄権":
             continue
         a, b = normalize(r["チームA"]), normalize(r["チームB"])
@@ -91,7 +92,10 @@ def chains(adj: dict, me: str, opp: str, season: int) -> list[dict]:
     for y, m in adj[opp]:
         if y != me:
             by_opp[y].append(m)
-    for x in set(by_me) & set(by_opp):
+    # 2026-10-01: set() の反復順（PYTHONHASHSEED 依存）に任せていたため、同じ重み・同じ implied の
+    # 2段つながりが複数あるとき pick() の安定ソートでの並びが実行のたびに変わっていた
+    # （中身は同じ、順番だけが変わる）。sorted() で決定的にする（中身の変更ではない）
+    for x in sorted(set(by_me) & set(by_opp)):
         for m1 in by_me[x]:
             for m2 in by_opp[x]:
                 add([me, x, opp], [m1, m2])

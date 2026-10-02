@@ -166,6 +166,8 @@ def test_t5_standings_roundtrip():
             assert same(new_row["goals_for"], r["得点"]), (fname, r, new_row)
             assert same(new_row["goals_against"], r["失点"]), (fname, r, new_row)
             assert same(new_row["points"], r["勝点"]), (fname, r, new_row)
+            # 2026-10-01、standings.raw_team 追加（出典そのままの「チーム」表記）。
+            assert new_row["raw_team"] == r["チーム"], (fname, r, new_row)
 
     assert not missing, f"{len(missing)} 件、standings.csv から復元できない行がある（例: {missing[:10]}）"
     assert checked > 0

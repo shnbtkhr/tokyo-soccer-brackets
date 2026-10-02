@@ -22,6 +22,7 @@ from pathlib import Path
 
 from build_outputs import normalize
 from collect_tleague import squad_of
+from dataset import source
 
 ROOT = Path(__file__).parent
 BASE = 1500.0
@@ -131,11 +132,11 @@ def level_of(league: str, div: str) -> str:
 def league_games(cfg: Config, schools: set) -> list[Game]:
     srcs = []
     if cfg.use_tleague:
-        srcs.append(("T", ROOT / "data/leagues/tleague_matches.csv"))
+        srcs.append(("T", source.path("data/leagues/tleague_matches.csv")))
     if cfg.use_district:
-        srcs.append(("地区", ROOT / "data/leagues/district_matches.csv"))
+        srcs.append(("地区", source.path("data/leagues/district_matches.csv")))
     if cfg.use_prince:
-        srcs.append(("プリンス", ROOT / "data/leagues/prince_kanto1_2026_matches.csv"))
+        srcs.append(("プリンス", source.path("data/leagues/prince_kanto1_2026_matches.csv")))
     games = []
     for kind, path in srcs:
         if not path.exists():

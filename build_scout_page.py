@@ -18,6 +18,7 @@ from pathlib import Path
 
 from analyze_team import win_prob
 from build_outputs import normalize
+from dataset import source
 
 ROOT = Path(__file__).parent
 
@@ -146,13 +147,13 @@ def build_data(team: str, block_config: Path) -> dict:
         if leagues_path.exists()
         else {}
     )
-    areas_path = ROOT / "out/scout/member_areas.json"
+    areas_path = source.path("out/scout/member_areas.json")
     areas = json.loads(areas_path.read_text(encoding="utf-8")) if areas_path.exists() else {}
 
     block = a.get("block", list(manual.get("slots", {}).keys()))
     stages = {k: [] for k in block}
 
-    teams_csv = ROOT / "out/teams.csv"
+    teams_csv = source.path("out/teams.csv")
     if teams_csv.exists():
         for t in csv.DictReader(teams_csv.open(encoding="utf-8-sig")):
             k = t["学校_正規化"]

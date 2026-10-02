@@ -26,12 +26,14 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from dataset import source
+
 ROOT = Path(__file__).parent
 DIR = ROOT / "data/leagues"
 
 
 def _rows(name: str) -> list[dict]:
-    p = DIR / name
+    p = source.path(f"data/leagues/{name}")
     if not p.exists():
         return []
     with p.open(encoding="utf-8-sig") as f:

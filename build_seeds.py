@@ -29,6 +29,7 @@ from pathlib import Path
 import connections as cn
 from analyze_team import BASE, compute_elo, load_matches, played, result_for, summarize, win_prob
 from build_outputs import normalize
+from dataset import source
 
 ROOT = Path(__file__).parent
 ME = "武蔵丘"
@@ -40,7 +41,7 @@ DEPTH = {"総体": ("二次", "一次", "支部"), "選手権": ("二次", "一�
 
 
 def csv_rows(path: str) -> list[dict]:
-    return list(csv.DictReader((ROOT / path).open(encoding="utf-8-sig")))
+    return list(csv.DictReader(source.path(path).open(encoding="utf-8-sig")))
 
 
 def teams_of(rows: list[dict], year: int, series: str, kw: str = "") -> set:
@@ -256,7 +257,7 @@ def main() -> int:
     teams_csv = csv_rows("out/teams.csv")
     tl_st, tl_m = csv_rows("data/leagues/tleague_standings.csv"), csv_rows("data/leagues/tleague_matches.csv")
     pr_st, pr_m = csv_rows("data/leagues/prince_kanto1_2026_standings.csv"), csv_rows("data/leagues/prince_kanto1_2026_matches.csv")
-    areas = json.loads((ROOT / "out/scout/member_areas.json").read_text(encoding="utf-8"))
+    areas = json.loads(source.path("out/scout/member_areas.json").read_text(encoding="utf-8"))
     adj, disp = cn.load(SEASON)
     me_elo = elo.get(ME, BASE)
 
